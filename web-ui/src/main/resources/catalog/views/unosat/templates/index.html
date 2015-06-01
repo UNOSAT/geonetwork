@@ -65,6 +65,18 @@
           </div>
         </div>
       </div>
+
+      <!--Map management (save/load contexts)-->
+      <div id="contextpanel" data-ng-show="mainCtrl.contextOpen">
+        <h2 translate>maps</h2>
+        <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
+          ✕
+        </button>
+
+        <div gn-ows-context="" map="::mainCtrl.map"></div>
+      </div>
+
+      <!--Print form panel-->
       <div id="printpanel" data-ng-show="mainCtrl.printOpen">
         <h2 translate>print</h2>
         <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
@@ -92,7 +104,7 @@
 
     <div class="un-main-tools" ngeo-btn-group ng-class="{active: mainCtrl.sidebarOpen()}">
       <button class="un-tool-btn btn" ngeo-btn ng-model="mainCtrl.layersOpen"><i class="fa fa-tasks"></i> </button>
-      <button class="un-tool-btn btn" ngeo-btn ng-model="mainCtrl.catalogOpen"><i class="fa fa-book"></i> </button>
+      <button class="un-tool-btn btn" ngeo-btn ng-model="mainCtrl.contextOpen"><i class="fa fa-book"></i> </button>
       <button class="un-tool-btn btn" ngeo-btn ng-model="mainCtrl.printOpen"><i class="fa fa-print"></i> </button>
       <button class="un-tool-btn btn" ngeo-btn ng-model="mainCtrl.mInteraction.active"><i class="fa fa-print"></i> </button>
       <button class="un-tool-btn btn"><i class="fa fa-tasks"></i> </button>

@@ -14,6 +14,7 @@
 @import "search.less";
 @import "layermanager.less";
 @import "form.less";
+@import "context.less";
 
 @header-height: 75px;
 @sidebar-width: 320px;
@@ -64,6 +65,17 @@ body > div,
     margin: 0;
     text-transform: uppercase;
     color: #fff;
+  }
+
+  .btn {
+    border-radius: 0;
+    background-color: @main-txt;
+    color: white;
+
+    &:focus, &:hover, &.active {
+      background-color: white;
+      color: @main-txt;
+    }
   }
 
   .close-panel {

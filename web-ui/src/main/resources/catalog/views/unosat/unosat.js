@@ -8,6 +8,7 @@
   goog.require('un-search');
   goog.require('un-catalog');
   goog.require('un-layermanager');
+  goog.require('un-contexts');
 
   var module = angular.module('gn_search_unosat', [
     'ngAnimate',
@@ -16,7 +17,8 @@
     'un-backgroundlayer',
     'un-search',
     'un-layermanager',
-    'un-catalog'
+    'un-catalog',
+    'un-contexts'
   ]);
 
   module.constant('defaultExtent', [604168.9251648698, 827653.5815669585, 3495323.0830233768, 2750197.7169957114]);
@@ -74,12 +76,12 @@
 
   gn.MainController.prototype.closeSidebar = function() {
     this.layersOpen = false;
-    this.catalogOpen = false;
+    this.contextOpen = false;
     this.printOpen = false;
   };
 
   gn.MainController.prototype.sidebarOpen = function() {
-    return this.layersOpen || this.catalogOpen || this.printOpen ||
+    return this.layersOpen || this.contextOpen || this.printOpen ||
         this.mInteraction.active;
   };
   gn.MainController.prototype.showTab = function(selector) {

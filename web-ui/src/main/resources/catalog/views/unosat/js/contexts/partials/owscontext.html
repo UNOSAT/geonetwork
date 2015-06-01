@@ -1,0 +1,34 @@
+<div class="context">
+
+  <a class="btn btn-default btn-block"
+     data-ng-click="save($event)"
+     title="{{'downloadContext'|translate}}"
+     download="{{mapFileName}}.xml">
+    <i class="fa fa-save"></i>&nbsp;
+    <span data-translate="">save</span>
+  </a>
+
+  <button type="button"
+          class="btn btn-default btn-block import"
+          title="{{'uploadContext'|translate}}">
+    <i class="fa fa-upload"></i>&nbsp;
+    <span data-translate="">uploadContext</span>
+  </button>
+  <a class="btn btn-default btn-block"
+     data-ng-click="reset($event)"
+     title="{{'resetContext'|translate}}">
+    <i class="fa fa-eraser"></i>&nbsp;
+    <span data-translate="">resetContext</span>
+  </a>
+</div>
+
+<input class="hidden" type="file"
+       accept="text/xml" id="owc-file-input"/>
+
+<div class="context-tab">
+  <div data-ng-repeat="c in ctxList" class="context-tab-cell pull-left"
+          data-ng-click="load(ctxFolder+c+'.xml')">
+    <img data-ng-src="{{ctxFolder}}{{c}}.png" />
+  </div>
+
+</div>

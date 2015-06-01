@@ -37,7 +37,7 @@
     function(gnViewerSettings, gnOwsContextService, $translate, $rootScope) {
       return {
         restrict: 'A',
-        templateUrl: '../../catalog/components/viewer/owscontext/' +
+        templateUrl: '../../catalog/views/unosat/js/contexts/' +
             'partials/owscontext.html',
         scope: {
           map: '='
@@ -53,6 +53,12 @@
             var str = new XMLSerializer().serializeToString(xml);
             var base64 = base64EncArr(strToUTF8Arr(str));
             $($event.target).attr('href', 'data:text/xml;base64,' + base64);
+          };
+
+          scope.load = function(url) {
+            gnOwsContextService.loadContextFromUrl(
+                url,
+                scope.map);
           };
 
           scope.reset = function() {
@@ -96,6 +102,11 @@
           $(window).on('unload', function() {
             gnOwsContextService.saveToLocalStorage(scope.map);
           });
+
+          if(gnViewerSettings.contexts) {
+            scope.ctxFolder = '../../catalog/views/unosat/data/contexts/';
+            scope.ctxList = gnViewerSettings.contexts;
+          }
         }
       };
     }

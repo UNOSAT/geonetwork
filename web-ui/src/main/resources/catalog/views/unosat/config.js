@@ -165,5 +165,7 @@
             viewerMap: viewerMap,
             searchMap: searchMap
           });
+
+          viewerSettings.contexts = ['france', 'italy', 'gb'];
         }]);
 })();
