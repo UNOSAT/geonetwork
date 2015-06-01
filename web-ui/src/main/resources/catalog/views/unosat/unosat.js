@@ -82,6 +82,9 @@
     return this.layersOpen || this.catalogOpen || this.printOpen ||
         this.mInteraction.active;
   };
+  gn.MainController.prototype.showTab = function(selector) {
+    $(selector).tab('show');
+  };
 
   module.controller('MainController', gn.MainController);
   gn.MainController['$inject'] = [

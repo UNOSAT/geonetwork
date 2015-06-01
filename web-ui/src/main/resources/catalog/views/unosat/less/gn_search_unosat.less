@@ -50,6 +50,9 @@ body > div,
   transition: all 300ms ease-out 0s;
   position: relative;
 
+  > div {
+    height: 100%;
+  }
   &.open {
     margin-left: 0;
   }
@@ -72,6 +75,33 @@ body > div,
     border: 0;
     color: #fff;
     line-height: 1;
+  }
+
+  .tab-content {
+    height: calc(~"100% - " @header-height);
+    overflow: hidden;
+    background-color: @main-base-color-light;
+  }
+  .nav-tabs {
+    border: none;
+    li {
+      padding-right: 5px;
+      margin-bottom: 0;
+      > a {
+        text-transform: uppercase;
+        font-size: 14px;
+        line-height: 1;
+        border: 0;
+        font-weight: bold;
+        border-radius: 0;
+        background-color: @main-base-color;
+        color: @main-txt-light;
+      }
+      > a:hover, &.active > a {
+        background-color: @main-base-color-light;
+        color: white;
+      }
+    }
   }
 
   un-backgroundlayer {

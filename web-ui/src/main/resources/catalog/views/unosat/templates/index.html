@@ -22,22 +22,48 @@
   <div id="map-container" >
     <div id="sidebar" ng-class="{open: mainCtrl.sidebarOpen()}"
          ngeo-resizemap="mainCtrl.map">
+
+      <!--Layers sidebar-->
       <div id="layers" data-ng-show="mainCtrl.layersOpen">
         <h2 translate>layers</h2>
         <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
           ✕
         </button>
+
+        <!--Background layer combo-->
         <un-backgroundlayer un-backgroundlayer-map="::mainCtrl.map"></un-backgroundlayer>
-        <div id="maplayers">
-          <un-layermanager un-layermanager-map="::mainCtrl.map"></un-layermanager>
+
+        <!--Tab panel header-->
+        <ul class="nav nav-tabs">
+          <li role="presentation" class="active">
+            <a href="#mymap" data-toggle="tab">
+              <span translate>my_layers</span>
+              <span ng-if="mainCtrl.selectedLayers.length > 0">({{mainCtrl.selectedLayers.length}})</span>
+            </a>
+          </li>
+          <li role="presentation">
+            <a href="#catalog" data-toggle="tab" translate>Catalog</a>
+          </li>
+        </ul>
+
+        <!--Tab panel content-->
+        <div class="tab-content">
+
+          <!--Mymap, list of inmap layer-->
+          <div id="mymap" class="tab-pane active">
+            <un-layermanager un-layermanager-map="::mainCtrl.map"
+                              app-layermanager-layers="::mainCtrl.selectedLayers">
+            </un-layermanager>
+            <div class="text-center">
+              <button class="btn btn-default" ng-click="mainCtrl.showTab('a[href=#catalog]');" translate>+ Add layers</button>
+            </div>
+          </div>
+
+          <!--Catalog tree-->
+          <div id="catalog" class="tab-pane">
+            <un-catalog un-catalog-map="::mainCtrl.map"></un-catalog>
+          </div>
         </div>
-      </div>
-      <div id="catalogpanel" data-ng-show="mainCtrl.catalogOpen">
-        <h2 translate>catalog</h2>
-        <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
-          ✕
-        </button>
-        <un-catalog un-catalog-map="::mainCtrl.map"></un-catalog>
       </div>
       <div id="printpanel" data-ng-show="mainCtrl.printOpen">
         <h2 translate>print</h2>
