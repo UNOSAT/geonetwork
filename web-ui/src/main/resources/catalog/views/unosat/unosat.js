@@ -81,8 +81,7 @@
   };
 
   gn.MainController.prototype.sidebarOpen = function() {
-    return this.layersOpen || this.contextOpen || this.printOpen ||
-        this.mInteraction.active;
+    return this.layersOpen || this.contextOpen || this.printOpen;
   };
   gn.MainController.prototype.showTab = function(selector) {
     $(selector).tab('show');

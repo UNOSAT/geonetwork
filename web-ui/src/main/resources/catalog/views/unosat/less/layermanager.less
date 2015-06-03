@@ -1,5 +1,8 @@
-#maplayers {
-  padding: 10px;
+#mymap {
+  color: @main-txt-light;
+  > div {
+    margin-top: 10px;
+  }
 }
 ul.layermanager {
   margin: 0;
@@ -10,6 +13,7 @@ li.layermanager-panel {
   list-style-type: none;
   margin-bottom: 1px;
   padding: 5px 10px;
+  border-radius: 0;
 
   a[data-toggle=collapse] .expanded,
   a[data-toggle=collapse] .collapsed {

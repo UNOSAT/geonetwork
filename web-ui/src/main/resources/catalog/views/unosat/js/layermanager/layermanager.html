@@ -9,6 +9,7 @@
       <span class="expanded fa fa-times"></span>
     </a>
     <div id="layermanager-item-{{$index}}" class="collapse">
+      <a href ng-if="::layer.get('cextent')" ng-click="ctrl.zoomToExtent(layer)"><span class="fa fa-arrows-alt" ></span></a>
       <a href ng-click="ctrl.changeVisibility(layer)"><span class="fa" ng-class="(layer.opacity > 0) ? 'fa-eye': 'fa-eye-slash'" ></span></a>
       <input class="opacity" type="range" min="0" max="1" step="0.25" ng-model="layer.opacity" />
       <a class="delete" ng-click="ctrl.removeLayer(layer);"><span class="fa fa-trash-o"></span></a>

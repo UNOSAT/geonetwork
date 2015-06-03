@@ -62,6 +62,7 @@
         {'LAYERS': node.layers},
         {label: node.name, url: node.url});
 
+    layer.set('cextent', node.cextent);
     layerCache_[layerCacheKey] = layer;
     return layer;
   };

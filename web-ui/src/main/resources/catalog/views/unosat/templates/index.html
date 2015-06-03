@@ -84,31 +84,30 @@
         </button>
         <div gn-mapprint="" print-active="mainCtrl.printOpen" map="::mainCtrl.map"></div>
       </div>
-      <div id="measurepanel" data-ng-show="mainCtrl.mInteraction.active">
-        <h2 translate>measure</h2>
-        <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
-          ✕
-        </button>
-        <div class="gn-measure-text">
-          <div class="alert alert-warning hidden-print" translate>measure_instruction</div>
-          <dl class="dl-horizontal">
-            <dt>{{'Distance' | translate}}</dt>
-            <dd>{{mainCtrl.measureObj.distance | measure}}</dd>
-            <dt>{{'Surface' | translate}}</dt>
-            <dd>{{mainCtrl.measureObj.surface | measure:'area':['km&sup2', ' m&sup2']}}</dd>
-          </dl>
-        </div>
-      </div>
-
     </div>
 
     <div class="un-main-tools" ngeo-btn-group ng-class="{active: mainCtrl.sidebarOpen()}">
-      <button class="un-tool-btn btn" ngeo-btn ng-model="mainCtrl.layersOpen"><i class="fa fa-tasks"></i> </button>
-      <button class="un-tool-btn btn" ngeo-btn ng-model="mainCtrl.contextOpen"><i class="fa fa-book"></i> </button>
+      <button class="un-tool-btn btn" ngeo-btn ng-model="mainCtrl.layersOpen"><span class="icon layers"></span> </button>
+      <button class="un-tool-btn btn" ngeo-btn ng-model="mainCtrl.contextOpen"><i class="icon map"></i> </button>
       <button class="un-tool-btn btn" ngeo-btn ng-model="mainCtrl.printOpen"><i class="fa fa-print"></i> </button>
-      <button class="un-tool-btn btn" ngeo-btn ng-model="mainCtrl.mInteraction.active"><i class="fa fa-print"></i> </button>
-      <button class="un-tool-btn btn"><i class="fa fa-tasks"></i> </button>
+      <button class="un-tool-btn btn" ngeo-btn ng-model="mainCtrl.mInteraction.active"><i class="icon measure"></i> </button>
+      <button class="un-tool-btn btn"><i class="fa fa-pencil"></i> </button>
     </div>
+
+    <div id="measurepanel" data-ng-show="mainCtrl.mInteraction.active">
+      <button class="close-panel" ng-click="mainCtrl.mInteraction.active = false">
+        ✕
+      </button>
+      <div class="gn-measure-text">
+        <dl class="dl-horizontal">
+          <dt>{{'Distance' | translate}}</dt>
+          <dd>{{mainCtrl.measureObj.distance | measure}}</dd>
+          <dt>{{'Surface' | translate}}</dt>
+          <dd>{{mainCtrl.measureObj.surface | measure:'area':['km&sup2', ' m&sup2']}}</dd>
+        </dl>
+      </div>
+    </div>
+
     <div ngeo-map="mainCtrl.map">
     </div>
   </div>

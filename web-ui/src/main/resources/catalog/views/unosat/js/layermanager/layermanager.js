@@ -69,6 +69,12 @@
     layer.setOpacity(newOpacity);
   };
 
+  gn.LayermanagerController.prototype.zoomToExtent = function(layer) {
+      this['map'].getView().fitExtent(layer.get('cextent'),
+          this['map'].getSize());
+  };
+
+
   gn.LayermanagerController['$inject'] = [
     '$scope',
     'ngeoSyncArrays'

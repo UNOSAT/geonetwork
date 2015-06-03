@@ -9,7 +9,8 @@
             "layers": "unosat:Couverture_P",
             "type": "WMS",
             "name": "Couverture",
-            "url": "http://localhost:8082/geoserver/unosat/wms?"
+            "url": "http://localhost:8082/geoserver/unosat/wms?",
+            "cextent": [-817059, 4675034, 1719426, 7050085]
           },
           {
             "layers": "unosat:Hydrogeologie_P",

@@ -19,6 +19,31 @@
 @header-height: 75px;
 @sidebar-width: 320px;
 
+@font-face {
+  font-family: 'unosat';
+  src: url('../catalog/views/unosat/less/fonts/icons.woff') format('woff');
+}
+
+.icon {
+  font-family: unosat;
+  font-style: normal;
+
+  &.layers:after {
+    content: '\e00e';
+  }
+  &.measure:after {
+    content: '\e021';
+  }
+  &.map:after {
+    content: '\e02c';
+  }
+  &:after {
+    text-align: center;
+    width: 100%;
+    font-size: 16px;
+  }
+}
+
 html, body,
 body > div,
 #main-container {
@@ -78,18 +103,8 @@ body > div,
     }
   }
 
-  .close-panel {
-    font-size: 20px;
-    position: absolute;
-    right: 10px;
-    top: 12px;
-    background: none;
-    border: 0;
-    color: #fff;
-    line-height: 1;
-  }
-
   .tab-content {
+    padding: 20px;
     height: calc(~"100% - " @header-height);
     overflow: hidden;
     background-color: @main-base-color-light;
@@ -130,6 +145,17 @@ body > div,
   }
 }
 
+.close-panel {
+  font-size: 20px;
+  position: absolute;
+  right: 10px;
+  top: 12px;
+  background: none;
+  border: 0;
+  color: #fff;
+  line-height: 1;
+}
+
 [gn-mapprint] {
   margin: 20px;
 }
@@ -145,5 +171,23 @@ body > div,
     background-color: #f9f9f9;
     background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAAAAABzHgM7AAAAAnRSTlMAAHaTzTgAAAARSURBVHgBY3iKBFEAOp/+MgB+UQnYeBZPWAAAAABJRU5ErkJggg==');
     position: relative;
+  }
+}
+
+#measurepanel {
+  position: absolute;
+  bottom: 56px;
+  left: 0;
+  height: 100px;
+  width: 250px;
+  z-index:5;
+  padding-top: 30px;
+  background-color: @main-base-color-light;
+  color: white;
+  dt {
+    width: 80px;
+  }
+  dd {
+    margin-left: 100px;
   }
 }
