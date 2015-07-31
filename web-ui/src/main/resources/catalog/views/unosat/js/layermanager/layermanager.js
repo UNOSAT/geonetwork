@@ -27,10 +27,9 @@
     this.opacities_ = {};
     this.selectedLayers = [];
     ngeoSyncArrays(map.getLayers().getArray(), this.selectedLayers,
-        true, $scope, goog.bind(function(layer) {
-          return goog.array.indexOf(
-              this.map.getLayers().getArray(), layer) !== 0;
-        }, this));
+        true, $scope, function(layer) {
+          return this.map.getLayers().getArray().indexOf(layer) !== 0;
+        });
 
     // watch any change on layers array to refresh the map
     $scope.$watchCollection(function() {
@@ -41,10 +40,10 @@
   };
 
   function layerFilter(layer) {
-    goog.bind(function(layer) {
-      return goog.array.indexOf(
-          this.map.getLayers().getArray(), layer) !== 0;
-    }, this)  }
+    return function(layer) {
+      return this.map.getLayers().getArray().indexOf(layer) !== 0;
+    }
+  };
 
   gn.LayermanagerController.prototype.removeLayer = function(layer) {
     this['map'].removeLayer(layer);
@@ -55,7 +54,7 @@
     var newOpacity;
     var uid = goog.getUid(layer);
     if (currentOpacity === 0) {
-      if (goog.isDef(this.opacities_[uid])) {
+      if (angular.isDefined(this.opacities_[uid])) {
         newOpacity = this.opacities_[uid];
       } else {
         newOpacity = 1;

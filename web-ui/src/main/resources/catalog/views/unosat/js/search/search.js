@@ -1,7 +1,6 @@
 (function() {
 
   goog.provide('un-search');
-
   var module = angular.module('un-search', []);
 
   gn.searchDirective  = function() {
@@ -22,10 +21,10 @@
           $(this).addClass('placeholder-text');
         });
         element.find('span.clear-button').on('click',
-            goog.bind(function(scope) {
-              $(this).find('input').val('').trigger('input');
+            function(scope) {
+              $(element).find('input').val('').trigger('input');
               scope['ctrl'].featureOverlay_.getFeatures().clear();
-            },element, scope));
+            });
 
         element.find('input').on(
             'input propertyChange focus blur', function() {

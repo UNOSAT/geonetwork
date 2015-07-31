@@ -1,7 +1,19 @@
+var gn = {};
+
+if(!goog) {
+  var goog = {};
+  goog.UID_PROPERTY_ = 'closure_uid_406936994';
+  goog.uidCounter_ = 0;
+  goog.getUid = function(obj) {
+    return obj[goog.UID_PROPERTY_] ||
+        (obj[goog.UID_PROPERTY_] = ++goog.uidCounter_);
+  };
+}
+
 (function() {
 
   goog.provide('gn_search_unosat_config');
-
+  window.gn = {};
   var module = angular.module('gn_search_unosat_config', []);
 
   module

@@ -3,14 +3,82 @@
     "name": "root",
     "children": [
       {
-        "name": "Rock",
+        "name": "Eau",
+        "children": [{
+          "name": "Hydrochimie",
+          "children": [
+            {
+              "layers": "unosat:Couverture_P",
+              "name": "Couverture",
+              "type": "WMS",
+              "url": "http://localhost:8082/geoserver/unosat/wms?"
+            },
+            {
+              "layers": "unosat:Hydrogeologie_P",
+              "type": "WMS",
+              "name": "Hydrogeologie",
+              "url": "http://localhost:8082/geoserver/unosat/wms?"
+            },
+            {
+              "layers": "unosat:Sources",
+              "type": "WMS",
+              "name": "Sources",
+              "url": "http://localhost:8082/geoserver/unosat/wms?"
+            }
+          ]
+        }, {
+          "name": "Hydrogéologie",
+          "children": [
+            {
+              "layers": "unosat:Couverture_P",
+              "type": "WMS",
+              "name": "Couverture",
+              "url": "http://localhost:8082/geoserver/unosat/wms?"
+            },
+            {
+              "layers": "unosat:Hydrogeologie_P",
+              "type": "WMS",
+              "name": "Hydrogeologie",
+              "url": "http://localhost:8082/geoserver/unosat/wms?"
+            },
+            {
+              "layers": "unosat:Sources",
+              "type": "WMS",
+              "name": "Sources",
+              "url": "http://localhost:8082/geoserver/unosat/wms?"
+            }
+          ]
+        }]
+      },{
+        "name": "Sol",
         "children": [
           {
             "layers": "unosat:Couverture_P",
-            "type": "WMS",
             "name": "Couverture",
-            "url": "http://localhost:8082/geoserver/unosat/wms?",
-            "cextent": [-817059, 4675034, 1719426, 7050085]
+            "type": "WMS",
+            "url": "http://localhost:8082/geoserver/unosat/wms?"
+          },
+          {
+            "layers": "unosat:Hydrogeologie_P",
+            "type": "WMS",
+            "name": "Hydrogeologie",
+            "url": "http://localhost:8082/geoserver/unosat/wms?"
+          },
+          {
+            "layers": "unosat:Sources",
+            "type": "WMS",
+            "name": "Sources",
+            "url": "http://localhost:8082/geoserver/unosat/wms?"
+          }
+        ]
+      },{
+        "name": "Climat",
+        "children": [
+          {
+            "layers": "unosat:Couverture_P",
+            "name": "Couverture",
+            "type": "WMS",
+            "url": "http://localhost:8082/geoserver/unosat/wms?"
           },
           {
             "layers": "unosat:Hydrogeologie_P",
@@ -27,7 +95,7 @@
         ]
       },
       {
-        "name": "Water",
+        "name": "Société",
         "children": [
           {
             "layers": "dem:altitude",

@@ -47,6 +47,15 @@
       map.addLayer(layer);
     }
   };
+
+  gn.UnCatalogController.prototype.toggleNode = function(ctrl, evt) {
+    if(ctrl.node.children && ctrl.depth > 1) {
+      var el = $(evt.target);
+      el.find('.fa').first().toggleClass('fa-minus-square')
+          .toggleClass('fa-plus-square');
+    }
+  };
+
   gn.UnCatalogController.prototype.getLayer = function(node) {
     var layer, layerCacheKey, type;
     if (!('type' in node)) {

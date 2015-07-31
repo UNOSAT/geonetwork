@@ -60,13 +60,13 @@
           extent: this.defaultExtent_,
           tipLabel: 'Full extent',
           className: 'un-zoom-extent',
-          label:goog.dom.htmlToDocumentFragment(
+          label:$(
               '<span class="fa fa-globe"></span>')}),
 
         new ol.control.FullScreen({
           tipLabel: 'Full screen',
           className: 'un-full-screen',
-          label:goog.dom.htmlToDocumentFragment(
+          label:$(
             '<span class="fa fa-arrows-alt"></span>')})
       ]
     });

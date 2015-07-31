@@ -116,6 +116,7 @@
             $('#owc-file-input')[0].value = '';
           });
 
+/*
           // load context from url or from storage
           if (gnViewerSettings.owsContext) {
             gnOwsContextService.loadContextFromUrl(gnViewerSettings.owsContext,
@@ -134,7 +135,7 @@
           $(window).on('unload', function() {
             gnOwsContextService.saveToLocalStorage(scope.map);
           });
-
+*/
           if(gnViewerSettings.contexts) {
             scope.ctxFolder = '../../catalog/views/unosat/data/contexts/';
             scope.ctxList = gnViewerSettings.contexts;

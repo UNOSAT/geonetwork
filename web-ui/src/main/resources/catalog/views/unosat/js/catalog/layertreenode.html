@@ -1,6 +1,8 @@
-<a data-toggle="collapse"
+<a data-toggle="collapse" class="collapsed"
    href="#catalog-{{::layertreenodeCtrl.uid}}"
-   ng-if="layertreenodeCtrl.node.children && layertreenodeCtrl.depth < 3">
+   ng-if="layertreenodeCtrl.node.children && layertreenodeCtrl.depth < 3"
+   ng-click="catalogCtrl.toggleNode(layertreenodeCtrl, $event)">
+  <i ng-if="layertreenodeCtrl.node.children && layertreenodeCtrl.depth > 1" class="fa fa-plus-square"></i>
   {{layertreenodeCtrl.node.name | translate}}
 </a>
 <span ng-if="layertreenodeCtrl.node.children && layertreenodeCtrl.depth >= 3">
@@ -14,7 +16,7 @@
   </a>
 </div>
 <ul id="catalog-{{::layertreenodeCtrl.uid}}" ng-if="layertreenodeCtrl.node.children"
-    ng-class="(layertreenodeCtrl.depth < 3) ? 'collapse' : ''">
+    ng-class="{collapse : layertreenodeCtrl.depth < 3, leaf : layertreenodeCtrl.depth > 1}">
   <li ng-repeat="node in layertreenodeCtrl.node.children"
       ngeo-layertreenode="node" ngeo-layertreenode-map="layertreenodeCtrl.map"
       ngeo-layertreenode-layerexpr="layertreenodeCtrl.layerExpr"
