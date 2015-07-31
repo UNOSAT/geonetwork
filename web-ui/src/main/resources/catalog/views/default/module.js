@@ -70,6 +70,8 @@
       var viewerMap = gnSearchSettings.viewerMap;
       var searchMap = gnSearchSettings.searchMap;
 
+
+
       $scope.modelOptions = angular.copy(gnGlobalSettings.modelOptions);
       $scope.modelOptionsForm = angular.copy(gnGlobalSettings.modelOptions);
       $scope.gnWmsQueue = gnWmsQueue;
@@ -161,6 +163,19 @@
           active: false
         }};
 
+      // Set the default browse mode for the home page
+      $scope.$watch('searchInfo', function () {
+        if (angular.isDefined($scope.searchInfo.facet)) {
+          if ($scope.searchInfo.facet['inspireThemes'].length > 0) {
+            $scope.browse = 'inspire';
+          } else if ($scope.searchInfo.facet['topicCats'].length > 0) {
+            $scope.browse = 'topics';
+          //} else if ($scope.searchInfo.facet['categories'].length > 0) {
+          //  $scope.browse = 'cat';
+          }
+        }
+      });
+
       $scope.resultviewFns = {
         addMdLayerToMap: function (link, md) {
 
@@ -216,7 +231,10 @@
         from: 1,
         to: 30,
         viewerMap: viewerMap,
-        searchMap: searchMap
+        searchMap: searchMap,
+        mapfieldOption: {
+          relations: ['within']
+        }
       }, gnSearchSettings.sortbyDefault);
 
 
