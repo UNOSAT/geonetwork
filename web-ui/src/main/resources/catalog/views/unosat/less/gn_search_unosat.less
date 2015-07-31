@@ -15,8 +15,10 @@
 @import "layermanager.less";
 @import "form.less";
 @import "context.less";
+@import "bgselector.less";
+@import "legend.less";
 
-@header-height: 75px;
+@header-height: 80px;
 @sidebar-width: 320px;
 
 @font-face {
@@ -86,7 +88,7 @@ body > div,
   h2 {
     font-size: 20px;
     line-height: 1;
-    padding: 12px 0 12px 12px;
+    padding: 20px 0 40px 12px;
     margin: 0;
     text-transform: uppercase;
     color: #fff;
@@ -105,7 +107,7 @@ body > div,
 
   .tab-content {
     padding: 20px;
-    height: calc(~"100% - " @header-height);
+    height: calc(~"100% - 34px -" @header-height);
     overflow: hidden;
     background-color: @main-base-color-light;
   }
@@ -128,19 +130,6 @@ body > div,
         background-color: @main-base-color-light;
         color: white;
       }
-    }
-  }
-
-  un-backgroundlayer {
-    .dropdown {
-      display: inline-block;
-
-      .dropdown-menu {
-        text-align: left;
-      }
-    }
-    > div {
-      margin-bottom: 15px;
     }
   }
 }

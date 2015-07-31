@@ -1,0 +1,28 @@
+.legend-container {
+  position: absolute;
+  bottom: 44px;
+  right: 20px;
+  left: 20px;
+  max-height: 50%;
+  overflow-y: auto;
+  transition: all 300ms ease-out 0s;
+
+  &.closed {
+    max-height: 0;
+    overflow-y: hidden;
+  }
+
+  .list-group {
+    margin-bottom: 0;
+  }
+
+  h5 {
+    color: #000000;
+  }
+}
+
+#legendBtn {
+  position: absolute;
+  bottom: 10px;
+
+}

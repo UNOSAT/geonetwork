@@ -1,0 +1,11 @@
+<div ng-repeat="layer in ::ctrl.bgLayers"
+     ng-click="ctrl.activateBackgroundLayer(layer)"
+     class="ga-bg-layer {{ctrl.getClass(layer, $index)}}"
+     ng-class="{'ga-bg-highlight': (layer == ctrl.currentBgLayer)}">
+  <div class="ga-bg-layer-text" translate>{{layer.name}}</div>
+</div>
+<div ng-click="ctrl.toggleMenu()" class="ga-bg-layer-bt"
+     ng-class="{'ga-bg-layer-bt-close': !ctrl.isBackgroundSelectorClosed}">
+  <div class="ga-bg-layer-bt-text" translate>bg_chooser_label</div>
+  <i class="fa fa-chevron-circle-right"></i>
+</div> 

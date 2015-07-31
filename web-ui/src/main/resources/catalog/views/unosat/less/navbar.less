@@ -4,7 +4,10 @@ header {
   /*background-image:  url("../catalog/views/unosat/img/header_bg.jpg");*/
   &.navbar {
     border-width: 0;
+    margin-bottom: 0;
     min-height:@header-height;
+    background-color: @main-basecolor-dark;
+    box-shadow: none;
 
     @media (max-width: @screen-xs-max) {
       min-height: 40px;
@@ -13,7 +16,6 @@ header {
       height: @header-height;
     }
   }
-  .box-shadow(0px 2px 6px -1px rgba(0, 0, 0, 0.5));
 
   .container-fluid {
     padding-left: 0;

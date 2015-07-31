@@ -4,21 +4,23 @@
 
   goog.require('gn_search');
   goog.require('gn_search_unosat_config');
-  goog.require('un-backgroundlayer');
+  goog.require('un-bgselector');
   goog.require('un-search');
   goog.require('un-catalog');
   goog.require('un-layermanager');
   goog.require('un-contexts');
+  goog.require('gn_legendpanel_directive');
 
   var module = angular.module('gn_search_unosat', [
     'ngAnimate',
     'gn_search',
     'gn_search_unosat_config',
-    'un-backgroundlayer',
+    'un-bgselector',
     'un-search',
     'un-layermanager',
     'un-catalog',
-    'un-contexts'
+    'un-contexts',
+      'gn_legendpanel_directive'
   ]);
 
   module.constant('defaultExtent', [604168.9251648698, 827653.5815669585, 3495323.0830233768, 2750197.7169957114]);
@@ -31,6 +33,9 @@
     this.map = null;
     this.setMap_();
     this.measureObj = {};
+    this.legendOpen = false;
+    this.drawVector;
+    var $this = this;
 
     this.map.addControl(new ol.control.MousePosition({
       target: document.querySelector('footer')
@@ -41,6 +46,12 @@
 
     this.mInteraction = gnMeasure.create(this.map,
         this.measureObj, $scope);
+
+    $scope.$watch('mainCtrl.drawOpen', function(v ) {
+      if($scope.mainCtrl.drawVector) {
+        $scope.mainCtrl.drawVector.inmap = v;
+      }
+    });
 
   };
 
@@ -78,10 +89,11 @@
     this.layersOpen = false;
     this.contextOpen = false;
     this.printOpen = false;
+    this.drawOpen = false;
   };
 
   gn.MainController.prototype.sidebarOpen = function() {
-    return this.layersOpen || this.contextOpen || this.printOpen;
+    return this.layersOpen || this.contextOpen || this.printOpen || this.drawOpen;
   };
   gn.MainController.prototype.showTab = function(selector) {
     $(selector).tab('show');

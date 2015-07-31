@@ -25,20 +25,17 @@
 
       <!--Layers sidebar-->
       <div id="layers" data-ng-show="mainCtrl.layersOpen">
-        <h2 translate>layers</h2>
+        <h2 translate>geoportal</h2>
         <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
           ✕
         </button>
-
-        <!--Background layer combo-->
-        <un-backgroundlayer un-backgroundlayer-map="::mainCtrl.map"></un-backgroundlayer>
 
         <!--Tab panel header-->
         <ul class="nav nav-tabs">
           <li role="presentation" class="active">
             <a href="#mymap" data-toggle="tab">
-              <span translate>Layers</span>
-              <span ng-if="mainCtrl.selectedLayers.length > 0">({{mainCtrl.selectedLayers.length}})</span>
+              <span translate>mylayers</span>
+              <span ng-if="mainCtrl.map.getLayers().getLength() > 1">({{mainCtrl.map.getLayers().getLength() - 1}})</span>
             </a>
           </li>
           <li role="presentation">
@@ -55,8 +52,12 @@
                               app-layermanager-layers="::mainCtrl.selectedLayers">
             </un-layermanager>
             <div class="text-center">
-              <button class="btn btn-default" ng-click="mainCtrl.showTab('a[href=#catalog]');" translate>+ Add layers</button>
+              <button class="btn btn-default" ng-click="mainCtrl.showTab('a[href=#catalog]');" translate>+ Ajouter</button>
             </div>
+            <div class="legend-container" ng-class="{closed : !mainCtrl.legendOpen}">
+              <div gn-legend-panel="::mainCtrl.map" />
+            </div>
+            <button data-ng-if="mainCtrl.map.getLayers().getLength() > 1" class="btn btn-default" id="legendBtn" ng-click="mainCtrl.legendOpen = !mainCtrl.legendOpen">Légende</button>
           </div>
 
           <!--Catalog tree-->
@@ -84,14 +85,26 @@
         </button>
         <div gn-mapprint="" print-active="mainCtrl.printOpen" map="::mainCtrl.map"></div>
       </div>
+
+      <!--Drawing-->
+      <div id="drawpanel" data-ng-show="mainCtrl.drawOpen">
+        <h2 translate>draw</h2>
+        <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
+          ✕
+        </button>
+
+        <div class="gn-draw-text" gn-draw="" map="::mainCtrl.map" vector="::mainCtrl.drawVector"></div>
+      </div>
+
     </div>
+
 
     <div class="un-main-tools" ngeo-btn-group ng-class="{active: mainCtrl.sidebarOpen()}">
       <button class="un-tool-btn btn" ngeo-btn ng-model="mainCtrl.layersOpen"><span class="icon layers"></span> </button>
       <button class="un-tool-btn btn" ngeo-btn ng-model="mainCtrl.contextOpen"><i class="icon map"></i> </button>
       <button class="un-tool-btn btn" ngeo-btn ng-model="mainCtrl.printOpen"><i class="fa fa-print"></i> </button>
       <button class="un-tool-btn btn" ngeo-btn ng-model="mainCtrl.mInteraction.active"><i class="icon measure"></i> </button>
-      <button class="un-tool-btn btn"><i class="fa fa-pencil"></i> </button>
+      <button class="un-tool-btn btn" ngeo-btn ng-model="mainCtrl.drawOpen"><i class="fa fa-pencil"></i> </button>
     </div>
 
     <div id="measurepanel" data-ng-show="mainCtrl.mInteraction.active">
@@ -110,6 +123,9 @@
 
     <div ngeo-map="mainCtrl.map">
     </div>
+
+    <!--Background selector-->
+    <un-bg-selector un-bg-selector-map="::mainCtrl.map" class="ga-bg-desktop"></un-bg-selector>
   </div>
   <footer ng-class="{'offset-left': mainCtrl.sidebarOpen()}">
 <!--

@@ -1,0 +1,152 @@
+//Got from geoadmin.ch
+.ga-bg-layer-bt, .ga-bg-layer, .ga-bg-layer-bt-close {
+  overflow: hidden;
+  cursor: pointer;
+  position: absolute;
+  background: transparent no-repeat center;
+  transition: right 0.5s ease, bottom 0.5s ease, width 0.5s ease;
+}
+
+.ga-bg-layer-bt {
+  z-index: 1005;
+}
+
+.ga-bg-layer-0 {
+  z-index: 1004;
+}
+.ga-bg-layer-1 {
+  z-index: 1003;
+}
+
+.ga-bg-layer-2 {
+  z-index: 1002;
+}
+
+.ga-bg-layer-3 {
+  z-index: 1001;
+}
+
+.ga-bg-layer-text, .ga-bg-layer-bt-text {
+  margin: 3px;
+  padding: 1px;
+  font-size: 75%;
+  text-align: center;
+
+  @media (max-width: @screen-tablet) {
+    display: none;
+  }
+}
+.ga-bg-layer:hover .ga-bg-layer-text{
+  background-color: rgba(112, 114, 152, 0.7);
+
+}
+
+.ga-bg-layer-text {
+  color: white;
+  background-color: rgba(74, 71, 136, 0.7);
+}
+
+.ga-bg-layer-bt-text {
+  color: white;
+  background-color: rgba(74, 71, 136, 0.7);
+}
+
+.ga-bg-desktop {
+
+  .fa-chevron-circle-right {
+    line-height: 64px;
+    text-align: center;
+    display: none;
+
+    @media (max-width: @screen-tablet) {
+      line-height: 32px;
+    }
+  }
+
+  .ga-bg-layer-bt {
+    width: 96px;
+    height: 64px;
+    bottom: 52px;
+    right: 10px;
+    background: #ffffff url('../catalog/views/unosat/js/bgselector/icons/mapquest.jpg') no-repeat center;
+
+    @media (max-width: @screen-tablet) {
+      width: 48px;
+      height: 32px;
+      bottom: 24px;
+      background-size: 44px 28px;
+    }
+  }
+
+  .ga-bg-layer-bt-close {
+    width: 20px;
+    background-image: none;
+
+    .ga-bg-layer-bt-text {
+      display: none;
+    }
+
+    .fa-chevron-circle-right {
+      display: block;
+    }
+  }
+
+  .ga-bg-layer {
+    width: 96px;
+    height: 64px;
+    bottom: 52px;
+    right: 10px;
+    background-color: @main-base-color-light;
+    @media (max-width: @screen-tablet) {
+      width: 48px;
+      height: 32px;
+      bottom: 24px;
+      background-size: 44px 28px;
+    }
+  }
+
+  .ga-bg-highlight {
+    background-color: rgba(74, 71, 136, 0.3);
+  }
+
+  .ga-mapquest {
+    background-image: url('../catalog/views/unosat/js/bgselector/icons/mapquest.jpg');
+  }
+
+  .ga-osm {
+    background-image: url('../catalog/views/unosat/js/bgselector/icons/osm.jpg');
+  }
+
+  .ga-bing_aerial {
+    background-image: url('../catalog/views/unosat/js/bgselector/icons/osm.jpg');
+  }
+
+  .ga-voidLayer {
+    background-image: url('../catalog/views/unosat/js/bgselector/icons/voidLayer-rect.png');
+  }
+
+  .ga-bg-layer-0 {
+    right: 35px;
+  }
+
+  .ga-bg-layer-1 {
+    right: 136px;
+    @media (max-width: @screen-tablet) {
+      right: 88px;
+    }
+  }
+
+  .ga-bg-layer-2 {
+    right: 237px;
+    @media (max-width: @screen-tablet) {
+      right: 141px;
+    }
+  }
+
+  .ga-bg-layer-3 {
+    right: 338px;
+    @media (max-width: @screen-tablet) {
+      right: 194px;
+    }
+  }
+}

@@ -298,5 +298,9 @@
     "wpsExecute": "Lancer",
     "wpsExecuteFailed": "Erreur lors du traitement",
     "wpsErrorCodeReturned": "Le serveur a retourné le code ",
-    "catalog": "Catalogue"
+    "catalog": "Catalogue",
+  "bg_chooser_label": "Fond de plan",
+  "mylayers": "Ma sélection",
+  "nolayerselected": "Aucune couche ajoutée à la carte.",
+  "geoportal": "Géoportail"
 }
