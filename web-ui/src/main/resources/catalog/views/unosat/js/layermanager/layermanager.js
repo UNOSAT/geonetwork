@@ -25,25 +25,9 @@
     var $this = this;
     this['uid'] = goog.getUid(this);
     this.opacities_ = {};
-    this.selectedLayers = [];
-    ngeoSyncArrays(map.getLayers().getArray(), this.selectedLayers,
-        true, $scope, function(layer) {
-          return this.map.getLayers().getArray().indexOf(layer) !== 0;
-        });
-
-    // watch any change on layers array to refresh the map
-    $scope.$watchCollection(function() {
-      return $this.selectedLayers;
-    }, function() {
-      $this.map.render();
-    });
+    this.selectedLayers = this.layers;
   };
 
-  function layerFilter(layer) {
-    return function(layer) {
-      return this.map.getLayers().getArray().indexOf(layer) !== 0;
-    }
-  };
 
   gn.LayermanagerController.prototype.removeLayer = function(layer) {
     this['map'].removeLayer(layer);

@@ -367,7 +367,7 @@
                 map.removeInteraction(select);
                 map.removeInteraction(modify);
                 select.getFeatures().clear();
-              }
+            }
             }
           });
 

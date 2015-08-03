@@ -35,7 +35,7 @@
           <li role="presentation" class="active">
             <a href="#mymap" data-toggle="tab">
               <span translate>mylayers</span>
-              <span ng-if="mainCtrl.map.getLayers().getLength() > 1">({{mainCtrl.map.getLayers().getLength() - 1}})</span>
+              <span ng-if="selectedLayers.length > 0">({selectedLayers.length}})</span>
             </a>
           </li>
           <li role="presentation">
@@ -49,7 +49,7 @@
           <!--Mymap, list of inmap layer-->
           <div id="mymap" class="tab-pane active">
             <un-layermanager un-layermanager-map="::mainCtrl.map"
-                              app-layermanager-layers="::mainCtrl.selectedLayers">
+                              un-layermanager-layers="::mainCtrl.selectedLayers">
             </un-layermanager>
             <div class="text-center">
               <button class="btn btn-default" ng-click="mainCtrl.showTab('a[href=#catalog]');" translate>+ Ajouter</button>
@@ -57,7 +57,7 @@
             <div class="legend-container" ng-class="{closed : !mainCtrl.legendOpen}">
               <div gn-legend-panel="::mainCtrl.map" />
             </div>
-            <button data-ng-if="mainCtrl.map.getLayers().getLength() > 1" class="btn btn-default" id="legendBtn" ng-click="mainCtrl.legendOpen = !mainCtrl.legendOpen">Légende</button>
+            <button data-ng-if=selectedLayers.length > 0" class="btn btn-default" id="legendBtn" ng-click="mainCtrl.legendOpen = !mainCtrl.legendOpen">Légende</button>
           </div>
 
           <!--Catalog tree-->

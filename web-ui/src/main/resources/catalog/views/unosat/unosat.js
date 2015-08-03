@@ -26,7 +26,7 @@
   module.constant('defaultExtent', [604168.9251648698, 827653.5815669585, 3495323.0830233768, 2750197.7169957114]);
 
   gn.MainController = function($scope, gnSearchSettings, defaultExtent,
-                               gnMeasure) {
+                               gnMeasure, ngeoSyncArrays) {
 
     this.searchSettings_ = gnSearchSettings;
     this.defaultExtent_ = defaultExtent;
@@ -36,6 +36,9 @@
     this.legendOpen = false;
     this.drawVector;
     var $this = this;
+
+    this['selectedLayers'] = [];
+    this.manageSelectedLayers_($scope, ngeoSyncArrays);
 
     this.map.addControl(new ol.control.MousePosition({
       target: document.querySelector('footer')
@@ -47,12 +50,11 @@
     this.mInteraction = gnMeasure.create(this.map,
         this.measureObj, $scope);
 
-    $scope.$watch('mainCtrl.drawOpen', function(v ) {
+    $scope.$watch('mainCtrl.drawOpen', function() {
       if($scope.mainCtrl.drawVector) {
-        $scope.mainCtrl.drawVector.inmap = v;
+        $scope.mainCtrl.drawVector.inmap = !$scope.mainCtrl.drawVector.inmap;
       }
     });
-
   };
 
   /**
@@ -85,6 +87,24 @@
     map = this.map;
   };
 
+  gn.MainController.prototype.manageSelectedLayers_ =
+      function(scope, ngeoSyncArrays) {
+        var map = this.map;
+        ngeoSyncArrays(map.getLayers().getArray(),
+            this['selectedLayers'], true, scope,
+            function(layer) {
+              return layer.displayInLayerManager;
+            }
+        );
+
+/*
+        scope.$watchCollection('mainCtrl.selectedLayers, goog.bind(function() {
+          this.map_.render();
+        }, this));
+*/
+
+      };
+
   gn.MainController.prototype.closeSidebar = function() {
     this.layersOpen = false;
     this.contextOpen = false;
@@ -104,6 +124,7 @@
     '$scope',
     'gnSearchSettings',
     'defaultExtent',
-    'gnMeasure'
+    'gnMeasure',
+    'ngeoSyncArrays'
   ];
 })();
