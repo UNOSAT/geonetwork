@@ -18,6 +18,8 @@
 @import "context.less";
 @import "bgselector.less";
 @import "legend.less";
+@import "layerinfo.less";
+@import "mouseposition.less";
 
 @header-height: 80px;
 @sidebar-width: 320px;
@@ -45,6 +47,20 @@
     width: 100%;
     font-size: 16px;
   }
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
 }
 
 html, body,
@@ -95,17 +111,6 @@ body > div,
     color: #fff;
   }
 
-  .btn {
-    border-radius: 0;
-    background-color: @main-txt;
-    color: white;
-
-    &:focus, &:hover, &.active {
-      background-color: white;
-      color: @main-txt;
-    }
-  }
-
   .tab-content {
     padding: 20px;
     height: calc(~"100% - 34px -" @header-height);
@@ -131,6 +136,25 @@ body > div,
         background-color: @main-base-color-light;
         color: white;
       }
+    }
+  }
+}
+#sidebar, #showlayerinfo {
+  color: white;
+  h2 {
+    line-height: 1;
+    padding: 20px 0 40px 12px;
+    margin: 0;
+  }
+
+  .btn {
+    border-radius: 0;
+    background-color: @main-txt;
+    color: white;
+
+    &:focus, &:hover, &.active {
+      background-color: white;
+      color: @main-txt;
     }
   }
 }

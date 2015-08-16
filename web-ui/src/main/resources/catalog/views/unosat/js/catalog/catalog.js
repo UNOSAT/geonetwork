@@ -51,6 +51,9 @@
   gn.UnCatalogController.prototype.toggleNode = function(ctrl, evt) {
     if(ctrl.node.children && ctrl.depth > 1) {
       var el = $(evt.target);
+      if(el.is('i')) {
+        el = el.parent();
+      }
       el.find('.fa').first().toggleClass('fa-minus-square')
           .toggleClass('fa-plus-square');
     }

@@ -1,15 +1,23 @@
-<a data-toggle="collapse" class="collapsed"
+<a data-toggle="collapse" class="collapsed" data-parent="#catalog-{{::layertreenodeCtrl.parentUid}}"
    href="#catalog-{{::layertreenodeCtrl.uid}}"
-   ng-if="layertreenodeCtrl.node.children && layertreenodeCtrl.depth < 3"
+   ng-if="layertreenodeCtrl.node.children && layertreenodeCtrl.depth == 1"
    ng-click="catalogCtrl.toggleNode(layertreenodeCtrl, $event)">
   <i ng-if="layertreenodeCtrl.node.children && layertreenodeCtrl.depth > 1" class="fa fa-plus-square"></i>
   {{layertreenodeCtrl.node.name | translate}}
 </a>
+<a data-toggle="collapse" class="collapsed"
+   href="#catalog-{{::layertreenodeCtrl.uid}}"
+   ng-if="layertreenodeCtrl.node.children && layertreenodeCtrl.depth > 1"
+   ng-click="catalogCtrl.toggleNode(layertreenodeCtrl, $event)">
+  <i ng-if="layertreenodeCtrl.node.children && layertreenodeCtrl.depth > 1" class="fa fa-plus-square"></i>
+  {{layertreenodeCtrl.node.name | translate}}
+</a>
+
 <span ng-if="layertreenodeCtrl.node.children && layertreenodeCtrl.depth >= 3">
   {{layertreenodeCtrl.node.name | translate}}
 </span>
 <div ng-if="!layertreenodeCtrl.node.children">
-  <app-layerinfo app-layerinfo-layer="layertreenodeCtrl.layer"></app-layerinfo>
+  <un-layerinfo-btn layer="::layertreenodeCtrl.layer"></un-layerinfo-btn>
   <a href ng-click="catalogCtrl.toggle(layertreenodeCtrl.node)">
     <i class="fa" ng-class="(layertreenodeCtrl.getSetActive()) ? 'fa-check-square' : 'fa-square'"></i>
     {{layertreenodeCtrl.node.name | translate}}

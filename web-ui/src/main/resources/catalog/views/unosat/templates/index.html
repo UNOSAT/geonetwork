@@ -35,7 +35,7 @@
           <li role="presentation" class="active">
             <a href="#mymap" data-toggle="tab">
               <span translate>mylayers</span>
-              <span ng-if="selectedLayers.length > 0">({selectedLayers.length}})</span>
+              <span ng-if="mainCtrl.selectedLayers.length > 0">({{mainCtrl.selectedLayers.length}})</span>
             </a>
           </li>
           <li role="presentation">
@@ -57,7 +57,7 @@
             <div class="legend-container" ng-class="{closed : !mainCtrl.legendOpen}">
               <div gn-legend-panel="::mainCtrl.map" />
             </div>
-            <button data-ng-if=selectedLayers.length > 0" class="btn btn-default" id="legendBtn" ng-click="mainCtrl.legendOpen = !mainCtrl.legendOpen">Légende</button>
+            <button data-ng-if="mainCtrl.selectedLayers.length > 0" class="btn btn-default" id="legendBtn" ng-click="mainCtrl.legendOpen = !mainCtrl.legendOpen">Légende</button>
           </div>
 
           <!--Catalog tree-->
@@ -98,6 +98,8 @@
 
     </div>
 
+    <div id="showlayerinfo" ng-class="{open: mainCtrl.unLayerState.open, offset: mainCtrl.sidebarOpen()}">
+    </div>
 
     <div class="un-main-tools" ngeo-btn-group ng-class="{active: mainCtrl.sidebarOpen()}">
       <button class="un-tool-btn btn" ngeo-btn ng-model="mainCtrl.layersOpen"><span class="icon layers"></span> </button>
@@ -128,6 +130,8 @@
     <un-bg-selector un-bg-selector-map="::mainCtrl.map" class="ga-bg-desktop"></un-bg-selector>
   </div>
   <footer ng-class="{'offset-left': mainCtrl.sidebarOpen()}">
+    <un-mouseposition class="" map="mainCtrl.map">
+    </un-mouseposition>
 <!--
     <div id="scale-position" ngeo-control="mainCtrl.scaleControl" ngeo-control-map="mainCtrl.map"></div>
 -->

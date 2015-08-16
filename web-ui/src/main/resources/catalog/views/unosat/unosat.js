@@ -2,14 +2,16 @@
 
   goog.provide('gn_search_unosat');
 
+  goog.require('gn_legendpanel_directive');
   goog.require('gn_search');
   goog.require('gn_search_unosat_config');
   goog.require('un-bgselector');
-  goog.require('un-search');
   goog.require('un-catalog');
-  goog.require('un-layermanager');
   goog.require('un-contexts');
-  goog.require('gn_legendpanel_directive');
+  goog.require('un-layerinfo');
+  goog.require('un-layermanager');
+  goog.require('un-search');
+  goog.require('un-mouseposition');
 
   var module = angular.module('gn_search_unosat', [
     'ngAnimate',
@@ -20,13 +22,19 @@
     'un-layermanager',
     'un-catalog',
     'un-contexts',
-      'gn_legendpanel_directive'
+    'un-layerinfo',
+    'un-mouseposition',
+    'gn_legendpanel_directive'
   ]);
 
   module.constant('defaultExtent', [604168.9251648698, 827653.5815669585, 3495323.0830233768, 2750197.7169957114]);
 
+  proj4.defs('EPSG:32633', '+proj=utm +zone=33 +ellps=WGS84 +datum=WGS84 +units=m +no_defs');
+  proj4.defs('EPSG:32634', '+proj=utm +zone=34 +ellps=WGS84 +datum=WGS84 +units=m +no_defs');
+
   gn.MainController = function($scope, gnSearchSettings, defaultExtent,
-                               gnMeasure, ngeoSyncArrays) {
+                               gnMeasure, ngeoSyncArrays, unLayerInfoService,
+                               unLayerState) {
 
     this.searchSettings_ = gnSearchSettings;
     this.defaultExtent_ = defaultExtent;
@@ -35,14 +43,17 @@
     this.measureObj = {};
     this.legendOpen = false;
     this.drawVector;
+    this.unLayerState = unLayerState;
     var $this = this;
 
     this['selectedLayers'] = [];
     this.manageSelectedLayers_($scope, ngeoSyncArrays);
 
+/*
     this.map.addControl(new ol.control.MousePosition({
       target: document.querySelector('footer')
     }));
+*/
     this.map.addControl(new ol.control.ScaleLine({
       target: document.querySelector('footer')
     }));
@@ -55,6 +66,8 @@
         $scope.mainCtrl.drawVector.inmap = !$scope.mainCtrl.drawVector.inmap;
       }
     });
+
+    unLayerInfoService.getAllMetadatas();
   };
 
   /**
@@ -125,6 +138,8 @@
     'gnSearchSettings',
     'defaultExtent',
     'gnMeasure',
-    'ngeoSyncArrays'
+    'ngeoSyncArrays',
+    'unLayerInfoService',
+    'unLayerState'
   ];
 })();
