@@ -1,0 +1,67 @@
+.gn-gfi-loading:hover {
+  cursor: wait;
+}
+
+[gn-gfi] {
+
+  .results {
+    position: absolute;
+    bottom: 50px;
+    left: 0;
+    right:0;
+    background: @main-basecolor-dark;
+    margin-bottom: 0;
+    max-height: 40em;
+    z-index: 1010;
+    overflow: auto;
+    .panel-heading,
+    .panel-footer {
+      background: transparent;
+      padding: .25em 1em;
+    }
+    .panel-heading {
+      background: @main-base-color-light;
+      position: sticky;
+      top: 0;
+      z-index: 3;
+    }
+    h5 {
+      color: @main-txt-light;
+    }
+    .list-group {
+      ul {
+        padding-left: 0;
+        list-style: none;
+      }
+      h5 {
+        padding-left: 1em;
+      }
+    }
+    span {
+      display: inline-block;
+      max-width: 20em;
+      vertical-align: top;
+      .text-overflow();
+    }
+    b {
+      text-transform: capitalize;
+      display: inline-block;
+      width: 12em;
+      text-align: right;
+    }
+    .close {
+      padding-top: .3em;
+      &:hover {
+        background: transparent;
+      }
+    }
+  }
+}
+
+.marker {
+  pointer-events: none;
+  font-size: 36px;
+  color: red;
+  -webkit-transform: rotate(-45deg);
+  text-shadow: 0 0 2px @main-basecolor-dark;
+}

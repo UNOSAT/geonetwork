@@ -79,7 +79,7 @@
                   map.getView().getResolution(),
                   map.getView().getProjection(), {
                     INFO_FORMAT: layer.ncInfo ? 'text/xml' :
-                        'application/vnd.ogc.gml'
+                        'application/json'
                   });
               var coordinate = e.coordinate;
               var proxyUrl = '../../proxy?url=' + encodeURIComponent(uri);
@@ -100,7 +100,7 @@
                     features = [new ol.Feature(props)];
                   }
                 } else {
-                  features = format.readFeatures(response);
+                  features = new ol.format.GeoJSON().readFeatures(response);
                 }
                 if (features) {
                   features.forEach(function(f) {
