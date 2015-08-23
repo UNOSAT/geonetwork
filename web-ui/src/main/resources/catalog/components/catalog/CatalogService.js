@@ -26,7 +26,8 @@
     '$location',
     '$timeout',
     'gnUrlUtils',
-    function($http, $location, $timeout, gnUrlUtils) {
+    'Metadata',
+    function($http, $location, $timeout, gnUrlUtils, Metadata) {
       return {
         //TODO: rewrite calls with gnHttp
 
@@ -182,6 +183,45 @@
             $location.path(path);
           });
           // TODO : handle creation error
+        },
+
+        /**
+         * @ngdoc method
+         * @name gnMetadataManager#getMdObjByUuid
+         * @methodOf gnMetadataManager
+         *
+         * @description
+         * Get the metadata js object from catalog. Trigger a search and
+         * return a promise.
+         * @param {string} uuid of the metadata
+         * @return {HttpPromise} of the $http get
+         */
+        getMdObjByUuid: function(uuid) {
+          return $http.get('q?_uuid=' + uuid + '' +
+              '&fast=index&_content_type=json&buildSummary=false').
+              then(function(resp) {
+                return new Metadata(resp.data.metadata);
+              });
+        },
+
+        /**
+         * @ngdoc method
+         * @name gnMetadataManager#updateMdObj
+         * @methodOf gnMetadataManager
+         *
+         * @description
+         * Update the metadata object
+         *
+         * @param {object } md to reload
+         * @return {HttpPromise} of the $http get
+         */
+        updateMdObj: function(md) {
+          return this.getMdObjByUuid(md.getUuid()).then(
+              function(md_) {
+                angular.extend(md, md_);
+                return md;
+              }
+          );
         }
       };
     }
@@ -550,6 +590,9 @@
       getOwnerId: function() {
         return this['geonet:info'].ownerId;
       },
+      getSchema: function() {
+        return this['geonet:info'].schema;
+      },
       publish: function() {
         this['geonet:info'].isPublishedToAll = this.isPublished() ?
             'false' : 'true';
@@ -697,13 +740,13 @@
       isWorkflowEnabled: function() {
         var st = this.mdStatus;
         var res = st &&
-          //Status is unknown
+            //Status is unknown
             (!isNaN(st) && st != '0');
 
         //What if it is an array: gmd:MD_ProgressCode
-        if(!res && Array.isArray(st)) {
+        if (!res && Array.isArray(st)) {
           angular.forEach(st, function(s) {
-            if(!isNaN(s) && s != '0') {
+            if (!isNaN(s) && s != '0') {
               res = true;
             }
           });
