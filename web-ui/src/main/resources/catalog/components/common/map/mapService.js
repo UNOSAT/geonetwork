@@ -456,6 +456,13 @@
               var params = gnUrlUtils.parseKeyValue(
                   options.metadata.split('?')[1]);
               var uuid = params.uuid || params.id;
+              if(!uuid) {
+                var pos = options.metadata.indexOf('#/metadata/');
+                if(pos) {
+                  uuid = options.metadata.substring(
+                          pos + 11, options.metadata.length);
+                }
+              }
               if (uuid) {
                 olLayer.set('metadataUuid', uuid);
               }

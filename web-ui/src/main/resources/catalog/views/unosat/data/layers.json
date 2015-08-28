@@ -1,133 +1,632 @@
 [
-  {
-    "name": "root",
+    {"name": "root",
     "children": [
       {
         "name": "Eau",
-        "children": [{
-          "name": "Hydrochimie",
-          "children": [
-            {
-              "layers": "unosat:Couverture_P",
-              "name": "Couverture",
-              "type": "WMS",
-              "url": "http://localhost:8082/geoserver/unosat/wms?"
-            },
-            {
-              "layers": "unosat:Hydrogeologie_P",
-              "type": "WMS",
-              "name": "Hydrogeologie",
-              "url": "http://localhost:8082/geoserver/unosat/wms?"
-            },
-            {
-              "layers": "unosat:Sources",
-              "type": "WMS",
-              "name": "Sources",
-              "url": "http://localhost:8082/geoserver/unosat/wms?"
-            }
-          ]
-        }, {
-          "name": "Hydrogéologie",
-          "children": [
-            {
-              "layers": "unosat:Couverture_P",
-              "type": "WMS",
-              "name": "Couverture",
-              "url": "http://localhost:8082/geoserver/unosat/wms?"
-            },
-            {
-              "layers": "unosat:Hydrogeologie_P",
-              "type": "WMS",
-              "name": "Hydrogeologie",
-              "url": "http://localhost:8082/geoserver/unosat/wms?"
-            },
-            {
-              "layers": "unosat:Sources",
-              "type": "WMS",
-              "name": "Sources",
-              "url": "http://localhost:8082/geoserver/unosat/wms?"
-            }
-          ]
-        }]
-      },{
-        "name": "Sol",
         "children": [
-          {
-            "layers": "unosat:Couverture_P",
-            "name": "Couverture",
-            "type": "WMS",
-            "url": "http://localhost:8082/geoserver/unosat/wms?"
-          },
-          {
-            "layers": "unosat:Hydrogeologie_P",
-            "type": "WMS",
-            "name": "Hydrogeologie",
-            "url": "http://localhost:8082/geoserver/unosat/wms?"
-          },
-          {
-            "layers": "unosat:Sources",
-            "type": "WMS",
-            "name": "Sources",
-            "url": "http://localhost:8082/geoserver/unosat/wms?"
-          }
-        ]
-      },{
-        "name": "Climat",
-        "children": [
-          {
-            "layers": "unosat:Couverture_P",
-            "name": "Couverture",
-            "type": "WMS",
-            "url": "http://localhost:8082/geoserver/unosat/wms?"
-          },
-          {
-            "layers": "unosat:Hydrogeologie_P",
-            "type": "WMS",
-            "name": "Hydrogeologie",
-            "url": "http://localhost:8082/geoserver/unosat/wms?"
-          },
-          {
-            "layers": "unosat:Sources",
-            "type": "WMS",
-            "name": "Sources",
-            "url": "http://localhost:8082/geoserver/unosat/wms?"
-          }
-        ]
+              {"name": "Hydrologie",
+                "children": [
+                      {
+                    "layers": "unosat:Sources",
+                    "name": "Points d'eau",
+                    "type": "WMS",
+                    "url": "http://localhost:8082/geoserver/wms?",
+                    "metadataUrl": "http://localhost:8080/geonetwork/srv/fre/catalog.search#/metadata/d001e11d66c6f9f97f220bccdc79a0a687eb5cf4"
+                  },
+                      {
+                    "layers": "unosat:Couverture_P",
+                    "name": "Puits",
+                    "type": "WMS",
+                    "url": "http://localhost:8082/geoserver/wms?",
+                    "metadataUrl": "http://localhost:8080/geonetwork/srv/fre/catalog.search#/metadata/f3ae088d-b692-4c39-9476-002f501ffb67"
+                  },
+                      {
+                    "layers": "unosat:Hydrogeologie_P",
+                    "name": "Puits, SITEAU",
+                    "type": "WMS",
+                    "url": "http://localhost:8082/geoserver/wms?"
+                  },
+                      {
+                        "layers": "unosat:Forages",
+                        "name": "Forages",
+                        "type": "WMS",
+                        "url": "http://cernunosat32:8080/geoserver/wms?"
+                      },
+                      {
+                        "layers": "unosat:Forages_SITEAU",
+                        "name": "Forages, SITEAU",
+                        "type": "WMS",
+                        "url": "http://cernunosat32:8080/geoserver/wms?"
+                      },
+                      {
+                        "layers": "unosat:Sources",
+                        "name": "Sources",
+                        "type": "WMS",
+                        "url": "http://cernunosat32:8080/geoserver/wms?"
+                      },
+                      {
+                        "layers": "unosat:Sources_min",
+                        "name": "Sources minérales",
+                        "type": "WMS",
+                        "url": "http://cernunosat32:8080/geoserver/wms?"
+                      },
+                      {
+                        "layers": "unosat:Mares_art_Pt",
+                        "name": "Mares artificielles",
+                        "type": "WMS",
+                        "url": "http://cernunosat32:8080/geoserver/wms?"
+                      },
+                      {
+                        "layers": "unosat:Seuils_Pt",
+                        "name": "Seuils",
+                        "type": "WMS",
+                        "url": "http://cernunosat32:8080/geoserver/wms?"
+                      },
+                      {
+                        "layers": "unosat:Ouvr_retenue_L",
+                        "name": "Ouvrages de retenue",
+                        "type": "WMS",
+                        "url": "http://cernunosat32:8080/geoserver/wms?"
+                      },              
+                      {
+                        "layers": "unosat:Ouvr_Plote",
+                        "name": "Ouvrages (Plote)",
+                        "type": "WMS",
+                        "url": "http://cernunosat32:8080/geoserver/wms?"
+                      },
+                      {
+                        "layers": "unosat:Ouvr_AEP",
+                        "name": "Ouvrages AEP",
+                        "type": "WMS",
+                        "url": "http://cernunosat32:8080/geoserver/wms?"
+                      },
+                      {
+                        "layers": "unosat:Reseau_AEP_L",
+                        "name": "Réseau AEP",
+                        "type": "WMS",
+                        "url": "http://cernunosat32:8080/geoserver/wms?"
+                      },
+                      {
+                        "layers": "unosat:Stations_mesure",
+                        "name": "Stations de mesures",
+                        "type": "WMS",
+                        "url": "http://cernunosat32:8080/geoserver/wms?"
+                      }]
+               },
+              {"name": "Eau de surface",
+                "children": [
+                  {"layers": "unosat:Hydronymie",
+                   "type": "WMS",
+                   "name": "Hydronymie",
+                   "url": "http://cernunosat32:8080/geoserver/wms?",
+                   "metadataUrl": "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/a76bfe1b99a5c645d8fcf785fa04c1c45c287a83"
+                  },
+                  {"name": "Ouadis",
+                      "children": [
+                            {
+                             "layers": "unosat:Ouadis_BATH_L",
+                              "type": "WMS",
+                              "name": "Ouadis BATH",
+                              "url": "http://cernunosat32:8080/geoserver/wms?",
+                              "metadataUrl": "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/248811ed772f6c55a3ec87fd5f0d3545f82f8ca5"
+                            },
+                            {
+                              "layers": "unosat:Ouadis_ENNE_L",
+                              "type": "WMS",
+                              "name": "Ouadis ENNE",
+                              "url": "http://cernunosat32:8080/geoserver/wms?",
+                              "metadataUrl":  "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/52477c62de22f4fdebc65d9f9003f87ec8a11b50"
+                            },
+                            {
+                              "layers": "unosat:Ouadis_ERDI_L",
+                              "type": "WMS",
+                              "name": "Ouadis ERDI",
+                              "url": "http://cernunosat32:8080/geoserver/wms?",
+                              "metadataUrl": "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/5a0648b10a47d85b7e93ed3b9baeb5f2c0e38338"
+                            },
+                            {
+                              "layers": "unosat:Ouadis_ERDN_L",
+                              "type": "WMS",
+                              "name": "Ouadis ERDN",
+                              "url": "http://cernunosat32:8080/geoserver/wms?",
+                              "metadataUrl":  "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/27b3652e2e78d3ac68cf2efe9228d49b5ea40c60"
+                            },
+                            {
+                              "layers": "unosat:Ouadis_OHAD_L",
+                              "type": "WMS",
+                              "name": "Ouadis OHAD",
+                              "url": "http://cernunosat32:8080/geoserver/wms?",
+                              "metadataUrl":  "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/8c3f660af04bdb4089dd6532d5861a9632d4a072"
+                            },
+                            {
+                              "layers": "unosat:Ouadis OKAD",
+                              "type": "WMS",
+                              "name": "Ouadis OKAD",
+                              "url": "http://cernunosat32:8080/geoserver/wms?",
+                              "metadataUrl": "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/ce19cbf4f5bf7b02f375ab6ae4067ecbc5827fa2"
+                            },
+                            {
+                              "layers": "unosat:Ouadis OUNI_L",
+                              "type": "WMS",
+                              "name": "Ouadis OUNI",
+                              "url": "http://cernunosat32:8080/geoserver/wms?",
+                              "metadataUrl": "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/1a8085d73a845e469cf6d2e1fb1e3854e964cb1a"
+                            },
+                            {
+                              "layers": "unosat:Ouadis_TIBE_L",
+                              "type": "WMS",
+                              "name": "Ouadis TIBE",
+                              "url": "http://cernunosat32:8080/geoserver/wms?"
+                            },
+                            {
+                              "layers": "unosat:Ouadis_TIBN_L",
+                              "type": "WMS",
+                              "name": "Ouadis TIBN",
+                              "url": "http://cernunosat32:8080/geoserver/wms?"
+                            },
+                            {
+                              "layers": "unosat:Ouadis_TOUS_L",
+                              "name": "Ouadis TOUS",
+                              "type": "WMS",
+                              "url": "http://cernunosat32:8080/geoserver/wms?"
+                            },
+                            {
+                              "layers": "unosat:Ouadis_WFIR_L",
+                              "name": "Ouadis WFIR",
+                              "type": "WMS",
+                              "url": "http://cernunosat32:8080/geoserver/wms?",
+                              "metadataUrl": "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/b69138e6bc21fe8d9e85bbe5faf4398d8d1e15f6"
+                            }]
+                  },
+                  {"layers": "unosat:Ouadis_simpl_L",
+                    "type": "WMS",
+                     "name": "Ouadis simplifiés",
+                     "url": "http://cernunosat32:8080/geoserver/wms?",
+                     "metadataUrl": "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/dfe62944a0777956c1ed8d8a05debc9db246d715"
+                  },
+                  { "layers": "unosat:AFR_Ouadis_simpl_L",
+                        "name": "Ouadis simplifiés, Afrique",
+                        "type": "WMS",
+                        "url": "http://cernunosat32:8080/geoserver/wms?",
+                        "metadataUrl":  "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/a269a7a7a0ce6b901ecc670417dcacf29ea56ba9"
+                  },
+                  { "layers": "unosat:Lignes_partage_eaux",
+                    "type": "WMS",
+                    "name": "Lignes de partage des eaux",
+                    "url": "http://cernunosat32:8080/geoserver/wms?",
+                    "metadataUrl": "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/99bd03b3c52a7fd5f820afd906296078667eb189"
+                  },
+                  {"layers": "unosat:Dir_ecoul_surf",
+                   "type": "WMS",
+                   "name": "Direction d'écoulement de surface",
+                   "url": "http://cernunosat32:8080/geoserver/wms?",
+                   "metadataUrl": "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/9924937abed0eae49f667c3b1e61410901461bda"
+                  },
+                  {"layers": "unosat:Plans_eau",
+                   "type": "WMS",
+                   "name": "Plans d'eau",
+                   "url": "http://cernunosat32:8080/geoserver/wms?",
+                   "metadataUrl": "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/ce6cd59c11f8d35a14c10ab8607d32dd3028634a"
+                  },
+                  {"layers": "unosat:Lac_Tchad",
+                   "type": "WMS",
+                   "name": "Lac Tchad",
+                   "url": "http://cernunosat32:8080/geoserver/wms?",
+                   "metadataUrl": "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/9c54ac5f3f74dc8b8139a30563600a133fe62cd6"
+                  },
+                  { "layers": "unosat:Lac_Fitri",
+                    "type": "WMS",
+                    "name": "Lac Fitri",
+                    "url": "http://cernunosat32:8080/geoserver/wms?",
+                    "metadataUrl": "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/b8e263c0ae551cbd64f8730f061757de188805c8"
+                  },
+                  { "layers": "unosat:Paleolacs",
+                    "type": "WMS",
+                    "name": "Paléolacs",
+                    "url": "http://cernunosat32:8080/geoserver/wms?"
+                  },
+                  { "layers": "unosat:Paleodrainage_L",
+                    "type": "WMS",
+                    "name": "Paléodrainage",
+                    "url": "http://cernunosat32:8080/geoserver/wms?"
+                  }]
+              },
+             { "name": "Hydrochimie",
+                "children": [
+                      {
+                        "layers": "unosat: Pts_eau_analyses",
+                        "type": "WMS",
+                        "name": "Analyses des points d'eau",
+                        "url": "http://cernunosat32:8080/geoserver/wms?",
+                        "metadataUrl":  "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/c01b5a0229a014e06893f096dee2050cc619a591"
+                      },
+                      {
+                        "layers": "unosat: Pts_eau_subst_toxiques",
+                        "type": "WMS",
+                        "name": "Substances toxiques des points d'eau",
+                        "url": "http://cernunosat32:8080/geoserver/wms?",
+                        "metadataUrl": "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/333464589ad4e6da349f294f8db7d4ec01f61d46"
+                      }]
+               },
+             {"name": "Hydrogéologie",
+                "children": [
+                  {"name": "Cartes hydrogéologiques ResEau I",
+                  "children": [
+                    {
+                      "layers": "unosat:HYDG_MAAout_fusion",
+                      "type": "WMS",
+                      "name": "HYDG, Tchad (Est) ",
+                      "url": "http://cernunosat32:8080/geoserver/wms?",
+                      "metadataUrl": "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/07f20cc8903db56c60977ddf1923d1c1e4ce09fd"
+                    },
+                    {
+                      "layers": "unosat:Hydg_BATH_P",
+                      "type": "WMS",
+                      "name": "HYDG Batha ",
+                      "url": "http://cernunosat32:8080/geoserver/wms?"
+                    },
+                    {
+                      "layers": "unosat:Hydg_ENNE_P",
+                      "type": "WMS",
+                      "name": "HYDG Ennedi",
+                      "url": "http://cernunosat32:8080/geoserver/wms?",
+                      "metadataUrl":  "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/ab833497183112ccd30010bd9da4c8ce35099cd0"
+                    },
+                    {
+                      "layers": "unosat:Hydg_ERDI_P",
+                      "type": "WMS",
+                      "name": "HYDG Erdis",
+                      "url": "http://cernunosat32:8080/geoserver/wms?",
+                      "metadataUrl": "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/3edc18935d7a4935695ff9c85307c2a28fb25069"
+                    },
+                    {
+                      "layers": "unosat:Hydg_ERDN_P",
+                      "type": "WMS",
+                      "name": "HYDG Erdis Nord",
+                      "url": "http://cernunosat32:8080/geoserver/wms?"
+                    },
+                    {
+                      "layers": "unosat:Hydg_OHAD_P",
+                      "type": "WMS",
+                      "name": "HYDG Ouadi Haddad",
+                      "url": "http://cernunosat32:8080/geoserver/wms?"
+                    },
+                    { "layers": "unosat:Hydg_OKAD_P",
+                      "type": "WMS",
+                      "name": "HYDG Ouadi Kadja",
+                      "url": "http://cernunosat32:8080/geoserver/wms?",
+                      "metadataUrl": "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/864a78661eb4762cfbf7685ceaf11fd1b613d4a4"
+                    },
+                    {"layers": "unosat:Hydg_OUNI_P",
+                     "type": "WMS",
+                     "name": "HYDG Borkou Nd-Ounianga",
+                     "url": "http://cernunosat32:8080/geoserver/wms?"
+                    },
+                    {"layers": "unosat:Hydg_TIBE_P",
+                     "type": "WMS",
+                     "name": "HYDG Tibesti",
+                     "url": "http://cernunosat32:8080/geoserver/wms?"
+                    },
+                    { "layers": "unosat:HYDG_MAAout_fusion",
+                        "type": "WMS",
+                        "name": "HYDG Tchad Est",
+                        "url": "http://cernunosat32:8080/geoserver/wms?",
+                        "metadataUrl":  "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/07f20cc8903db56c60977ddf1923d1c1e4ce09fd"
+                      },
+                    { "layers": "unosat:Hydg_TIBN_P",
+                      "type": "WMS",
+                      "name": "HYDG Tibesti Nord",
+                      "url": "http://cernunosat32:8080/geoserver/wms?"
+                    },
+                    {"layers": "unosat:Hydg_TOUS_P",
+                     "type": "WMS",
+                     "name": "HYDG Pic Toussidé",
+                     "url": "http://cernunosat32:8080/geoserver/wms?"
+                    },
+                    { "layers": "unosat:Hydg_WFIR_P",
+                      "type": "WMS",
+                      "name": "HYDG Wadi Fira Est",
+                      "url": "http://cernunosat32:8080/geoserver/wms?",
+                      "metadataUrl":  "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/b9386dbd7af5ea8e0e091faf0cce81346832ee88"
+                    },
+                    {
+                        "layers": "unosat:Hydg_detail_P",
+                        "type": "WMS",
+                        "name": "Hydrogéologie détaillée",
+                        "url": "http://cernunosat32:8080/geoserver/wms?"
+                      }]
+                  },
+				  {
+                        "layers": "unosat:Dir_ecoul_nappe",
+                        "type": "WMS",
+                        "name": "Direction d'écoulement de la nappe",
+                        "url": "http://cernunosat32:8080/geoserver/wms?",
+                        "metadataUrl": "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/9924937abed0eae49f667c3b1e61410901461bda"
+                  }]
+                  }]
       },
       {
-        "name": "Société",
+        "name": "Terre",
         "children": [
-          {
-            "layers": "dem:altitude",
-            "type": "WMS",
-            "name": "Altitude",
-            "url": "http://sdi.georchestra.org/geoserver/ows?SERVICE=WMS&"
-          },
-          {
-            "layers": "dem:hillshading",
-            "type": "WMS",
-            "name": "Ombres",
-            "url": "http://sdi.georchestra.org/geoserver/ows?SERVICE=WMS&"
-          },
-          {
-            "name": "rivers",
-            "children": [
-              {
-                "layers": "dem:altitude",
-                "type": "WMS",
-                "name": "Altitude",
-                "url": "http://sdi.georchestra.org/geoserver/ows?SERVICE=WMS&"
+              {"name": "Couverture",
+                "children": [
+                  {
+                    "layers": "unosat:Dunes_P",
+                    "type": "WMS",
+                    "name": "Sables éoliens",
+                    "url": "http://cernunosat32:8080/geoserver/wms?",
+                    "metadataUrl": "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/4ec283d0718ba71c8c4f929a3b1cbb8e6f7bbd36"
+                  },
+                  {
+                    "layers": "unosat:Diatomites_P",
+                    "type": "WMS",
+                    "name": "Diatomites",
+                    "url": "http://cernunosat32:8080/geoserver/wms?",
+                    "metadataUrl": "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/ae5d629f1662272813feda4f9b16778a3b0cbfbb"
+                  },
+                  {
+                    "layers": "unosat:Couv_Pt",
+                    "type": "WMS",
+                    "name": "Evaporites et salines",
+                    "url": "http://cernunosat32:8080/geoserver/wms?",
+                    "metadataUrl":  "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/f6bc147d791567d8646af007eec1ce7cf8b9e3b4"
+                  }]
               },
-              {
-                "layers": "dem:hillshading",
-                "type": "WMS",
-                "name": "Ombres",
-                "url": "http://sdi.georchestra.org/geoserver/ows?SERVICE=WMS&"
-              }
+              {"name": "Tectonique",
+                "children": [
+                    {
+                    "layers": "unosat:Failles",
+                    "name": "Failles",
+                    "type": "WMS",
+                    "url": "http://cernunosat32:8080/geoserver/wms?",
+                    "metadataUrl":  "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/25c0cd35cf3ac140306f7e774defa9a7c24b1798"
+                  },
+                  {
+                    "layers": "unosat:Failles_simpl",
+                    "type": "WMS",
+                    "name": "Failles simplifiées",
+                    "url": "http://cernunosat32:8080/geoserver/wms?",
+                    "metadataUrl": "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/699b7d52978ae5709fbe1d14963028f032fa2e14"
+                  },
+                   {
+                    "layers": "unosat:Failles_detail",
+                    "type": "WMS",
+                    "name": "Failles détaillées",
+                    "url": "http://cernunosat32:8080/geoserver/wms?"
+                  },
+                   {
+                    "layers": "unosat:Filons",
+                    "type": "WMS",
+                    "name": "Filons",
+                    "url": "http://cernunosat32:8080/geoserver/wms?",
+                    "metadataUrl": "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/e84ad3ad2d48ed8ef4f4d0a392cce207cc9a8a55"
+                  },
+                   {
+                    "layers": "unosat:Pendages_litho",
+                    "type": "WMS",
+                    "name": "Pendages",
+                    "url": "http://cernunosat32:8080/geoserver/wms?",
+                    "metadataUrl": "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/f342cfaa8f07d703de6ebb36f7fadae57684685f"
+                }]
+          },
+          {"name": "Relief",
+            "children": [
+                  {"layers": "unosat:Pts_cotes",
+                    "type": "WMS",
+                    "name": "Points cotés",
+                    "url": "http://cernunosat32:8080/geoserver/wms?",
+                    "metadataUrl": "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/301ef68cd69c87e2369ed184d01a56baa5992593"
+                  },
+                  { "layers": "unosat:Oronymie",
+                    "type": "WMS",
+                    "name": "Oronymie",
+                    "url": "http://cernunosat32:8080/geoserver/wms?",
+                    "metadataUrl": "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/ae8a0a59c9b5cac11147c6f262a8b6c11ae8ddb8"
+                  },
+                  {"layers": "unosat:Courbes_niv_E_500k_50m",
+                    "type": "WMS",
+                    "name": "Courbes de niveau (eqd:50m)",
+                    "url": "http://cernunosat32:8080/geoserver/wms?",
+                    "metadataUrl": "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/3a581a7855b9ef3c5db44d5f0dc4c117d4c2eae4"
+                  },
+                  {"layers": "unosat:Courbes_niv_E_200k_40m",
+                    "type": "WMS",
+                    "name": "Courbes de niveau (eqd:40m)",
+                    "url": "http://cernunosat32:8080/geoserver/wms?",
+                    "metadataUrl":  "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/da575ff380eae3ed189a0993befbf5f1339b8058"
+                  },
+                  { "layers": "unosat:Courbes_niv_E_100k_20m",
+                    "type": "WMS",
+                    "name": "Courbes de niveau (eqd:20m)",
+                    "url": "http://cernunosat32:8080/geoserver/wms?"
+                  }
+                  ]
+              }]
+      },
+      {"name": "Climat",
+        "children": [
+                {"name": "Précipitation",
+                  "children": [
+						{"layers": "unosat:Pcp_moy_Stations",
+						"name": "Précipitations stations (Moy)",
+						"type": "WMS",
+						"url": "http://cernunosat32:8080/geoserver/wms?",
+						"metadataUrl": "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/60511ed10d6a0a623dfe9f7d6e65de082464451d"
+						},
+						{"layers": "unosat:Pcp_moy_FEWS_iso_50mm",
+						"name": "Isohyètes FEWS (eqd:50mm)",
+						"type": "WMS",
+						"url": "http://cernunosat32:8080/geoserver/wms?",
+						"metadataUrl": "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/5f77f9e3b02d0f249301371f53672a60dfe6e590"
+						},
+					{"layers": "unosat:Pcp_moy_TRMM_iso_50mm",
+					"type": "WMS",
+					"name": "Isohyètes TRMM (eqd:50mm)",
+					"url": "http://cernunosat32:8080/geoserver/wms?",
+					"metadataUrl": "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/2440d7ea15265b0419880aee987ca27dd28fe3ea"
+                }]
+      }]
+      },
+      {"name": "Société et Territoire",
+        "children": [
+                {"name": "Grilles Cartographique",
+                  "children": [
+                          {"layers": "unosat:Feuilles_hydg_500k",
+                            "type": "WMS",
+                           "name": "Feuilles ResEau, 1:500'000",
+                           "url": "http://cernunosat32:8080/geoserver/wms?",
+                           "metadataUrl":  "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/cf3f7a9d349de4f9d1317e65358a80090865f8bd"
+                          },
+                          {"layers": "unosat:Feuilles_hydg_200k",
+                            "type": "WMS",
+                            "name": "Feuilles ResEau, 1:200'000",
+                            "url": "http://cernunosat32:8080/geoserver/wms?",
+                            "metadataUrl":  "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/cb7283b83702c39b7874c85153a45057aa00cf64"
+                          },
+                          {"layers": "unosat:Feuilles_hydg_detail",
+                            "type": "WMS",
+                            "name": "Feuilles ResEau, hors série",
+                            "url": "http://cernunosat32:8080/geoserver/wms?",
+                            "metadataUrl": "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/3a77aea4864804fedc3b06c3d174e40a4a3cfdca"
+                          }]
+                  },
+               {"name": "Limites administratives",
+                "children": [
+                      { "layers": "unosat:TCD_Admin0_P",
+                        "type": "WMS",
+                        "name": "Frontières nationales",
+                        "url":"http://cernunosat32:8080/geoserver/wms?",
+                        "metadataUrl": "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/b5fb5265d1ca64cd422638db99904aa7bc18ed7c"
+                      },
+                      {"layers": "unosat:TCD_Admin1_P",
+                       "type": "WMS",
+                       "name": "Régions",
+                       "url": "http://cernunosat32:8080/geoserver/wms?",
+                       "metadataUrl": "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/f73b7a06d60d0823f528e36208b77d1f1200d656"
+                      },
+                      {"layers": "unosat:TCD_Admin2_P",
+                       "type": "WMS",
+                       "name": "Départements",
+                       "url": "http://cernunosat32:8080/geoserver/wms?",
+                       "metadataUrl": "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/b439ee03f272f60e2dbc2d9d17f5538297769c2b"
+                      },
+                      {"layers": "unosat:AFR_Admin0_P",
+                        "type": "WMS",
+                        "name": "Frontières internationales, Afrique",
+                        "url": "http://cernunosat32:8080/geoserver/wms?",
+                        "metadataUrl":  "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/d001e11d66c6f9f97f220bccdc79a0a687eb5cf4"
+                      }]
+                },
+                {"name": "Localitees",
+                 "children": [
+                        {"layers": "unosat:Villes",
+                            "type": "WMS",
+                            "name": "Villes",
+                            "url": "http://cernunosat32:8080/geoserver/wms?",
+                            "metadataUrl":   "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/e6b660570d3d60f7c8d94b7282e6247673a6ff41"
+                        },
+                        {"layers": "unosat:Villages",
+                            "type": "WMS",
+                            "name": "Villages",
+                            "url": "http://cernunosat32:8080/geoserver/wms?",
+                            "metadataUrl": "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/a5d9cbe725fbae1bc3c71fbdf116458774de9a75"
+                        },
+                        {"layers": "unosat:Camps_ref",
+                            "type": "WMS",
+                            "name": "Localités temporaires",
+                            "url": "http://cernunosat32:8080/geoserver/wms?",
+                            "metadataUrl": "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/639bccdd57f34c911b640bc6382c9261b2c3b4ef"
+                        },
+                        {"layers": "unosat:Habitat",
+                         "type": "WMS",
+                         "name": "Habitat",
+                         "url": "http://cernunosat32:8080/geoserver/wms?",
+                         "metadataUrl": "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/1f242dff820b5813ebb1a24eb6fc02d2c1c41782"
+                        },
+                        {"layers": "unosat:AFR_Localites",
+                         "type": "WMS",
+                         "name": "Localités, Afrique",
+                         "url": "http://cernunosat32:8080/geoserver/wms?",
+                         "metadataUrl": "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/21170508bf562099506ab02b44db57b530917c3a"
+                        },
+                        {"layers": "unosat:AFR_Habitat",
+                         "type": "WMS",
+                         "name": "Habitat, Afrique",
+                         "url": "http://cernunosat32:8080/geoserver/wms?",
+                         "metadataUrl":  "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/def67ef2e8de38f0f78a275c7856bb6d5f20324b"
+                        }]
+                  },
+                  {"name": "Démographie",
+                    "children": [
+                    {"layers": "unosat:Pop_est_localites",
+                      "type": "WMS",
+                      "name": "Population estimée",
+                      "url": "http://cernunosat32:8080/geoserver/wms?",
+                      "metadataUrl": "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/3d6e90ed9516901f246e99ea5489f7a8817e3f24"
+                    }]
+                  },
+                  {"name": "Infrastructure",
+                     "children": [
+                      {"layers": "unosat:Routes",
+                        "type": "WMS",
+                        "name": "Réseau routier",
+                        "url": "http://cernunosat32:8080/geoserver/wms?",
+                        "metadataUrl": "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/0c815f635186d556cf0e0b0531a16fee7ebee3d6"
+                      },
+                      {"layers": "unosat:AFR_Routes",
+                       "type": "WMS",
+                       "name": "Réseau routier, Afrique",
+                       "url": "http://cernunosat32:8080/geoserver/wms?",
+                       "metadataUrl": "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/e45331be59f29e9d2379a5b26d248ffa4c649954"
+                      },
+                      {"layers": "unosat:Aeroports_Pt",
+                       "type": "WMS",
+                       "name": "Aéroports",
+                       "url": "http://cernunosat32:8080/geoserver/wms?",
+                       "metadataUrl": "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/b2b33c9f46f1cef532b46467553b06557b840fe3"
+                      },
+                      {"layers": "unosat:Pistes_aviation",
+                       "type": "WMS",
+                       "name": "Pistes d'aviation",
+                       "url": "http://cernunosat32:8080/geoserver/wms?",
+                       "metadataUrl":  "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/c8836121a18508a273ce67b8b38f8c9d5ef13ae1"
+                      }]
+                  },
+                  {"name": "Economie",
+                    "children": [
+                       {"layers": "unosat:Activites_econ_Pt",
+                        "type": "WMS",
+                        "name": "Activités économiques",
+                        "url": "http://cernunosat32:8080/geoserver/wms?",
+                        "metadataUrl": "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/247a0f24e0b4a653cee8e154342226f0609baf6c"
+                        }]
+                  },
+                  {"name": "Agriculture",
+                    "children": [
+                              {"layers": "unosat:Palmeraies",
+                              "type": "WMS",
+                              "name": "Palmeraies",
+                              "url": "http://cernunosat32:8080/geoserver/wms?",
+                              "metadataUrl": "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/d9a737405518ba3f7091785a282eec6c56f8969a"
+                              },
+                              {"layers": "unosat:Zones_irriguées",
+                            "type": "WMS",
+                            "name": "Zones irriguées",
+                            "url": "http://cernunosat32:8080/geoserver/wms?",
+                            "metadataUrl": "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/b2a60a4014f39907cb14b5a4baa1d92049de40cd"
+                              }]
+                  },
+                  {"name": "Pastoralisme",
+                    "children": [
+                          {"layers": "unosat:Transhumance_L",
+                            "type": "WMS",
+                            "name": "Transhumance",
+                            "url": "http://cernunosat32:8080/geoserver/wms?",
+                            "metadataUrl":  "http://cernunosat32:8080/geonetwork/srv/fre/catalog.search#/metadata/0e221b9832767f944c15cd132619a5505eba4e4d"
+                          }]
+                  }
+              ]
+                  }
             ]
-          }
-        ]
-      }
-    ]
-  }
-]
+   }
+  ]

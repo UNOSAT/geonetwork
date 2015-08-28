@@ -123,11 +123,22 @@
     this.contextOpen = false;
     this.printOpen = false;
     this.drawOpen = false;
+    this.importOpen = false;
+  };
+  gn.MainController.prototype.closeInfopanel = function() {
+    this.unLayerState.md = undefined;
+    this.legendOpen = false;
   };
 
   gn.MainController.prototype.sidebarOpen = function() {
-    return this.layersOpen || this.contextOpen || this.printOpen || this.drawOpen;
+    return this.layersOpen || this.contextOpen || this.printOpen ||
+        this.drawOpen || this.importOpen;
   };
+
+  gn.MainController.prototype.infopanelOpen = function() {
+    return this.unLayerState.md || this.legendOpen;
+  };
+
   gn.MainController.prototype.showTab = function(selector) {
     $(selector).tab('show');
   };

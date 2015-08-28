@@ -1,31 +1,26 @@
-<h4>{{md.title}}</h4>
-<button class="close-panel" ng-click="close()">
-  ✕
-</button>
-
 <div class="md-mainblock">
   <div class="pull-right md-thumb">
     <img
             class="gn-img-thumbnail img-thumbnail"
-            alt="{{md.overview.label}}"
-            data-ng-src="{{md.overview.url}}"/>
+            alt="{{obj.md.overview.label}}"
+            data-ng-src="{{obj.md.overview.url}}"/>
   </div>
 
-  <div class="md-abstract">{{md.abstract}}</div>
+  <div class="md-abstract">{{obj.md.abstract}}</div>
 </div>
 
 <table class="table">
   <tbody>
-  <tr data-ng-if="::(md.category.length > 0 ||
-                      md.topicCat.length > 0)">
+  <tr data-ng-if="::(obj.md.category.length > 0 ||
+                      obj.md.topicCat.length > 0)">
     <th data-translate="">listOfCategories</th>
     <td>
-      <a data-ng-repeat="cat in ::md.category"
+      <a data-ng-repeat="cat in ::obj.md.category"
          data-ng-href="#/search?_cat={{cat}}">
         <span class="fa gn-icon-{{cat}}" title="{{cat | translate}}"></span>
       </a>
 
-      <a data-ng-repeat="t in ::md.topicCat"
+      <a data-ng-repeat="t in ::obj.md.topicCat"
          data-ng-href="#/search?topicCat={{t}}">
         <i class="fa" title="{{t | translate}}">
           <span class="fa gn-icon-{{t}}"></span>
@@ -33,94 +28,109 @@
       </a>
     </td>
   </tr>
-  <tr data-ng-if="::md.keyword">
+  <tr>
+    <th>Emprise</th>
+    <td>
+      <p data-ng-repeat="bbox in ::obj.md.geoBox">
+        <img class="gn-img-thumbnail img-thumbnail gn-img-extent"
+             data-ng-src="region.getmap.png?mapsrs=EPSG:3857&width=150&background=osm&geomsrs=EPSG:4326&geom={{obj.md.getBoxAsPolygon($index)}}"/>
+      </p>
+    </td>
+  </tr>
+  <tr>
+    <th>Légende</th>
+    <td>
+      <p class="legend">
+        <img class=""
+             data-ng-src="{{obj.layer.get('legend')}}"/>
+      </p>
+    </td>
+  </tr>
+  <tr data-ng-if="::obj.md.keyword">
     <th data-translate="">keywords</th>
     <td>
 
       <ul>
-        <li data-ng-repeat="k in ::md.keyword track by $index">
+        <li data-ng-repeat="k in ::obj.md.keyword track by $index">
           {{k}}
         </li>
       </ul>
-      <!--<span class="badge" data-ng-repeat="k in ::md.keyword track by $index">{{k}}</span>-->
+      <!--<span class="badge" data-ng-repeat="k in ::obj.md.keyword track by $index">{{k}}</span>-->
     </td>
   </tr>
   <!--
-  <tr data-ng-if="::md.datasetLang">
+  <tr data-ng-if="::obj.md.datasetLang">
     <th data-translate="">language</th>
     <td>
       <ul>
-        <li data-ng-repeat="l in ::md.datasetLang">
+        <li data-ng-repeat="l in ::obj.md.datasetLang">
           {{l | translate}}
         </li>
       </ul>
     </td>
   </tr>
 
-  <tr data-ng-if="::md.identifier">
+  <tr data-ng-if="::obj.md.identifier">
     <th data-translate="">identifier</th>
     <td>
       <ul>
-        <li data-ng-repeat="i in ::md.identifier">
+        <li data-ng-repeat="i in ::obj.md.identifier">
           {{i}}
         </li>
       </ul>
     </td>
   </tr>
-  <tr data-ng-if="::md.classification_text">
+  <tr data-ng-if="::obj.md.classification_text">
     <th data-translate="">classification</th>
-    <td>{{::md.classification_text}}</td>
+    <td>{{::obj.md.classification_text}}</td>
   </tr>
-  <tr data-ng-if="::md.legalConstraints">
+  <tr data-ng-if="::obj.md.legalConstraints">
     <th data-translate="">legalConstraints</th>
     <td>
-      <p data-ng-repeat="c in ::md.legalConstraints track by $index">{{c}}</p>
+      <p data-ng-repeat="c in ::obj.md.legalConstraints track by $index">{{c}}</p>
     </td>
   </tr>
 
 
-  <tr data-ng-if="::md.securityConstraints">
+  <tr data-ng-if="::obj.md.securityConstraints">
     <th data-translate="">securityConstraints</th>
     <td>
-      <p data-ng-repeat="c in ::md.securityConstraints track by $index">{{c}}</p>
+      <p data-ng-repeat="c in ::obj.md.securityConstraints track by $index">{{c}}</p>
     </td>
   </tr>
 
 
-  <tr data-ng-if="::md.resourceConstraints">
+  <tr data-ng-if="::obj.md.resourceConstraints">
     <th data-translate="">resourceConstraints</th>
     <td>
-      <p data-ng-repeat="c in ::md.resourceConstraints track by $index">{{c}}</p>
+      <p data-ng-repeat="c in ::obj.md.resourceConstraints track by $index">{{c}}</p>
     </td>
   </tr>
 -->
 
-  <tr data-ng-if="::md.getAllContacts().resource">
-    <th data-translate="">resourceContact</th>
+  <tr data-ng-if="::obj.md.getAllContacts().resource">
+    <th data-translate="">Contact</th>
     <td>
       <div class="gn-contact"
-           data-ng-repeat="c in ::md.getAllContacts().resource track by $index">
+           data-ng-repeat="c in ::obj.md.getAllContacts().resource track by $index">
+<!--
         <h3>
           <i class="fa fa-envelope"></i>
           {{c.role | translate}}
         </h3>
+-->
         <div class="row">
           <div class="col-md-6">
             <address>
               <strong>
-                {{c.org}}<br/>
+                Projet RésEau Tchad<br/>
               </strong>
-              <div data-ng-if="c.email != ''">
-                <a href="mailto:{{c.email}}">
-                  <span data-ng-hide="c.name">{{c.email}}</span>
-                  <span data-ng-show="c.name">{{c.name}}</span>
-                  <span data-ng-show="c.position">({{c.position}})</span>
+              <div>
+                <a href="mailto:reseau.databank@unitar.org">
+                  <span>reseau.databank@unitar.org</span>
                 </a>
               </div>
-              <div data-ng-if="c.email === ''">{{c.name}}
-                <span data-ng-show="c.position">({{c.position}})</span>
-              </div>
-              <div data-ng-if="c.address != ''">{{c.address}}</div>
+              <div>Tchad</div>
               <a href="tel:{{c.phone}}"
                  data-ng-if="c.phone != ''">
                 <span data-translate="">call</span> {{c.phone}}
@@ -131,35 +141,17 @@
       </div>
     </td>
   </tr>
-  <tr>
-    <th>Légende</th>
-    <td>
-      <p>
-        <img class=""
-             data-ng-src="{{layer.get('legend')}}"/>
-      </p>
-    </td>
-  </tr>
-  <tr>
-    <th>Emprise</th>
-    <td>
-      <p data-ng-repeat="bbox in ::md.geoBox">
-        <img class="gn-img-thumbnail img-thumbnail gn-img-extent"
-             data-ng-src="region.getmap.png?mapsrs=EPSG:3857&width=150&background=osm&geomsrs=EPSG:4326&geom={{md.getBoxAsPolygon($index)}}"/>
-      </p>
-    </td>
-  </tr>
-  <tr data-ng-if="::md.status_text.length > 0">
+  <tr data-ng-if="::obj.md.status_text.length > 0">
     <th data-translate="">resourceStatus</th>
     <td>
       <ul>
-        <li data-ng-repeat="s in ::md.status_text">{{s}}</li>
+        <li data-ng-repeat="s in ::obj.md.status_text">{{s}}</li>
       </ul>
     </td>
   </tr>
-  <tr data-ng-if="::md.credit">
+  <tr data-ng-if="::obj.md.credit">
     <th data-translate="">credit</th>
-    <td>{{::md.credit}}</td>
+    <td>{{::obj.md.credit}}</td>
   </tr>
 
   </tbody>

@@ -49,13 +49,10 @@
           <!--Mymap, list of inmap layer-->
           <div id="mymap" class="tab-pane active">
             <un-layermanager un-layermanager-map="::mainCtrl.map"
-                              un-layermanager-layers="::mainCtrl.selectedLayers">
+                             un-layermanager-layers="::mainCtrl.selectedLayers">
             </un-layermanager>
             <div class="text-center">
               <button class="btn btn-default" ng-click="mainCtrl.showTab('a[href=#catalog]');" translate>+ Ajouter</button>
-            </div>
-            <div class="legend-container" ng-class="{closed : !mainCtrl.legendOpen}">
-              <div gn-legend-panel="::mainCtrl.map" />
             </div>
             <button data-ng-if="mainCtrl.selectedLayers.length > 0" class="btn btn-default" id="legendBtn" ng-click="mainCtrl.legendOpen = !mainCtrl.legendOpen">Légende</button>
           </div>
@@ -63,6 +60,48 @@
           <!--Catalog tree-->
           <div id="catalog" class="tab-pane">
             <un-catalog un-catalog-map="::mainCtrl.map"></un-catalog>
+          </div>
+        </div>
+      </div>
+
+      <!--Import sidebar-->
+      <div id="import" data-ng-show="mainCtrl.importOpen">
+        <h2 translate>Import externe</h2>
+        <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
+          ✕
+        </button>
+
+        <!--Tab panel header-->
+        <ul class="nav nav-tabs">
+          <li role="presentation" class="active">
+            <a href="#importkml" data-toggle="tab" translate>KML</a>
+          </li>
+          <li role="presentation">
+            <a href="#importwms" data-toggle="tab">WMS</a>
+          </li>
+          <li role="presentation">
+            <a href="#importwmts" data-toggle="tab" translate>WMTS</a>
+          </li>
+        </ul>
+
+        <!--Tab panel content-->
+        <div class="tab-content">
+
+          <!--Import KML-->
+          <div id="importkml" class="tab-pane">
+            <div gn-kml-import="" gn-kml-import-map="::mainCtrl.map"></div>
+          </div>
+
+          <!--Import WMS-->
+          <div id="importwms" class="tab-pane active">
+            <div gn-wms-import="wms"
+                 gn-wms-import-map="::mainCtrl.map"
+                 services-list-from-catalog="true"></div>
+          </div>
+
+          <!--Import WMTS-->
+          <div id="importwmts" class="tab-pane">
+            <div gn-wms-import="wmts" gn-wms-import-map="::mainCtrl.map"></div>
           </div>
         </div>
       </div>
@@ -98,11 +137,27 @@
 
     </div>
 
-    <div id="showlayerinfo" ng-class="{open: mainCtrl.unLayerState.open, offset: mainCtrl.sidebarOpen()}">
+    <div id="infopanel"
+         ng-class="{open: mainCtrl.infopanelOpen(), offset: mainCtrl.sidebarOpen()}">
+      <div id="showlayerinfo" data-ng-show="mainCtrl.unLayerState.md">
+        <h4>{{mainCtrl.unLayerState.md.title || mainCtrl.unLayerState.md.defaultTitle}}</h4>
+        <button class="close-panel" ng-click="mainCtrl.closeInfopanel()">
+          ✕
+        </button>
+        <div un-layerinfo=""></div>
+      </div>
+      <div class="legend-container" data-ng-show="mainCtrl.legendOpen">
+        <h4>Légende</h4>
+        <button class="close-panel" ng-click="mainCtrl.closeInfopanel()">
+          ✕
+        </button>
+        <div gn-legend-panel="::mainCtrl.map" />
+      </div>
     </div>
 
     <div class="un-main-tools" ngeo-btn-group ng-class="{active: mainCtrl.sidebarOpen()}">
       <button class="un-tool-btn btn" ngeo-btn ng-model="mainCtrl.layersOpen"><span class="icon layers"></span> </button>
+      <button class="un-tool-btn btn" ngeo-btn ng-model="mainCtrl.importOpen"><span class="fa fa-plus"></span> </button>
       <button class="un-tool-btn btn" ngeo-btn ng-model="mainCtrl.contextOpen"><i class="icon map"></i> </button>
       <button class="un-tool-btn btn" ngeo-btn ng-model="mainCtrl.printOpen"><i class="fa fa-print"></i> </button>
       <button class="un-tool-btn btn" ngeo-btn ng-model="mainCtrl.mInteraction.active"><i class="icon measure"></i> </button>

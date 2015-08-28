@@ -72,7 +72,7 @@
 
     var layer = this.gnMap_.createOlWMS(this.map,
         {'LAYERS': node.layers},
-        {label: node.name, url: node.url});
+        {label: node.name, url: node.url, metadata: node.metadataUrl});
 
     layer.set('cextent', node.cextent);
     layerCache_[layerCacheKey] = layer;

@@ -5,7 +5,8 @@
   var module = angular.module('un-layerinfo', []);
 
   module.value('unLayerState', {
-    open: false
+    layer: undefined,
+    md: undefined
   });
 
   module.service('unLayerInfoService', [
@@ -41,22 +42,8 @@
           return o.getUuid() == uuid;
         });
         md = angular.isArray(md) && md.length == 1 && md[0];
-        if(md) {
-
-          // Compile the md view content
-          var div = angular.element('#showlayerinfo');
-          div.empty();
-          var scope = div.scope().$new();
-          scope.md = md;
-          scope.layer = layer;
-          var el = document.createElement('div');
-          el.setAttribute('un-layerinfo', '');
-          div.append(el);
-          $compile(el)(scope);
-
-          // diplay the layer info panel
-          unLayerState.open = true;
-        }
+        unLayerState.md = md;
+        unLayerState.layer = layer;
       };
     }]);
 
@@ -65,9 +52,11 @@
       restrict: 'A',
       templateUrl: '../../catalog/views/unosat/js/layerinfo/layerinfo.html',
       link: function(scope) {
-        scope.close = function() {
-          unLayerState.open = false;
-        }
+        scope.obj = unLayerState;
+
+        scope.$watchCollection('obj', function() {
+          console.log('watch');
+        })
       }
     };
   };
