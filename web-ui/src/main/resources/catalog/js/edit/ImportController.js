@@ -36,6 +36,7 @@
         $scope.importing = false;
         var report = {
           id: data.jqXHR.responseJSON.id,
+          uuid: data.jqXHR.responseJSON.uuid,
           success: data.jqXHR.responseJSON.success,
           message: data.jqXHR.responseJSON.msg
         };
@@ -55,7 +56,8 @@
       $scope.mdImportUploadOptions = {
         autoUpload: false,
         done: uploadImportMdDone,
-        fail: uploadImportMdError
+        fail: uploadImportMdError,
+        singleUpload: true
       };
       /** --- */
 
