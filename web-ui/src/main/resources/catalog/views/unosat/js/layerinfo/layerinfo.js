@@ -13,9 +13,9 @@
     'Metadata',
     'gnSearchManagerService',
     'gnPopup',
-    'unLayerState',
+    '$rootScope',
     '$compile',
-    function(Metadata, gnSearchManagerService, gnPopup, unLayerState,
+    function(Metadata, gnSearchManagerService, gnPopup, $rootScope,
              $compile) {
 
       var mds = [];
@@ -42,22 +42,36 @@
           return o.getUuid() == uuid;
         });
         md = angular.isArray(md) && md.length == 1 && md[0];
+
+        var scope = $rootScope.$new();
+        scope.layer = layer;
+        scope.md = md;
+        gnPopup.create({
+          title: md.title || md.defaultTitle,
+          content: '<div un-layerinfo="" md="md" layer="layer" class="info-content"></div>',
+          className: 'un-popup un-layerinfo'
+        }, scope);
+/*
         unLayerState.md = md;
         unLayerState.layer = layer;
+*/
       };
     }]);
 
-  gn.layerinfoDirective = function(unLayerState) {
+  gn.layerinfoDirective = function() {
     return {
       restrict: 'A',
+      scope: {
+        md: '=',
+        layer: '='
+      },
       templateUrl: '../../catalog/views/unosat/js/layerinfo/layerinfo.html',
       link: function(scope) {
-        scope.obj = unLayerState;
       }
     };
   };
 
-  module.directive('unLayerinfo', ['unLayerState', gn.layerinfoDirective]);
+  module.directive('unLayerinfo', [gn.layerinfoDirective]);
 
   gn.layerinfoDirectiveBtn = function() {
     return {
@@ -87,7 +101,7 @@
     gn.LayerinfoController);
 
   gn.LayerinfoController['$inject'] = [
-    'unLayerInfoService'
+      'unLayerInfoService'
   ];
 
 })();

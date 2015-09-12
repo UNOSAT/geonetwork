@@ -57,3 +57,14 @@
     font-size: 12px;
   }
 }
+
+#importwms, #importwmts {
+  height: 100%;
+  .layerTree {
+    height: 100%;
+    > ul {
+      height: ~"calc(100% - 87px)";
+      overflow-y: scroll;
+    }
+  }
+}

@@ -1,41 +1,8 @@
-#infopanel {
-  display: none;
-  transition: all 300ms ease-out 0s;
-  position: absolute;
-  width: 0;
+.un-layerinfo {
+
+  max-width: 800px;
+  width: 500px;
   height: 60%;
-  left: 0;
-  bottom: 50px;
-  background-color: @main-basecolor-dark;
-  z-index: 1003;
-  font-size: 12px;
-
-  > div {
-    height: ~"calc(100% - 60px)";
-  }
-
-  h4 {
-    padding: 20px;
-    width: 480px;
-    margin: 0;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-  }
-
-  .info-content {
-    height: 100%;
-    overflow-y: auto;
-  }
-
-  &.open {
-    width: 500px;
-    display: block;
-  }
-  &.offset {
-    left: @sidebar-width;
-  }
-
   .md-abstract {
     width: 66%;
   }
@@ -81,3 +48,4 @@
     }
   }
 }
+

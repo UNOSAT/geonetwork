@@ -30,9 +30,7 @@ if(!goog) {
 
           // Keep one layer in the background
           // while the context is not yet loaded.
-          viewerSettings.bgLayers = [
-            gnMap.createLayerForType('osm')
-          ];
+          viewerSettings.bgLayers = [];
 
           viewerSettings.servicesUrl = {
             wms: [{

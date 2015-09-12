@@ -22,6 +22,7 @@
 @import "mouseposition.less";
 @import "gfi.less";
 @import "import.less";
+@import "popup.less";
 
 @header-height: 80px;
 @sidebar-width: 320px;
@@ -52,18 +53,14 @@
 }
 
 ::-webkit-scrollbar {
-  width: 12px;
+  width: 8px;
+  background-color: transparent;
 }
-
-::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-  border-radius: 10px;
-}
-
 ::-webkit-scrollbar-thumb {
-  border-radius: 10px;
-  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+  background-color: rgba(125, 125, 125, 0.7);
+  border-radius: 4px;
 }
+
 
 html, body,
 body > div,
@@ -153,7 +150,7 @@ body > div,
     }
   }
 }
-#sidebar, #infopanel {
+#sidebar, .un-popup {
   color: white;
   h2 {
     line-height: 1;

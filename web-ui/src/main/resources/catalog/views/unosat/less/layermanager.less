@@ -3,10 +3,14 @@
   > div {
     margin-top: 10px;
   }
+  height: 100%;
 }
+
 ul.layermanager {
   margin: 0;
   padding: 0;
+  max-height: ~"calc(100% - 60px)";
+  overflow-y: scroll;
 }
 
 li.layermanager-panel {
@@ -46,6 +50,14 @@ li.layermanager-panel {
       display: none;
     }
   }
+  a.layername {
+    width: 170px;
+    display: inline-block;
+    /* overflow-x: hidden; */
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
 
   input.opacity {
     margin-top: 10px;
@@ -75,3 +87,4 @@ li.layermanager-panel {
     }
   }
 }
+

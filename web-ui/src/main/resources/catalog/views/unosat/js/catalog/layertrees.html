@@ -13,7 +13,7 @@
 </a>
 <div ng-if="::!layertreeCtrl.isRoot && !layertreeCtrl.node.children">
   <un-layerinfo-btn layer="::layertreeCtrl.layer"></un-layerinfo-btn>
-  <a href ng-click="catalogCtrl.toggle(layertreeCtrl.node)">
+  <a href="" ng-click="catalogCtrl.toggle(layertreeCtrl.node)">
     <i class="fa" ng-class="(layertreeCtrl.getSetActive()) ? 'fa-check-square' : 'fa-square'"></i>
     {{layertreeCtrl.node.name | translate}}
   </a>

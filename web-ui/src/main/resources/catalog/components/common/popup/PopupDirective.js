@@ -43,10 +43,8 @@
           optionsFunc: '&gnPopupOptions' // Options from directive
         },
         template:
-            '<h4 class="popover-title gn-popup-title">' +
-            '<span translate>{{options.title}}</span>' +
-            '<button type="button" class="close" ng-click="close($event)">' +
-            '&times;</button>' +
+            '<h4>{{options.title}}</h4><button data-dismiss="modal"' +
+            ' aria-hidden="true" class="close-panel" ng-click="close($event)">✕</button>' +
             '<i class="icon-print gn-popup-print hidden-print" ' +
             'title="{{titlePrint}}" ' +
             'ng-if="options.showPrint" ng-click="print()"></i>' +
