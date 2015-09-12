@@ -5,11 +5,7 @@
   var module = angular.module('un-catalog', []);
   module.constant('unCatalogUrl', '../../catalog/views/unosat/data/layers.json');
   module.value('ngeoLayertreeTemplateUrl',
-      '../../catalog/views/unosat/js/catalog/layertree.html');
-
-// Use an application-specific "layer tree node" template.
-  module.value('ngeoLayertreenodeTemplateUrl',
-      '../../catalog/views/unosat/js/catalog/layertreenode.html');
+      '../../catalog/views/unosat/js/catalog/layertrees.html');
 
   gn.catalogDirective = function() {
     return {

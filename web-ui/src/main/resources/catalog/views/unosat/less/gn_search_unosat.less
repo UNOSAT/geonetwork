@@ -21,6 +21,7 @@
 @import "layerinfo.less";
 @import "mouseposition.less";
 @import "gfi.less";
+@import "import.less";
 
 @header-height: 80px;
 @sidebar-width: 320px;
@@ -117,6 +118,18 @@ body > div,
     height: calc(~"100% - 34px -" @header-height);
     overflow: hidden;
     background-color: @main-base-color-light;
+    .form-control {
+      background-color: @main-basecolor-dark;
+      font-size: 12px;
+    }
+    select{
+      -webkit-appearance:none;
+      -moz-appearance:none;
+      appearance:none;
+    }
+    &.no-nav {
+      height: calc(~"100% -" @header-height);
+    }
   }
   .nav-tabs {
     border: none;
@@ -207,8 +220,77 @@ body > div,
   }
 }
 
-#import {
-  li.list-group-item {
-    background-color: @main-basecolor-dark;
+[role=tooltip] {
+  position: absolute;
+  clip: rect(1px, 1px, 1px, 1px);
+  left: 52px;
+}
+button:hover [role=tooltip] {
+  clip: auto;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  padding: .2em .5em;
+  margin-top: -.2em;
+  border-radius: 0 .2em 0 .2em;
+  text-shadow: 0 0 1px #000;
+  z-index: 9000;
+}
+
+.modal-dialog {
+  margin-top: 200px;
+  color: @main-txt-light;
+}
+.modal-content {
+  border-radius: 0;
+}
+.modal-header {
+  background-color: @main-base-color;
+  h4 {
+    text-transform: uppercase;
+    color: white;
   }
+  .close {
+    color: white;
+    box-shadow: none;
+  }
+
+}
+.modal-body {
+  font-size: 12px;
+  background-color: @main-basecolor-dark;
+  li {
+    margin-top: 5px;
+  }
+
+}
+
+input[type=range]{
+  -webkit-appearance: none;
+  background-color: transparent;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+  height: 5px;
+  background: #ddd;
+  border: none;
+  border-radius: 3px;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  border: none;
+  height: 15px;
+  width: 15px;
+  background: @main-base-color-light;
+  border-radius: 6px;
+
+  margin-top: -5px;
+}
+
+input[type=range]:focus {
+  outline: none;
+}
+
+input[type=range]:focus::-webkit-slider-runnable-track {
+  background: #ccc;
 }

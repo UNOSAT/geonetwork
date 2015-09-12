@@ -123,7 +123,7 @@
     "SearchLayer": "Chercher",
     "chooseAservice": "Choisir un service",
     "chooseAserviceHelp": "Tous les services de la liste sont référencés dans le catalogue.",
-    "orTypeAServiceUrl": "saisir l'URL d'un service {{type}}",
+    "orTypeAServiceUrl": "Saisir l'URL d'un service {{type}} ou sélectionner un service dans la liste:",
     "addAllLayersToMap": "Ajouter toutes les {{nombre}} couches à la carte",
     "downloadsAndResources": "Téléchargements et liens",
     "sourceCatalog": "Fourni par",

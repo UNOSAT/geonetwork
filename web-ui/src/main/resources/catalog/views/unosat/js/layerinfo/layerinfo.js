@@ -53,10 +53,6 @@
       templateUrl: '../../catalog/views/unosat/js/layerinfo/layerinfo.html',
       link: function(scope) {
         scope.obj = unLayerState;
-
-        scope.$watchCollection('obj', function() {
-          console.log('watch');
-        })
       }
     };
   };

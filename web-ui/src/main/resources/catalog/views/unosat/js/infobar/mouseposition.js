@@ -9,7 +9,7 @@
       scope: {
         'map': '='
       },
-      templateUrl: '../../catalog/views/unosat/js/mouseposition/' +
+      templateUrl: '../../catalog/views/unosat/js/infobar/' +
           'mouseposition.html',
       link: function(scope, element, attrs) {
         var map = scope.map;
@@ -58,14 +58,13 @@
           }
         }];
 
-        scope.projection = scope.mousePositionProjections[1];
+        scope.changeProj = function(projection) {
+          scope.projection = projection;
+          control.setProjection(ol.proj.get(projection.value));
+          control.setCoordinateFormat(projection.format);
 
-        scope.$watch('projection', function(projection) {
-          if(projection) {
-            control.setProjection(ol.proj.get(projection.value));
-            control.setCoordinateFormat(projection.format);
-          }
-        });
+        };
+        scope.changeProj(scope.mousePositionProjections[1]);
       }
     };
   };

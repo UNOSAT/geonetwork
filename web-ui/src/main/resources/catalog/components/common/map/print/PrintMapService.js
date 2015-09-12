@@ -149,7 +149,7 @@
 
             var styles = (hasLayerStyleFunction) ?
                 feature.getStyleFunction()(feature) :
-                ol.feature.defaultStyleFunction(feature);
+                ol.style.defaultStyleFunction(feature);
 
 
             var geometry = feature.getGeometry();

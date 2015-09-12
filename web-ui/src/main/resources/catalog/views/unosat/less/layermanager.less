@@ -14,6 +14,19 @@ li.layermanager-panel {
   margin-bottom: 1px;
   padding: 5px 10px;
   border-radius: 0;
+  background-color: @main-basecolor-dark;
+
+  .sortable-handle {
+  padding-right: 15px;
+  }
+
+  .fa-minus, .fa-ellipsis-h, .fa-info, .fa-trash-o {
+    padding-right: 5px;
+  }
+
+  a:hover, a:focus {
+    text-decoration: none;
+  }
 
   a[data-toggle=collapse] .expanded,
   a[data-toggle=collapse] .collapsed {
@@ -35,7 +48,9 @@ li.layermanager-panel {
   }
 
   input.opacity {
-    width: 50px;
+    margin-top: 10px;
+    margin-left: 32px;
+    width: 100px;
     display: inline-block;
   }
   .delete {

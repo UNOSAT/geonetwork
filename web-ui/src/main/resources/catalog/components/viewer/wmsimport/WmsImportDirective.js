@@ -373,9 +373,9 @@
         },
         template: "<li class='list-group-item' ng-click='handle($event)' " +
             "ng-class='(!isParentNode()) ? \"leaf\" : \"\"'><label>" +
-            "<span class='fa'  ng-class='isParentNode() ? \"fa-folder-o\" :" +
-            " \"fa-plus-square-o\"'></span>" +
-            ' {{member.Title || member.title}}</label></li>',
+            "<span class='fa'  ng-class='isParentNode() ? \"fa-folder-open-o\" :" +
+            " \"fa-plus-square\"'></span>" +
+            ' <span>{{member.Title || member.title}}</span></label></li>',
         link: function(scope, element, attrs, controller) {
           var el = element;
           var select = function() {

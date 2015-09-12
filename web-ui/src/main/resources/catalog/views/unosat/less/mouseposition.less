@@ -1,15 +1,33 @@
 un-mouseposition {
-  select {
+  .ol-mouse-position {
+    left: 150px;
+  }
+  > div {
+    display: inline-block;
+  }
+}
+un-scaleselector  {
+  margin-right: 150px;
+}
+
+footer {
+  font-size: 12px;
+  .btn {
+    border-radius: 0;
     height: 32px;
     min-height: inherit;
     width: auto;
     font-size: inherit;
-    padding: 5px;
     color : rgb(85, 85, 85);
     font-size: 11px;
   }
 
-  .ol-mouse-position {
-    left: 130px;
+  .dropdown-menu {
+    z-index: 1100;
+    font-size: 11px;
+   > li > a {
+     padding: 2px, 15px;
+   }
   }
+
 }

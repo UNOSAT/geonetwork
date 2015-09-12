@@ -5,15 +5,19 @@
   var module = angular.module('un-bgselector', []);
 
   var bgLayers = [{
-    "layer": "mapquest",
-    "name": "MapQuest"
-  }, {
     "name": "Open Street Map",
     "layer": "osm"
   }, {
     "name": "Bing",
     "layer": "bing_aerial"
   }, {
+    "name": "Relief Ombré",
+    "layer": "wmts",
+    "opts" : {
+      "url": "http://services.arcgisonline.com/ArcGIS/rest/services/World_Shaded_Relief/MapServer/WMTS/1.0.0/WMTSCapabilities.xml?REQUEST=GetCapabilities&service=WMTS",
+      "name": "World_Shaded_Relief"
+    }
+  },{
     "name": "Aucun",
     "layer": "voidLayer"
   }];
@@ -42,7 +46,13 @@
     this['bgLayers'] = bgLayers;
     this.layerCache = {};
 
-    this.setLayer(bgLayers[0]);
+    this.setLayer(bgLayers[1]);
+
+    var adminLimitLayer = gnMap.createOlWMS(this.map, {LAYERS: 'unosat:fond_carte'}, {
+      url: 'http://localhost:8082/geoserver/wms?',
+      label: "Limites administratives"
+    });
+    this.map.addLayer(adminLimitLayer);
   };
 
 
@@ -60,7 +70,7 @@
       layer = this.layerCache[layerSpec.name];
     }
     else {
-      layer = this.createLayer_(layerSpec['layer']);
+      layer = this.createLayer_(layerSpec);
       this.layerCache[layerSpec.name] = layer;
     }
     this.backgroundLayerMgr_.set(this['map'], layer);
@@ -88,15 +98,15 @@
    * @return {ol.layer.Tile} The layer.
    * @private
    */
-  gn.BgSelectorController.prototype.createLayer_ = function(layerName) {
+  gn.BgSelectorController.prototype.createLayer_ = function(layerSpec) {
     var layer;
-    if(layerName != 'voidLayer') {
-      layer = this.gnMap_.createLayerForType(layerName);
+    if(layerSpec.layer != 'voidLayer') {
+      layer = this.gnMap_.createLayerForType(this.map, layerSpec.layer, layerSpec.opts);
     }
     else {
       layer = new ol.layer.Tile();
     }
-    layer.set('bgType', layerName);
+    layer.set('bgType', layerSpec.layer);
     return layer;
   };
 

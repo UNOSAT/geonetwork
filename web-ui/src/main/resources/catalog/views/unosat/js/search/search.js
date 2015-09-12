@@ -23,7 +23,7 @@
         element.find('span.clear-button').on('click',
             function(scope) {
               $(element).find('input').val('').trigger('input');
-              scope['ctrl'].featureOverlay_.getFeatures().clear();
+              //scope['ctrl'].featureOverlay_.getFeatures().clear();
             });
 
         element.find('input').on(
@@ -42,12 +42,10 @@
   module.directive('unSearch', gn.searchDirective);
 
 
-  gn.SearchController = function($rootScope, $compile,
+  gn.SearchController = function($rootScope, $compile, ngeoFeatureOverlayMgr,
                                   ngeoCreateGeoJSONBloodhound, gnUrlUtils) {
 
     this.gnUrlUtils_ = gnUrlUtils;
-
-    this.featureOverlay_ = this.createFeatureOverlay_();
 
     var bloodhoundEngine = this.createAndInitBloodhound_(
         ngeoCreateGeoJSONBloodhound);
@@ -55,6 +53,8 @@
     this['options'] = {
       highlight: true
     };
+
+    //this.vectorOverlay_ = ngeoFeatureOverlayMgr.getFeatureOverlay ();
 
     this['datasets'] = [{
       source: bloodhoundEngine.ttAdapter(),
@@ -95,18 +95,6 @@
     });
 
   };
-
-
-  /**
-   * @return {ol.FeatureOverlay} The feature overlay.
-   * @private
-   */
-  gn.SearchController.prototype.createFeatureOverlay_ = function() {
-    var featureOverlay = new ol.FeatureOverlay();
-    featureOverlay.setMap(this['map']);
-    return featureOverlay;
-  };
-
 
   /**
    * @param {ngeo.CreateGeoJSONBloodhound} ngeoCreateGeoJSONBloodhound The ngeo
@@ -160,7 +148,7 @@
         'EPSG:4326', 'EPSG:3857');
 
     var geom = ol.geom.Polygon.fromExtent(extent);
-    map.getView().fitGeometry(geom, map.getSize(), {
+    map.getView().fit(geom.getExtent(), map.getSize(), {
       maxZoom: 16
     });
   };
@@ -169,7 +157,7 @@
   module.controller('UnSearchController', gn.SearchController);
 
   gn.SearchController['$inject'] = [
-    '$rootScope', '$compile',
+    '$rootScope', '$compile', 'ngeoFeatureOverlayMgr',
     'ngeoCreateGeoJSONBloodhound',
     'gnUrlUtils'];
 

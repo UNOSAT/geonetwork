@@ -20,9 +20,15 @@
                     "url": "http://localhost:8082/geoserver/wms?",
                     "metadataUrl": "http://localhost:8080/geonetwork/srv/fre/catalog.search#/metadata/f3ae088d-b692-4c39-9476-002f501ffb67"
                   },
-                      {
+                  {
                     "layers": "unosat:Hydrogeologie_P",
                     "name": "Puits, SITEAU",
+                    "type": "WMS",
+                    "url": "http://localhost:8082/geoserver/wms?"
+                  },
+                  {
+                    "layers": "unosat:fond_carte",
+                    "name": "Fond",
                     "type": "WMS",
                     "url": "http://localhost:8082/geoserver/wms?"
                   },

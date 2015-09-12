@@ -12,9 +12,9 @@
   goog.require('un-layermanager');
   goog.require('un-search');
   goog.require('un-mouseposition');
+  goog.require('un-scaleselector');
 
   var module = angular.module('gn_search_unosat', [
-    'ngAnimate',
     'gn_search',
     'gn_search_unosat_config',
     'un-bgselector',
@@ -24,6 +24,7 @@
     'un-contexts',
     'un-layerinfo',
     'un-mouseposition',
+    'un-scaleselector',
     'gn_legendpanel_directive'
   ]);
 

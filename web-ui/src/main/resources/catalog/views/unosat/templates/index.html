@@ -7,21 +7,29 @@
         <a class="navbar-brand" href="http://reseau-tchad.org/" target="_blank">
           <img class="respimg" width="180" alt="ResEau" src="../../catalog/views/unosat/img/Logo_cercle_ResEau_v1_lueur.png" style="">
         </a>
+        <div class="portaltitle">
+          <span class="title">ResEau - SIRE Tchad</span>
+          <span>Système d'information des ressources en eau du Tchad</span>
+        </div>
+      </div>
+      <div class="nav navbar-nav">
+        <div id="toptools">
+          <a href="" data-toggle="modal" data-target="#reseauModal">Le projet ResEau</a>&nbsp;|&nbsp;
+          <a href="" data-toggle="modal" data-target="#reservesModal">Réserves</a>&nbsp;|&nbsp;
+          <a href="" data-toggle="modal" data-target="#dataModal">Données géographiques</a>&nbsp;|&nbsp;
+          <a href="" data-toggle="modal" data-target="#unosatModal">UNOSAT</a>
+        </div>
       </div>
       <ul class="nav navbar-nav navbar-right">
-        <li>
-          <un-search un-search-map="mainCtrl.map"></un-search>
-        </li>
+        <un-search un-search-map="mainCtrl.map"></un-search>
       </ul>
-
     </div>
-
   </header>
 
   <!--Container-->
   <div id="map-container" >
     <div id="sidebar" ng-class="{open: mainCtrl.sidebarOpen()}"
-         ngeo-resizemap="mainCtrl.map">
+         ngeo-resizemap="mainCtrl.map" ngeo-resizemap-state="mainCtrl.sidebarOpen()">
 
       <!--Layers sidebar-->
       <div id="layers" data-ng-show="mainCtrl.layersOpen">
@@ -54,7 +62,7 @@
             <div class="text-center">
               <button class="btn btn-default" ng-click="mainCtrl.showTab('a[href=#catalog]');" translate>+ Ajouter</button>
             </div>
-            <button data-ng-if="mainCtrl.selectedLayers.length > 0" class="btn btn-default" id="legendBtn" ng-click="mainCtrl.legendOpen = !mainCtrl.legendOpen">Légende</button>
+<!--            <button data-ng-if="mainCtrl.selectedLayers.length > 0" class="btn btn-default" id="legendBtn" ng-click="mainCtrl.legendOpen = !mainCtrl.legendOpen">Légende</button>-->
           </div>
 
           <!--Catalog tree-->
@@ -74,13 +82,13 @@
         <!--Tab panel header-->
         <ul class="nav nav-tabs">
           <li role="presentation" class="active">
-            <a href="#importkml" data-toggle="tab" translate>KML</a>
+            <a href="#importkml" data-toggle="tab">KML</a>
           </li>
           <li role="presentation">
             <a href="#importwms" data-toggle="tab">WMS</a>
           </li>
           <li role="presentation">
-            <a href="#importwmts" data-toggle="tab" translate>WMTS</a>
+            <a href="#importwmts" data-toggle="tab">WMTS</a>
           </li>
         </ul>
 
@@ -88,12 +96,12 @@
         <div class="tab-content">
 
           <!--Import KML-->
-          <div id="importkml" class="tab-pane">
+          <div id="importkml" class="tab-pane active">
             <div gn-kml-import="" gn-kml-import-map="::mainCtrl.map"></div>
           </div>
 
           <!--Import WMS-->
-          <div id="importwms" class="tab-pane active">
+          <div id="importwms" class="tab-pane">
             <div gn-wms-import="wms"
                  gn-wms-import-map="::mainCtrl.map"
                  services-list-from-catalog="true"></div>
@@ -112,8 +120,9 @@
         <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
           ✕
         </button>
-
-        <div gn-ows-context="" map="::mainCtrl.map"></div>
+        <div class="tab-content no-nav">
+          <div gn-ows-context="" map="::mainCtrl.map"></div>
+        </div>
       </div>
 
       <!--Print form panel-->
@@ -122,17 +131,20 @@
         <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
           ✕
         </button>
-        <div gn-mapprint="" print-active="mainCtrl.printOpen" map="::mainCtrl.map"></div>
+        <div class="tab-content no-nav">
+          <div gn-mapprint="" print-active="mainCtrl.printOpen" map="::mainCtrl.map"></div>
+        </div>
       </div>
 
       <!--Drawing-->
       <div id="drawpanel" data-ng-show="mainCtrl.drawOpen">
-        <h2 translate>draw</h2>
+        <h2>Annotations</h2>
         <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
           ✕
         </button>
-
-        <div class="gn-draw-text" gn-draw="" map="::mainCtrl.map" vector="::mainCtrl.drawVector"></div>
+        <div class="tab-content no-nav">
+          <div class="gn-draw-text" gn-draw="" map="::mainCtrl.map" vector="::mainCtrl.drawVector"></div>
+        </div>
       </div>
 
     </div>
@@ -144,24 +156,25 @@
         <button class="close-panel" ng-click="mainCtrl.closeInfopanel()">
           ✕
         </button>
-        <div un-layerinfo=""></div>
+        <div un-layerinfo="" class="info-content"></div>
       </div>
       <div class="legend-container" data-ng-show="mainCtrl.legendOpen">
         <h4>Légende</h4>
         <button class="close-panel" ng-click="mainCtrl.closeInfopanel()">
           ✕
         </button>
-        <div gn-legend-panel="::mainCtrl.map" />
+        <div gn-legend-panel="::mainCtrl.map" class="info-content"/>
       </div>
     </div>
 
     <div class="un-main-tools" ngeo-btn-group ng-class="{active: mainCtrl.sidebarOpen()}">
-      <button class="un-tool-btn btn" ngeo-btn ng-model="mainCtrl.layersOpen"><span class="icon layers"></span> </button>
-      <button class="un-tool-btn btn" ngeo-btn ng-model="mainCtrl.importOpen"><span class="fa fa-plus"></span> </button>
-      <button class="un-tool-btn btn" ngeo-btn ng-model="mainCtrl.contextOpen"><i class="icon map"></i> </button>
-      <button class="un-tool-btn btn" ngeo-btn ng-model="mainCtrl.printOpen"><i class="fa fa-print"></i> </button>
-      <button class="un-tool-btn btn" ngeo-btn ng-model="mainCtrl.mInteraction.active"><i class="icon measure"></i> </button>
-      <button class="un-tool-btn btn" ngeo-btn ng-model="mainCtrl.drawOpen"><i class="fa fa-pencil"></i> </button>
+      <button class="un-tool-btn btn" ngeo-btn ng-model="mainCtrl.layersOpen"><span class="icon layers"></span><span role="tooltip">Mes couches</span></button>
+      <button class="un-tool-btn btn" ngeo-btn ng-model="mainCtrl.importOpen"><span class="fa fa-plus"></span><span role="tooltip">Import de couches externes</span></button>
+      <button class="un-tool-btn btn" ngeo-btn ng-model="mainCtrl.contextOpen"><i class="icon map"></i><span role="tooltip">Mes cartes</span></button>
+      <button class="un-tool-btn btn" ngeo-btn ng-model="mainCtrl.printOpen"><i class="fa fa-print"></i><span role="tooltip">Impression</span></button>
+      <button class="un-tool-btn btn" ngeo-btn ng-model="mainCtrl.mInteraction.active"><i class="icon measure"></i><span role="tooltip">Mesure</span></button>
+      <button class="un-tool-btn btn" ngeo-btn ng-model="mainCtrl.drawOpen"><i class="fa fa-pencil"></i><span role="tooltip">Annotations</span></button>
+      <button class="un-tool-btn btn" ngeo-btn ng-model="mainCtrl.legendOpen"><i class="fa fa-list"></i><span role="tooltip">Légendes</span></button>
     </div>
 
     <div id="measurepanel" data-ng-show="mainCtrl.mInteraction.active">
@@ -187,10 +200,78 @@
     <un-bg-selector un-bg-selector-map="::mainCtrl.map" class="ga-bg-desktop"></un-bg-selector>
   </div>
   <footer ng-class="{'offset-left': mainCtrl.sidebarOpen()}">
+    <un-scaleselector class="pull-right" map="mainCtrl.map">
+    </un-scaleselector>
     <un-mouseposition class="" map="mainCtrl.map">
     </un-mouseposition>
 <!--
     <div id="scale-position" ngeo-control="mainCtrl.scaleControl" ngeo-control-map="mainCtrl.map"></div>
 -->
   </footer>
+
+  <!-- Modals -->
+  <div class="modal fade" id="reseauModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header text-center">
+          <button type="button" class="close-panel" data-dismiss="modal" aria-label="Close">✕</button>
+          <h4 class="modal-title" id="myModalLabel">Le projet ResEau</h4>
+        </div>
+        <div class="modal-body text-justify">
+          <p>Sous la pression démographique et face à des besoins en eau croissants, le Tchad a décidé de prioriser la production d'un Système d'Informations des Ressources en Eau (SIRE) à l'échelle nationale afin de répondre aux objectifs définis dans le Schéma Directeur de l'Eau et de l'Assainissement (SDEA) et la Stratégie Nationale de Réduction de la Pauvreté (SNRP). Ce programme, dénommé ResEau, résulte d'une demande formulée par le Ministère de l'Elevage et de l'Hydraulique (MEH) auprès de la Direction du Développement et de la Coopération (DDC) de la Confédération Suisse pour l'aider à faire face à cette préoccupation nationale.</p>
+          <p>L'Institut des Nations Unies pour la Formation et la Recherche (UNITAR) et son programme opérationnel pour les applications satellitaires, UNOSAT ont été mandatés par la DDC pour sa mise en oeuvre et la création des composantes techniques du SIRE. Lors de la première phase, de 2012 à 2015, le projet ResEau I couvre 6 régions à savoir le Borkou, l'Ennedi Est, l'Ennedi Ouest, le Tibesti, le Wadi Fira et le Ouaddaï.</p>
+          <p>Le programme vise à augmenter la résilience du Tchad face aux variations climatiques par une gestion active des ressources en eau de surface et des aquifères. Un meilleur accès à l'eau aura un impact direct sur la santé, la sécurité alimentaire, la lutte contre la pauvreté et le développement des communautés urbaines et rurales. Tout en soutenant les projets réalisés par d'autres acteurs dans le domaine, l'action s'effectue à travers la mise à disposition de connaissances en hydrogéologie et géologie et le renforcement de capacités locales pour l'analyse et la gestion de ces données. Le présent portail cartographique est l'outil de consultation de cette information.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="reservesModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header text-center">
+          <button type="button" class="close-panel" data-dismiss="modal" aria-label="Close">✕</button>
+          <h4 class="modal-title">Réserves</h4>
+        </div>
+        <div class="modal-body text-justify">
+          <p>La représentation et l'utilisation des limites administratives, des noms géographiques et autres données employées sur ce portail cartographique ne sont pas garanties sans erreurs, de même qu'ils n'engagent pas la responsabilité des éditeurs ni m'impliquent de reconnaissance officielle de leur part. Les ouvrages hydrauliques et leurs paramètres sont présentés de manière indicative, n'ayant pas fait l'objet de validation systématique sur le terrain. </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="dataModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header text-center">
+          <button type="button" class="close-panel" data-dismiss="modal" aria-label="Close">✕</button>
+          <h4 class="modal-title">Sources de données</h4>
+        </div>
+        <div class="modal-body text-justify">
+          <p>L'information du SIRE provient de produits élaborés par UNOSAT/UNITAR et le Ministère de l'Elevage et de l'Hydraulique (MEH) et de données exogènes. Les données géographiques ont été produites comme suit:</p>
+          <ul>
+            <li>Les localités du Tchad ont fait l'objet d'une cartographie minutieuse en se référant à la collection d'images satellite disponibles sous Google Earth (scènes QuickBird, IKONOS et SPOT de 2003 à 2012).</li>
+            <li>Les données de puits, forages et sources et leurs informations techniques sont extraites de la base de données SITEAU du MEH.</li>
+            <li>Les points d'eau traditionnels (bir, aïn, guelta) sont repris des séries de cartes topographiques au 1:200'000 de la République du Tchad, publiées entre 1955 et 1979 pat l'Institut Géographique National (IGN).</li>
+            <li>Les courbes topographiques et les lignes de partage des eaux découlent de traitements du modèle numérique de terrain SRTM (Shuttle Radar Topography Mission), produit par la National Aeronautics and Space Administration (NASA), le Jet Propulsion Laboratory (JPL) et le National Geospatial Agency (NGA), et distribué par l'US Geological Survey (USGS).</li>
+            <li>Les données de précipitations sont issues du modèle Rainfall Estimate RFE 2.0, élaboré par la National Oceanic and Atmospheric Administration (NOAA) et son Climate Prediction Center.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="unosatModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header text-center">
+          <button type="button" class="close-panel" data-dismiss="modal" aria-label="Close">✕</button>
+          <h4 class="modal-title">UNOSAT</h4>
+        </div>
+        <div class="modal-body text-justify">
+          <h4>UNOSAT</h4>
+          <h5>Le Programme opérationnel pour les applications satellitaires de l'UNITAR</h5>
+          <p>UNOSAT est un programme opérationnel spécialisé dans la recherche appliquée des solutions satellitaires, englobant l'observation de la terre, les télécommunications, la géolocalisation et la navigation pour répondre aux défis auxquels doit faire face la communauté internationale. UNOSAT livre des solutions satellitaires et de l'information géographique à des organisations internationales et aux Pays membres des Nations Unies afin de les aider à combattre la pauvreté, réduire leur vulnérabilité aux risques naturels et répondre aux crises humanitaires.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
