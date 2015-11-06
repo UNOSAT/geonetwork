@@ -35,7 +35,7 @@
 
   gn.MainController = function($scope, gnSearchSettings, defaultExtent,
                                gnMeasure, ngeoSyncArrays, unLayerInfoService,
-                               unLayerState) {
+                               unLayerState, gnPopup) {
 
     this.searchSettings_ = gnSearchSettings;
     this.defaultExtent_ = defaultExtent;
@@ -45,6 +45,8 @@
     this.legendOpen = false;
     this.drawVector;
     this.unLayerState = unLayerState;
+    this.gnPopup = gnPopup;
+    this.$scope = $scope;
     var $this = this;
 
     this['selectedLayers'] = [];
@@ -65,6 +67,15 @@
     $scope.$watch('mainCtrl.drawOpen', function() {
       if($scope.mainCtrl.drawVector) {
         $scope.mainCtrl.drawVector.inmap = !$scope.mainCtrl.drawVector.inmap;
+      }
+    });
+    $scope.$watch('mainCtrl.legendOpen', function() {
+      if($scope.mainCtrl.legendOpen) {
+        $this.openLegend();
+      }
+      else {
+        var e = angular.element('.un-legendpanel');
+        if(e) e.remove();
       }
     });
 
@@ -137,7 +148,15 @@
   };
 
   gn.MainController.prototype.infopanelOpen = function() {
-    return this.unLayerState.md || this.legendOpen;
+    return this.unLayerState.md;
+  };
+
+  gn.MainController.prototype.openLegend = function() {
+    this.gnPopup.create({
+      title: "Légendes",
+      content: '<div gn-legend-panel="::mainCtrl.map" class="info-content"/>',
+      className: 'un-popup un-legendpanel'
+    }, this.$scope);
   };
 
   gn.MainController.prototype.showTab = function(selector) {
@@ -152,6 +171,8 @@
     'gnMeasure',
     'ngeoSyncArrays',
     'unLayerInfoService',
-    'unLayerState'
+    'unLayerState',
+    'gnPopup'
   ];
+
 })();

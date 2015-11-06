@@ -291,3 +291,33 @@ input[type=range]:focus {
 input[type=range]:focus::-webkit-slider-runnable-track {
   background: #ccc;
 }
+
+[gn-draw] {
+  label {
+    font-weight: normal;
+  }
+  [gn-style-form] {
+    min-height: 150px;
+  }
+  .flux {
+    margin-bottom: 20px;
+  }
+  .color-picker-wrapper {
+    > div {
+      > span {
+        width: 42px !important;
+        height: 42px !important;
+        border-radius: 4px;
+        z-index: 100;
+        border: none;
+      }
+      input {
+        width: 0;
+        position: absolute;
+        left: 5px;
+        top: 5px;
+        z-index: 0;
+      }
+    }
+  }
+}

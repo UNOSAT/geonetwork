@@ -12,16 +12,16 @@
       </ul>
     </div>
 
-    <button gi-btn="active" class="btn btn-default"
+    <button gi-btn="active" class="btn btn-default" title="Editer"
             data-ng-class="{disabled:vector.getSource().getFeatures().length <= 0}"
             ng-model="modifying">
       <i class="fa fa-pencil"></i>&nbsp;
-      <span data-translate="">Modify</span></button>
-    <button gi-btn="active" class="btn btn-default"
+      </button>
+    <button gi-btn="active" class="btn btn-default" title="Supprimer"
             data-ng-class="{disabled:vector.getSource().getFeatures().length <= 0}"
             ng-model="deleteF.active">
       <i class="fa fa-eraser"></i>&nbsp;
-      <span data-translate="">Remove</span>
+
     </button>
   </div>
 

@@ -149,21 +149,13 @@
 
     </div>
 
-    <div id="infopanel"
-         ng-class="{open: mainCtrl.infopanelOpen(), offset: mainCtrl.sidebarOpen()}">
+    <div id="infopanel">
       <div id="showlayerinfo" data-ng-show="mainCtrl.unLayerState.md">
         <h4>{{mainCtrl.unLayerState.md.title || mainCtrl.unLayerState.md.defaultTitle}}</h4>
         <button class="close-panel" ng-click="mainCtrl.closeInfopanel()">
           ✕
         </button>
         <div un-layerinfo="" class="info-content"></div>
-      </div>
-      <div class="legend-container" data-ng-show="mainCtrl.legendOpen">
-        <h4>Légende</h4>
-        <button class="close-panel" ng-click="mainCtrl.closeInfopanel()">
-          ✕
-        </button>
-        <div gn-legend-panel="::mainCtrl.map" class="info-content"/>
       </div>
     </div>
 
