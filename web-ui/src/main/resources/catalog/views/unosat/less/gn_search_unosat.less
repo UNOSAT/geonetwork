@@ -58,9 +58,11 @@
 }
 ::-webkit-scrollbar-thumb {
   background-color: rgba(125, 125, 125, 0.7);
-  border-radius: 4px;
 }
 
+body, .form-control {
+  font-size: 12px;
+}
 
 html, body,
 body > div,
@@ -171,10 +173,10 @@ body > div,
 }
 
 .close-panel {
-  font-size: 20px;
+  font-size: 16px;
   position: absolute;
   right: 10px;
-  top: 12px;
+  top: 10px;
   background: none;
   border: 0;
   color: #fff;
@@ -242,6 +244,7 @@ button:hover [role=tooltip] {
 }
 .modal-header {
   background-color: @main-base-color;
+  padding: 8px;
   h4 {
     text-transform: uppercase;
     color: white;
@@ -253,7 +256,6 @@ button:hover [role=tooltip] {
 
 }
 .modal-body {
-  font-size: 12px;
   background-color: @main-basecolor-dark;
   li {
     margin-top: 5px;
@@ -317,6 +319,74 @@ input[type=range]:focus::-webkit-slider-runnable-track {
         left: 5px;
         top: 5px;
         z-index: 0;
+      }
+    }
+  }
+}
+
+[gn-gfi] {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 2.3em;
+  z-index: 50;
+  .results {
+    background-color: rgba(255,255,255,0.5);
+    left: .5em;
+    right: 9.5em;
+    bottom: .5em;
+    border-radius: 0;
+    width: auto;
+    overflow: visible;
+    .panel-heading {
+      position: absolute;
+      top: -1em;
+      right: 1em;
+      background: @main-basecolor-dark;
+      width: 15em;
+      height: auto;
+      border-radius: 0;
+      z-index: 0;
+      height: 2em;
+      padding: 0;
+      border-radius: 2px;
+      h5 {
+        margin: 0 .5em;
+        text-transform: uppercase;
+        font-size: 12px;
+        line-height: 2.3em;
+        color: white;
+      }
+      .btn {
+        background: white;
+        opacity: 1;
+        width: 1.2em;
+        border-radius: 2px;
+        padding: 3px 0 3px;
+        color: black;
+      }
+    }
+    .sxt-layer {
+      padding: 0 2em;
+    }
+    .table-scroller {
+      overflow-x: auto;
+    }
+    h5 {
+      color: @main-basecolor-dark;
+      font-weight: bold;
+    }
+    table {
+      width: 100%;
+      background: #fff;
+      border-bottom: 1px solid @gray-lighter;
+      font-size: 11px;
+      margin-bottom: 0;
+      th {
+        color: black;
+        font-weight: bold;
+        background: #eee;
+        border-right: 1px solid #aaa;
       }
     }
   }

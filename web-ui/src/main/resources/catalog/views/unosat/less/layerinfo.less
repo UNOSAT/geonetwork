@@ -1,5 +1,20 @@
 .un-layerinfo {
 
+  &.un-popup {
+    background-color: @main-basecolor-dark;
+
+    .gn-popup-content {
+      background-color: white;
+      color: @main-basecolor-dark;
+      height: ~"calc(100% - 48px)";
+    }
+
+    h4 {
+      padding: 15px;
+      font-size: 15px;
+    }
+  }
+
   max-width: 800px;
   width: 500px;
   height: 60%;
@@ -8,7 +23,6 @@
   }
 
   .md-mainblock {
-    background-color: @main-base-color-light;
     padding: 10px;
     margin-bottom: 20px;
     text-align: justify;
@@ -27,7 +41,6 @@
   }
 
   p.legend {
-    background-color: white;
     padding: 10px;
   }
 

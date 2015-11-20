@@ -93,16 +93,19 @@
         zoom: 6
       }),
       controls: [
-        new ol.control.Zoom(),
+        new ol.control.Zoom({
+          zoomInTipLabel: 'Zoom avant',
+          zoomOutTipLabel: 'Zoom arrière'
+        }),
         new ol.control.ZoomToExtent({
           extent: this.defaultExtent_,
-          tipLabel: 'Full extent',
+          tipLabel: 'Emprise globale',
           className: 'un-zoom-extent',
           label:$(
               '<span class="fa fa-globe"></span>')}),
 
         new ol.control.FullScreen({
-          tipLabel: 'Full screen',
+          tipLabel: 'Plein écran',
           className: 'un-full-screen',
           label:$(
             '<span class="fa fa-arrows-alt"></span>')})

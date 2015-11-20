@@ -10,19 +10,27 @@
     </h5>
   </div>
 
-  <ul class="list-group" ng-repeat="(key, group) in results | groupBy: 'layer'">
-    <h5>{{key}}</h5>
-    <li class="list-group-item" ng-repeat="result in group">
-      <ul>
-        <li ng-repeat="(attr, value) in result.getProperties() | attributes">
-        <b>{{attr | lowercase}}</b>:
-        <span ng-bind-html="value | linky:'_blank'"></span>
-        </li>
-      </ul>
-    </li>
-  </ul>
+  <div ng-repeat="(key, group) in results | groupBy: 'layer'">
 
-  <div class="panel-footer">
+    <h5 class="sxt-layer">{{key}}</h5>
+
+    <div class="table-scroller">
+      <table class="table table-condensed table-hover table-stripped">
+        <tr>
+          <th ng-repeat="attr in keys(group[0].getProperties()) | attributes" >
+            {{attr}}
+            <!-- <span ng-bind-html="value | linky:'_blank'"></span> -->
+          </th>
+        </tr>
+        <tr ng-repeat="result in group">
+          <td ng-repeat="attr in keys(result.getProperties()) | attributes">
+            <!-- <b>{{attr | lowercase}}</b>: -->
+            <span ng-bind-html="result.getProperties()[attr] | linky:'_blank'" title="{{result.getProperties()[attr]}}"></span>
+          </td>
+        </tr>
+      </table>
+    </div>
+
   </div>
 
 </div>

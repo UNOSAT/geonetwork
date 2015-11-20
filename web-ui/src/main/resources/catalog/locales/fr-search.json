@@ -311,5 +311,7 @@
     "bg_chooser_label": "Fond de plan",
     "mylayers": "Ma sélection",
     "nolayerselected": "Aucune couche ajoutée à la carte.",
-    "geoportal": "Géoportail"
+    "geoportal": "Géoportail",
+    "print_legend": "Légendes",
+    "print_legend_field": "Inclure les légendes"
 }
