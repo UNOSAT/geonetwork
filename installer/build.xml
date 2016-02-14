@@ -21,7 +21,7 @@
   </condition>
 
   <property name="appName" value="geonetwork"/>
-  <property name="version" value="3.0.3"/>
+  <property name="version" value="3.1.0"/>
   <property name="subVersion" value="SNAPSHOT"/>
   <property name="javaVersion" value="1.7.0"/>
   <!-- Minimum version required -->
@@ -149,13 +149,13 @@
     </replace>
 
     <!-- help file -->
-    <copy file="../docs/readme.html"
+    <copy file="readme.html"
           tofile="${propsdir}/readme.html"
           filtering="on" overwrite="yes"/>
-    <copy file="../docs/readme_fra.html"
+    <copy file="readme_fra.html"
           tofile="${propsdir}/readme_fra.html"
           filtering="on" overwrite="yes"/>
-    <copy file="../docs/readme_spa.html"
+    <copy file="readme_spa.html"
           tofile="${propsdir}/readme_spa.html"
           filtering="on" overwrite="yes"/>
 

@@ -59,6 +59,7 @@ import javax.servlet.http.HttpServletRequest;
  * Sends the resource to the client
  */
 @Controller
+@Deprecated
 public class Download {
 
     @Autowired
@@ -144,6 +145,8 @@ public class Download {
                 List<OperationAllowed> opsAllowed = opAllowedRepo.findByMetadataId(id);
                 
 				for (OperationAllowed opAllowed : opsAllowed) {
+					if (opAllowed.getId().getOperationId() != ReservedOperation.notify.getId())
+						continue;
                     Group group = groupRepository.findOne(opAllowed.getId().getGroupId());
 					String  name  = group.getName();
 					String  email = group.getEmail();

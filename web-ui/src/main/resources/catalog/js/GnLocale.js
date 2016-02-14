@@ -10,27 +10,38 @@
 
   module.constant('$LOCALES', ['core']);
 
-  module.factory('localeLoader', ['$http', '$q', function($http, $q) {
+  module.factory('localeLoader', ['$http', '$q',
+    function($http, $q) {
     return function(options) {
+
+      function buildUrl(prefix, lang, value, suffix) {
+        if (value.indexOf('/') === 0) {
+          return value.substring(1);
+        } else {
+          return prefix + lang.substring(0, 2) + '-' + value + suffix;
+        }
+      };
       var allPromises = [];
       angular.forEach(options.locales, function(value, index) {
-        var langUrl = options.prefix +
-            options.key + '-' + value + options.suffix;
+        var langUrl = buildUrl(options.prefix, options.key,
+            value, options.suffix);
 
         var deferredInst = $q.defer();
         allPromises.push(deferredInst.promise);
 
         $http({
           method: 'GET',
-          url: langUrl
+          url: langUrl,
+          headers: {
+            'Accept-Language': options.key
+          }
         }).success(function(data) {
           deferredInst.resolve(data);
         }).error(function() {
           // Load english locale file if not available
           $http({
             method: 'GET',
-            url: options.prefix +
-                'en-' + value + options.suffix
+            url: buildUrl(options.prefix, 'en', value, options.suffix)
           }).success(function(data) {
             deferredInst.resolve(data);
           }).error(function() {
@@ -56,9 +67,11 @@
         suffix: '.json'
       });
 
+      gnGlobalSettings.iso3lang =
+        location.href.split('/')[5] || 'eng';
       gnGlobalSettings.lang = gnGlobalSettings.locale.lang ||
-          location.href.split('/')[5].substring(0, 2) || 'en';
-      $translateProvider.preferredLanguage(gnGlobalSettings.lang);
+        gnGlobalSettings.iso3lang.substring(0, 2);
+      $translateProvider.preferredLanguage(gnGlobalSettings.iso3lang);
       moment.lang(gnGlobalSettings.lang);
     }]);
 

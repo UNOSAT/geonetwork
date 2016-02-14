@@ -89,7 +89,8 @@
       $(':checkbox:not(:checked)', form).each(function() {
         uc.push(encodeURIComponent(this.name) + '=false');
       });
-      return form.serialize().replace(/=on/g, '=true') +
+      return form.serialize().replace(/=on&/g, '=true&').
+          replace(/=on$/, '=true') +
           (uc.length ? '&' + uc.join('&').replace(/%20/g, '+') : '');
     };
 
@@ -358,7 +359,7 @@
                   regionsList.push({
                     id: id,
                     name: id.split('#')[1],
-                    label: $translate(id.split('#')[1])
+                    label: value['@label'] || id.split('#')[1]
                   });
                 }
               });

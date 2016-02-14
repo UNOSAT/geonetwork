@@ -259,6 +259,42 @@
 
   /**
    * @ngdoc directive
+   * @name gn_utility.directive:gnClickToggle
+   * @function
+   *
+   * @description
+   * Trigger an event (default is click) of all element matching
+   * the gnSectionToggle selector. By default, all elements
+   * matching form > fieldset > legend[data-gn-slide-toggle]
+   * ie. first level legend are clicked.
+   *
+   * This is usefull to quickly collapse all section in the editor.
+   *
+   * Add the event attribute to define a custom event.
+   */
+  module.directive('gnToggle', [
+    function() {
+      return {
+        restrict: 'A',
+        template: '<button title="{{\'gnToggle\' | translate}}">' +
+            '<i class="fa fa-fw fa-angle-double-left"/>&nbsp;' +
+            '</button>',
+        link: function linkFn(scope, element, attr) {
+          var selector = attr['gnSectionToggle'] ||
+              'form > fieldset > legend[data-gn-slide-toggle]',
+              event = attr['event'] || 'click';
+          element.on('click', function() {
+            $(selector).each(function(idx, elem) {
+              $(elem).trigger(event);
+            });
+          });
+        }
+      };
+    }
+  ]);
+
+  /**
+   * @ngdoc directive
    * @name gn_utility.directive:gnDirectoryEntryPicker
    * @function
    *
@@ -800,6 +836,9 @@
       }
     }
   });
+  module.filter('encodeURIComponent', function() {
+    return window.encodeURIComponent;
+  });
   module.directive('gnJsonText', function() {
     return {
       restrict: 'A',
@@ -833,23 +872,22 @@
       link: function(scope, element, attr, ngModel) {
 
         element.bind('click', function() {
-          var md = scope.$eval(attr['gnImgModal']);
-          var imgs = md.getThumbnails();
-          var img = imgs.big || imgs.small;
-
+          var img = scope.$eval(attr['gnImgModal']);
           if (img) {
+            var label = (img.label || img.title || '');
+            var labelDiv =
+                '<div class="gn-img-background">' +
+                '  <div class="gn-img-thumbnail-caption">' + label + '</div>' +
+                '</div>';
             var modalElt = angular.element('' +
                 '<div class="modal fade in">' +
-                '<div class="modal-dialog in">' +
-                '  <button type=button class="btn btn-default ' +
-                'gn-btn-modal-img">&times</button>' +
-                '    <img src="' + img + '">' +
+                '<div class="modal-dialog gn-img-modal in">' +
+                '  <button type=button class="btn btn-link gn-btn-modal-img">' +
+                '<i class="fa fa-times text-danger"/></button>' +
+                '  <img src="' + (img.url || img.id) + '"/>' +
+                (label != '' ? labelDiv : '') +
                 '</div>' +
                 '</div>');
-            modalElt.find('img').on('load', function() {
-              var w = this.clientWidth;
-              modalElt.find('.modal-dialog').css('width', w + 'px');
-            });
 
             $(document.body).append(modalElt);
             modalElt.modal();

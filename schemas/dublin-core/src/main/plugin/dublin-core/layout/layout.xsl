@@ -92,10 +92,11 @@
 
   <!-- Hide from the editor the dct:references pointing to uploaded files -->
   <xsl:template mode="mode-dublin-core" priority="101"
-                match="dct:references[
-                          starts-with(., 'http') or
+                match="*[(name(.) = 'dct:references' or
+                          name(.) = 'dc:relation') and
+                         (starts-with(., 'http') or
                           contains(. , 'resources.get') or
-                          contains(., 'file.disclaimer')]" />
+                          contains(., 'file.disclaimer'))]" />
 
 
   <!-- the other elements in DC. -->
@@ -166,7 +167,7 @@
 
 
   <!-- Readonly elements -->
-  <xsl:template mode="mode-dublin-core" priority="200" match="dc:identifier">
+  <xsl:template mode="mode-dublin-core" priority="200" match="dc:identifier|dct:modified">
     
     <xsl:call-template name="render-element">
       <xsl:with-param name="label" select="gn-fn-metadata:getLabel($schema, name(), $labels)/label"/>

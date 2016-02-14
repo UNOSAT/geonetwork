@@ -51,10 +51,21 @@
              scope.thesaurusKey = null;
              scope.snippet = null;
              scope.snippetRef = null;
-             var restrictTo =
-                 scope.include ? (
-                     scope.include.indexOf(',') !== -1 ?
-                      scope.include.split(',') : [scope.include]) : [];
+             var restrictionList = scope.include ? (
+             scope.include.indexOf(',') !== -1 ?
+                 scope.include.split(',') : [scope.include]) : [];
+
+             var includeThesaurus = [];
+             var excludeThesaurus = [];
+             for (var i = 0; i < restrictionList.length; i++) {
+               var t = restrictionList[i];
+               if (t.indexOf('-') === 0) {
+                 excludeThesaurus.push(t.substring(1));
+               } else {
+                 includeThesaurus.push(t);
+               }
+             }
+
 
              scope.allowFreeTextKeywords =
              (attrs.allowFreeTextKeywords === undefined) ||
@@ -64,18 +75,17 @@
              // in the record ?
              gnThesaurusService.getAll().then(
              function(listOfThesaurus) {
-               // TODO: Sort them
-               if (restrictTo.length > 0) {
-                 var filteredList = [];
-                 angular.forEach(listOfThesaurus, function(thesaurus) {
-                   if ($.inArray(thesaurus.getKey(), restrictTo) !== -1) {
-                     filteredList.push(thesaurus);
-                   }
-                 });
-                 scope.thesaurus = filteredList;
-               } else {
-                 scope.thesaurus = listOfThesaurus;
-               }
+               scope.thesaurus = [];
+               angular.forEach(listOfThesaurus, function(thesaurus) {
+                 if (excludeThesaurus.length > 0 &&
+                 $.inArray(thesaurus.getKey(), excludeThesaurus) !== -1) {
+
+                 } else if (includeThesaurus.length == 0 || (
+                 includeThesaurus.length > 0 &&
+                 $.inArray(thesaurus.getKey(), includeThesaurus) !== -1)) {
+                   scope.thesaurus.push(thesaurus);
+                 }
+               });
              });
 
              scope.add = function() {
@@ -134,10 +144,10 @@
    * TODO: explain transformation
    */
   module.directive('gnKeywordSelector',
-      ['$timeout', '$translate',
+      ['$compile', '$timeout', '$translate',
        'gnThesaurusService', 'gnEditor',
        'Keyword',
-       function($timeout, $translate,
+       function($compile, $timeout, $translate,
                gnThesaurusService, gnEditor, Keyword) {
 
          return {
@@ -161,6 +171,8 @@
            templateUrl: '../../catalog/components/thesaurus/' +
            'partials/keywordselector.html',
            link: function(scope, element, attrs) {
+             $compile(element.contents())(scope);
+             // pick up skos browser directive with compiler
 
              scope.max = gnThesaurusService.DEFAULT_NUMBER_OF_RESULTS;
              scope.filter = null;
@@ -269,6 +281,29 @@
                scope.$watch('filter', search);
              };
 
+             // Used by skos-browser to add keywords from the
+             // skos hierarchy to the current list of tags
+             scope.addThesaurusConcept = function(uri, text) {
+                var textArr = [];
+                textArr['#text'] = text;
+                var k = {
+                  uri: uri,
+                  value: textArr
+                };
+                var keyword = new Keyword(k);
+
+                var thisId = '#tagsinput_' + scope.elementRef;
+                // Add to tags
+                $(thisId).tagsinput('add', keyword);
+
+                // Update selection and snippet
+                scope.selected = $(thisId).tagsinput('items');
+                getSnippet(); // FIXME: should not be necessary
+               // as there is a watch on it ?
+
+                // Clear typeahead
+                $(thisId).tagsinput('input').typeahead('setQuery', '');
+             };
 
              // Init typeahead and tag input
              var initTagsInput = function() {
@@ -411,6 +446,10 @@
 
              if (scope.thesaurusKey) {
                init();
+               gnThesaurusService.getTopConcept(scope.thesaurusKey).then(
+               function(c) {
+                 scope.concept = c;
+               });
              }
            }
          };

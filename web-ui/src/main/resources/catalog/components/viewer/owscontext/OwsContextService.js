@@ -93,7 +93,7 @@
         gnViewerSettings.initialExtent = extent;
 
         // $timeout used to avoid map no rendered (eg: null size)
-        $timeout(function(){
+        $timeout(function() {
           map.getView().fit(extent, map.getSize(), { nearest: true });
         }, 0, false);
 
@@ -141,7 +141,7 @@
 
         // if there's at least one valid bg layer in the context use them for
         // the application otherwise use the defaults from config
-        $q.all(promises).finally (function() {
+        $q.all(promises).then (function() {
           if (bgLayers.length > 0) {
             // make sure we remove any existing bglayer
             if (map.getLayers().getLength() > 0) {
@@ -371,7 +371,7 @@
                     olL.set('bgIdx', bgIdx);
                   }
                   return olL;
-                });
+                }).catch(function(){});
           }
         }
         else { // we suppose it's WMS
@@ -387,7 +387,7 @@
                   olL.set('label', layer.title);
                 }
                 return olL;
-              });
+              }).catch(function(){});
         }
       };
     }

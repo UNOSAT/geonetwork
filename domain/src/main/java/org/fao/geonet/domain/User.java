@@ -5,6 +5,8 @@ import org.fao.geonet.entitylistener.UserEntityListenerManager;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.keygen.KeyGenerators;
+import org.springframework.security.crypto.keygen.StringKeyGenerator;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -39,6 +41,7 @@ public class User extends GeonetEntity implements UserDetails {
     private Profile _profile = Profile.RegisteredUser;
     private UserSecurity _security = new UserSecurity();
     private String _lastLoginDate;
+    private Boolean _isEnabled;
 
     /**
      * Get the userid.   This is a generated value and as such new instances should not have this set as it will simply be ignored
@@ -367,10 +370,17 @@ public class User extends GeonetEntity implements UserDetails {
         return true;
     }
 
-    @Override
-    @Transient
+    @Column
     public boolean isEnabled() {
-        return true;
+        if (_isEnabled == null) {
+            this._isEnabled = true;
+        }
+        return _isEnabled;
+    }
+
+    public User setEnabled(Boolean enabled) {
+        this._isEnabled = enabled;
+        return this;
     }
 
     /**
@@ -455,6 +465,12 @@ public class User extends GeonetEntity implements UserDetails {
         if (_lastLoginDate != null ? !_lastLoginDate.equals(user._lastLoginDate) : user._lastLoginDate != null) return false;
 
         return true;
+    }
+
+
+    public static String getRandomPassword() {
+        StringKeyGenerator generator = KeyGenerators.string();
+        return generator.generateKey().substring(0, 8);
     }
 
     @Override

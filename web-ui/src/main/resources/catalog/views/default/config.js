@@ -25,23 +25,15 @@
             gnMap.createLayerForType('osm')
           ];
 
-          viewerSettings.servicesUrl = {
-            wms: [{
-              name: 'Ifremer - Biologie',
-              url: 'http://www.ifremer.fr/services/wms/biologie?'
-            }, {
-              name: 'Ifremer - Océanographie physique',
-              url: 'http://www.ifremer.fr/services/wms/oceanographie_physique?service=WMS&request=GetCapabilities'
-            }],
+          viewerSettings.bingKey = 'AnElW2Zqi4fI-9cYx1LHiQfokQ9GrNzcjOh_' +
+              'p_0hkO1yo78ba8zTLARcLBIf8H6D';
 
-            wmts: [{
-              name: 'Arcgisonline - Relief ombré',
-              url: 'http://services.arcgisonline.com/ArcGIS/rest/services/World_Shaded_Relief/MapServer/WMTS/1.0.0/WMTSCapabilities.xml?REQUEST=GetCapabilities&service=WMTS'
-            }, {
-              name: 'Arcgisonline - World Imagery',
-              url: 'http://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/WMTS/1.0.0/WMTSCapabilities.xml?REQUEST=GetCapabilities&service=WMTS'
-            }]
-          };
+          viewerSettings.servicesUrl =
+            viewerSettings.mapConfig.listOfServices || {};
+
+          // WMS settings
+          viewerSettings.singleTileWMS = true;
+
           var bboxStyle = new ol.style.Style({
             stroke: new ol.style.Stroke({
               color: 'rgba(255,0,0,1)',
