@@ -11,7 +11,7 @@
   <i ng-if="::!layertreeCtrl.isRoot && layertreeCtrl.node.children && layertreeCtrl.depth > 1" class="fa fa-plus-square"></i>
   {{layertreeCtrl.node.name | translate}}
 </a>
-<div ng-if="::!layertreeCtrl.isRoot && !layertreeCtrl.node.children">
+<div ng-if="::!layertreeCtrl.isRoot && !layertreeCtrl.node.children" data-ng-class="{error: layertreeCtrl.layer.get('errors').length}">
   <un-layerinfo-btn layer="::layertreeCtrl.layer"></un-layerinfo-btn>
   <a href="" ng-click="catalogCtrl.toggle(layertreeCtrl.node)">
     <i class="fa" ng-class="(layertreeCtrl.getSetActive()) ? 'fa-check-square' : 'fa-square'"></i>

@@ -139,8 +139,9 @@
 
             fo.getSource().clear();
             var layers = map.getLayers().getArray().filter(function(layer) {
-              return layer.getSource() instanceof ol.source.ImageWMS ||
-                  layer.getSource() instanceof ol.source.TileWMS;
+              return (layer.getSource() instanceof ol.source.ImageWMS ||
+                  layer.getSource() instanceof ol.source.TileWMS) &&
+                  !layer.get('no_gfi');
             });
 
             layers.forEach(function(layer) {

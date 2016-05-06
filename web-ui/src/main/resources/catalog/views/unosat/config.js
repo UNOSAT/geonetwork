@@ -34,11 +34,8 @@ if(!goog) {
 
           viewerSettings.servicesUrl = {
             wms: [{
-              name: 'Ifremer - Biologie',
-              url: 'http://www.ifremer.fr/services/wms/biologie?'
-            }, {
-              name: 'Ifremer - Océanographie physique',
-              url: 'http://www.ifremer.fr/services/wms/oceanographie_physique?service=WMS&request=GetCapabilities'
+              name: 'ResEau Geoportal',
+              url: 'http://http://geoportal.reseau-tchad.org/geoserver/wms?'
             }],
 
             wmts: [{
@@ -107,6 +104,11 @@ if(!goog) {
 
           /** Facets configuration */
           searchSettings.facetsSummaryType = 'hits';
+
+          viewerSettings.bingKey = 'AnElW2Zqi4fI-9cYx1LHiQfokQ9GrNzcjOh_' +
+              'p_0hkO1yo78ba8zTLARcLBIf8H6D';
+
+          viewerSettings.singleTileWMS = true;
 
           /*
              * Hits per page combo values configuration. The first one is the

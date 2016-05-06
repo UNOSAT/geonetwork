@@ -6,6 +6,13 @@ un-catalog {
 
   font-size: 13px;
 
+  div.error {
+    a, a:hover {
+      color: grey !important;
+      text-decoration: line-through;
+    }
+  }
+
   ul.catalog {
     overflow-y: auto;
     height: 100%;
@@ -59,9 +66,11 @@ un-catalog {
           padding-bottom: 0;
         }
 
-        > ul > li > a {
-          padding: 3px 5px 3px 9px;
-          background-color: beige;
+        > ul > li {
+          > a {
+            padding: 3px 5px 3px 9px;
+            background-color: beige;
+          }
         }
       }
 

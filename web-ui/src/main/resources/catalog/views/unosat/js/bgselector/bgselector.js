@@ -48,10 +48,11 @@
 
     this.setLayer(bgLayers[1]);
 
-    var adminLimitLayer = gnMap.createOlWMS(this.map, {LAYERS: 'unosat:fond_carte'}, {
-      url: 'http://localhost:8082/geoserver/wms?',
+    var adminLimitLayer = gnMap.createOlWMS(this.map, {LAYERS: 'unosat:AFR_Admin0_P', STYLES: 'unosat:AFR_fond_carte'}, {
+      url: 'http://geoportal.reseau-tchad.org/geoserver/wms?',
       label: "Limites administratives"
     });
+    adminLimitLayer.set('no_gfi', true);
     this.map.addLayer(adminLimitLayer);
   };
 

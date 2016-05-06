@@ -127,7 +127,7 @@
 
       <!--Print form panel-->
       <div id="printpanel" data-ng-show="mainCtrl.printOpen">
-        <h2 translate>print</h2>
+        <h2 translate>Impression</h2>
         <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
           ✕
         </button>
@@ -166,7 +166,7 @@
       <button class="un-tool-btn btn" ngeo-btn ng-model="mainCtrl.printOpen"><i class="fa fa-print"></i><span role="tooltip">Impression</span></button>
       <button class="un-tool-btn btn" ngeo-btn ng-model="mainCtrl.mInteraction.active"><i class="icon measure"></i><span role="tooltip">Mesure</span></button>
       <button class="un-tool-btn btn" ngeo-btn ng-model="mainCtrl.drawOpen"><i class="fa fa-pencil"></i><span role="tooltip">Annotations</span></button>
-      <button class="un-tool-btn btn" ngeo-btn ng-model="mainCtrl.legendOpen"><i class="fa fa-list"></i><span role="tooltip">Légendes</span></button>
+      <button class="un-tool-btn btn" ng-click="mainCtrl.openLegend()"><i class="fa fa-list"></i><span role="tooltip">Légendes</span></button>
     </div>
 
     <div id="measurepanel" data-ng-show="mainCtrl.mInteraction.active">

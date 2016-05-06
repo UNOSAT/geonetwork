@@ -35,7 +35,7 @@
           format: coordinatesFormat
         }, {
           value: 'EPSG:4326',
-          label: 'WGS 84 (lat/lon)',
+          label: 'WGS 84 (DMS/DD)',
           format: function(coordinates) {
             return ol.coordinate.toStringHDMS(coordinates) +
                 ' (' + ol.coordinate.format(coordinates, '{y}, {x}', 5) + ')';

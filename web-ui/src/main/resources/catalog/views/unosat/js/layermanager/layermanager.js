@@ -53,7 +53,7 @@
   };
 
   gn.LayermanagerController.prototype.zoomToExtent = function(layer) {
-      this['map'].getView().fitExtent(layer.get('cextent'),
+      this['map'].getView().fit(layer.get('cextent'),
           this['map'].getSize());
   };
 

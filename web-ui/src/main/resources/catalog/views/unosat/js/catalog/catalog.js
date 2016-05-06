@@ -70,6 +70,15 @@
         {'LAYERS': node.layers},
         {label: node.name, url: node.url, metadata: node.metadataUrl});
 
+    this.gnMap_.addWmsFromScratch(this.map, node.url, node.layers, true).then(
+        function(olLayer) {
+      layer.setSource(olLayer.getSource());
+          layer.setProperties(olLayer.getProperties());
+    }, function() {
+          layer.set('errors', ['not found']);
+        });
+
+
     layer.set('cextent', node.cextent);
     layerCache_[layerCacheKey] = layer;
     return layer;

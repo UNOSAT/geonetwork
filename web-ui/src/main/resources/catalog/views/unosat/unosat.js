@@ -155,6 +155,7 @@
   };
 
   gn.MainController.prototype.openLegend = function() {
+    if($('.un-legendpanel').length > 0) return;
     this.gnPopup.create({
       title: "Légendes",
       content: '<div gn-legend-panel="::mainCtrl.map" class="info-content"/>',

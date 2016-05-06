@@ -491,7 +491,7 @@
               visible: options.visible,
               source: source,
               legend: options.legend || gnUrlUtils.append(options.url,
-                  'request=GetLegendGraphic&format=image/png&service=WMS&LAYER=' + layerParams.LAYERS),
+                  'request=GetLegendGraphic&SCALE=6539&format=image/png&service=WMS&LAYER=' + layerParams.LAYERS),
               attribution: options.attribution,
               attributionUrl: options.attributionUrl,
               label: options.label,
@@ -638,7 +638,8 @@
                 label: getCapLayer.Title,
                 attribution: attribution,
                 attributionUrl: attributionUrl,
-                legend: legend,
+                // specific unosat
+                legend: legend += '&SCALE=6539',
                 group: getCapLayer.group,
                 metadata: metadata,
                 extent: gnOwsCapabilities.getLayerExtentFromGetCap(map,
@@ -963,27 +964,8 @@
                   // information only. A tile error loading
                   // may be reported after the layer is added
                   // to the map and will give more details.
-                  var o = {
-                    url: url,
-                    name: name,
-                    msg: 'layerNotInCap'
-                  }, errors = [];
-                  olL = $this.addWmsToMap(map, o);
-
-                  if (!angular.isArray(olL.get('errors'))) {
-                    olL.set('errors', []);
-                  }
-                  var errormsg = $translate('layerNotfoundInCapability', {
-                    layer: name,
-                    url: url
-                  });
-                  errors.push(errormsg);
-                  console.warn(errormsg);
-
-                  olL.get('errors').push(errors);
-
-                  gnWmsQueue.error(o);
-                  defer.reject(o);
+                  console.warn('Couche absente: ' + name);
+                  defer.reject();
                 } else {
                   olL = $this.createOlWMSFromCap(map, capL, url);
 
@@ -1487,6 +1469,8 @@
 
             defer.resolve(layer);
 
+            // specific unosat
+/*
             if (layer.get('metadataUrl')) {
 
               return gnSearchManagerService.gnSearch({
@@ -1500,6 +1484,7 @@
                 return layer;
               });
             }
+ */
             return defer.promise;
           }
 
