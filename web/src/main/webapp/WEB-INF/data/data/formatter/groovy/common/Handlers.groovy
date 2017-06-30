@@ -3,19 +3,19 @@ import jeeves.server.context.ServiceContext
 import org.fao.geonet.constants.Geonet
 import org.fao.geonet.guiservices.metadata.GetRelated
 import org.fao.geonet.kernel.GeonetworkDataDirectory
-import org.fao.geonet.services.metadata.format.FormatType
-import org.fao.geonet.services.metadata.format.groovy.Environment
-import org.fao.geonet.services.metadata.format.groovy.util.AssociatedLink
-import org.fao.geonet.services.metadata.format.groovy.util.Direction
-import org.fao.geonet.services.metadata.format.groovy.util.LinkBlock
-import org.fao.geonet.services.metadata.format.groovy.util.LinkType
-import org.fao.geonet.services.metadata.format.groovy.util.NavBarItem
+import org.fao.geonet.api.records.formatters.FormatType
+import org.fao.geonet.api.records.formatters.groovy.Environment
+import org.fao.geonet.api.records.formatters.groovy.util.AssociatedLink
+import org.fao.geonet.api.records.formatters.groovy.util.Direction
+import org.fao.geonet.api.records.formatters.groovy.util.LinkBlock
+import org.fao.geonet.api.records.formatters.groovy.util.LinkType
+import org.fao.geonet.api.records.formatters.groovy.util.NavBarItem
 import org.fao.geonet.utils.Xml
 import org.jdom.Element
 
 public class Handlers {
-    private org.fao.geonet.services.metadata.format.groovy.Handlers handlers;
-    private org.fao.geonet.services.metadata.format.groovy.Functions f
+    private org.fao.geonet.api.records.formatters.groovy.Handlers handlers;
+    private org.fao.geonet.api.records.formatters.groovy.Functions f
     private Environment env
 
     common.Matchers matchers
@@ -99,15 +99,16 @@ public class Handlers {
     def htmlOrXmlStart = {
         if (func.isHtmlOutput()) {
             def minimize = ''
+            def baseUrl = func.f.fparams.url;
             if (env.param("debug").toBool()) {
                 minimize = '?minimize=false'
             }
             String cssLinks = """
-    <link rel="stylesheet" href="../../static/gn_bootstrap.css$minimize"/>
-    <link rel="stylesheet" href="../../static/gn_metadata.css$minimize"/>""";
+    <link rel="stylesheet" href="$baseUrl../../static/gn_bootstrap.css$minimize"/>
+    <link rel="stylesheet" href="$baseUrl../../static/gn_metadata.css$minimize"/>""";
 
             if (func.isPDFOutput()) {
-                cssLinks = """<link rel="stylesheet" href="../../static/gn_metadata_pdf.css$minimize"/>"""
+                cssLinks = """<link rel="stylesheet" href="$baseUrl../../static/gn_metadata_pdf.css$minimize"/>"""
             }
             return """
 <!DOCTYPE html>
@@ -115,8 +116,8 @@ public class Handlers {
 <head lang="en">
     <meta charset="UTF-8"/>
     $cssLinks
-    <script src="../../static/lib.js$minimize"></script>
-    <script src="../../static/gn_formatter_lib.js$minimize"></script>
+    <script src="$baseUrl../../static/lib.js$minimize"></script>
+    <script src="$baseUrl../../static/gn_formatter_lib.js$minimize"></script>
 </head>
 <body>
 """

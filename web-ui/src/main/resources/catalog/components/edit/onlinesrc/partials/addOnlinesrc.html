@@ -6,6 +6,7 @@
             class="form-horizontal"
             role="form"
             method="POST">
+              <input type="hidden" name="_csrf" value="{{csrf}}"/>
         <div class="onlinesrc-container">
 
           <div data-ng-show="config.types.length > 1 && config.display == 'radio'">
@@ -13,6 +14,7 @@
                    data-ng-repeat="c in config.types">
               <input type="radio"
                      name="linkType"
+                     data-ng-disabled="isEditing"
                      data-ng-model="params.linkType"
                      data-ng-value="c">
               <i class="{{c.icon}}"/>&nbsp;
@@ -26,8 +28,10 @@
               <span data-translate="">onlineChooseDocType</span>
             </label>
             <div class="col-sm-10">
-              <select data-ng-options="option as (option.label | translate) group by (option.group  | translate) for option in config.types"
-                      data-ng-model="params.linkType"/>
+              <select
+                data-ng-options="option as (option.label | translate) group by (option.group  | translate) for option in config.types"
+                data-ng-disabled="isEditing"
+                data-ng-model="params.linkType"/>
             </div>
           </div>
 
@@ -68,19 +72,33 @@
           </div>
 
           <!-- URL text field -->
-          <div class="form-group"
-               data-ng-class="gnAddLink.url.$valid ? '' : 'has-error'">
+          <div class="form-group gn-required"
+               data-ng-class="{'has-error' : !isFieldMultilingual('url') ? !gnAddLink.url.$valid : false}">
             <label for="onlinesrcUrl"
                    class="col-sm-2 control-label"
                    data-translate="">url</label>
-            <div class="col-sm-10">
+
+            <div class="col-sm-10"
+                 data-ng-if="isFieldMultilingual('url')"
+                 gn-multilingual-field="{{mdOtherLanguages}}"
+                 current-language="ctrl.urlCurLang"
+                 data-main-language="{{mdLang}}"
+                 expanded="false">
+              <input data-ng-repeat="(key, val) in mdLangs"
+                     class="form-control input-sm"
+                     lang="{{val}}"
+                     ng-model-options="{debounce: 500}"
+                     data-ng-model="params.url[val]">
+            </div>
+
+            <div class="col-sm-10" data-ng-if="!isFieldMultilingual('url')">
               <div data-ng-class="{'input-group': OGCProtocol != null}">
                 <input data-ng-model="params.url"
                        data-ng-model-options="{debounce: 500}"
                        required=""
                        name="url"
                        class="form-control"
-                       type="url"
+                       type="text"
                        data-ng-blur="loadCurrentLink()"
                        id="onlinesrcUrl"
                        placeholder="http://">
@@ -90,7 +108,7 @@
                           class="btn btn-warning"
                           title="{{'loadCapabilitiesLayers' | translate}}"
                           data-gn-click-and-spin="loadCurrentLink(true)">
-                    <i class="fa fa-refresh" />
+                    <i class="fa fa-refresh"/>
                   </button>
                 </span>
               </div>
@@ -101,11 +119,11 @@
 
 
           <div class="form-group"
-               data-ng-show="isImage">
+               data-ng-if="isImage">
             <label class="col-sm-2 control-label"
                    data-translate="">overview</label>
             <div class="col-sm-10">
-              <img ng-src="{{params.url}}"
+              <img ng-src="{{isFieldMultilingual('url') ? params.url[ctrl.urlCurLang] : params.url}}"
                    class="img-thumbnail">
             </div>
           </div>
@@ -114,7 +132,7 @@
           <!-- Layers grid directive -->
           <div data-gn-layers-grid
                data-ng-show="OGCProtocol != null"
-               data-gn-selection-mode="multiple"
+               data-gn-selection-mode="isEditing ? 'single' : 'multiple'"
                data-layers="layers"
                data-selection="params.selectedLayers">
           </div>
@@ -122,12 +140,12 @@
           <!-- Name text Field -->
           <div class="form-group"
                data-ng-show="params.linkType.fields.name &&
-                             !params.linkType.fields.name.hidden">
+                             !params.linkType.fields.name.hidden && !(OGCProtocol && !isEditing)">
             <label for="onlinesrcName"
                    class="col-sm-2 control-label"
                    data-translate="">onlineResourceName</label>
             <div class="col-sm-10"
-                 data-ng-if="!isMdMultilingual || (isMdMultilingual && OGCProtocol != null)">
+                 data-ng-if="!isFieldMultilingual('name')">
               <input ng-model="params.name"
                      name="name"
                      type="text"
@@ -135,36 +153,36 @@
                      placeholder="Name">
             </div>
             <div class="col-sm-10"
-                 data-ng-if="isMdMultilingual && OGCProtocol == null"
+                 data-ng-if="isFieldMultilingual('name')"
                  data-gn-multilingual-field="{{mdOtherLanguages}}"
                  data-main-language="{{mdLang}}"
                  expanded="false">
               <input data-ng-repeat="(key, val) in mdLangs"
                      class="form-control input-sm"
                      lang="{{val}}"
-                     data-ng-model="params.name[val]" >
+                     data-ng-model="params.name[val]">
             </div>
           </div>
 
           <!-- Description Text area -->
           <div class="form-group"
                data-ng-show="params.linkType.fields.desc &&
-                             !params.linkType.fields.desc.hidden">
+                             !params.linkType.fields.desc.hidden && !(OGCProtocol && !isEditing)">
             <label for="onlinesrcDescr"
                    class="col-sm-2 control-label"
                    data-translate="">Description</label>
             <div class="col-sm-10"
-                 data-ng-if="!isMdMultilingual || (isMdMultilingual && OGCProtocol != null)">
+                 data-ng-if="!isFieldMultilingual('desc')">
               <textarea rows="3"
                         data-gn-autogrow=""
                         data-ng-model="params.desc"
                         class="form-control input-sm"
                         id="onlinesrcDescr"
                         placeholder="Description"
-                        name="description" />
+                        name="description"/>
             </div>
             <div class="col-sm-10"
-                 data-ng-if="isMdMultilingual && OGCProtocol == null"
+                 data-ng-if="isFieldMultilingual('desc')"
                  gn-multilingual-field="{{mdOtherLanguages}}"
                  data-main-language="{{mdLang}}"
                  expanded="false">
@@ -174,7 +192,7 @@
                         data-ng-model="params.desc[val]"
                         class="form-control input-sm"
                         placeholder="Description"
-                        name="description" />
+                        name="description"/>
             </div>
           </div>
 
@@ -201,11 +219,12 @@
       <div class="panel panel-default"
            data-ng-show="params.linkType.sources.filestore">
         <div class="panel-heading"
-             data-translate>fileStore</div>
+             data-translate>fileStore
+        </div>
         <div class="panel-body">
           <div data-gn-file-store="gnCurrentEdit.uuid"
-           data-current="resource"
-           data-filter="params.linkType.fileStoreFilter || ''"/>
+               data-current="resource"
+               data-filter="params.linkType.fileStoreFilter || ''"/>
         </div>
       </div>
 
@@ -217,9 +236,10 @@
         <div class="panel-body">
           <form class="form-horizontal" role="form"
                 data-ng-search-form="">
+              <input type="hidden" name="_csrf" value="{{csrf}}"/>
             <div class="input-group">
               <span class="input-group-addon">
-                <i class="fa fa-search" />
+                <i class="fa fa-search"/>
               </span>
               <input class="form-control"
                      data-ng-change="triggerSearch()"
@@ -240,7 +260,7 @@
             <div data-ng-show="metadataLinks.length > 0">
               <h5>
                 <span data-translate=""
-                  data-translate-values="{count: '{{metadataLinks.length}}'}">serviceContainsManyUrl</span>
+                      data-translate-values="{count: metadataLinks.length}">serviceContainsManyUrl</span>
                 <strong>{{metadataTitle}}</strong>
               </h5>
               <ul class="list-group">
@@ -259,12 +279,14 @@
       <div class="panel panel-default"
            data-ng-show="params.linkType.sources.thumbnailMaker">
         <div class="panel-heading"
-             data-translate="">createAThumbnail</div>
+             data-translate="">createAThumbnail
+        </div>
         <div class="panel-body">
           <div class="form-group gn-thumbnail-maker-panel">
             <div class="alert alert-warning"
                  data-ng-show="layers == undefined"
-                 data-translate="">noLayersForThumbnail</div>
+                 data-translate="">noLayersForThumbnail
+            </div>
             <div data-ng-hide="layers == undefined">
             <textarea class="form-control hidden"
                       name="config">{{jsonSpec}}</textarea>
@@ -297,16 +319,17 @@
 
   <div class="">
     <button type="button"
-            data-ng-disabled="!gnAddLink.$valid"
             class="btn navbar-btn"
             data-ng-class="gnAddLink.$valid && !isUrlOk ? 'btn-warning' : 'btn-success'"
             data-gn-click-and-spin="addOnlinesrc()">
-      <i class="fa gn-icon-onlinesrc" />
+      <i class="fa gn-icon-onlinesrc"/>
       <i class="icon-external-link"></i>&nbsp;
-      <span data-ng-show="gnAddLink.$valid && isUrlOk"
-            data-translate="">addOnlinesrc</span>
-      <span data-ng-show="gnAddLink.$valid && !isUrlOk"
-            data-translate="">addLinkAnyway</span>
+      <span data-ng-show="gnAddLink.$valid && isUrlOk">
+        {{((isEditing ? 'update' : 'add') + 'Onlinesrc') | translate}}
+      </span>
+      <span data-ng-show="gnAddLink.$valid && !isUrlOk">
+        {{((isEditing ? 'update' : 'add') + 'LinkAnyway') | translate}}
+      </span>
     </button>
     <div data-gn-need-help="user-guide/associating-resources/linking-documents.html"
          class="pull-right"></div>
@@ -316,9 +339,9 @@
       <span data-translate="">areYouSureToAddALinkWithError</span>
       <a class="btn btn-link"
          target="_blank"
-         data-ng-href="{{params.url}}"
+         data-ng-href="params.url[ctrl.urlCurLang]"
          data-ng-show="gnAddLink.$valid && !isUrlOk">
-        {{params.url}}
+        {{params.url[ctrl.urlCurLang]}}
       </a>
     </div>
   </div>

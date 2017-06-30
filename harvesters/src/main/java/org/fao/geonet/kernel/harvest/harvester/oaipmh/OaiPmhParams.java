@@ -33,123 +33,132 @@ import java.util.ArrayList;
 
 //=============================================================================
 
-public class OaiPmhParams extends AbstractParams
-{
-	//--------------------------------------------------------------------------
-	//---
-	//--- Constructor
-	//---
-	//--------------------------------------------------------------------------
+public class OaiPmhParams extends AbstractParams {
+    //--------------------------------------------------------------------------
+    //---
+    //--- Constructor
+    //---
+    //--------------------------------------------------------------------------
 
-	public OaiPmhParams(DataManager dm)
-	{
-		super(dm);
-	}
+    public String url;
 
-	//---------------------------------------------------------------------------
-	//---
-	//--- Create : called when a new entry must be added. Reads values from the
-	//---          provided entry, providing default values
-	//---
-	//---------------------------------------------------------------------------
+    /**
+     * The filter is a process (see schema/process folder) which depends on the schema.
+     * It could be composed of parameter which will be sent to XSL transformation using
+     * the following syntax :
+     * <pre>
+     * anonymizer?protocol=MYLOCALNETWORK:FILEPATH&email=gis@organisation.org&thesaurus=MYORGONLYTHEASURUS
+     * </pre>
+     */
+    public String  xslfilter;
 
-	public void create(Element node) throws BadInputEx
-	{
-		super.create(node);
+    //---------------------------------------------------------------------------
+    //---
+    //--- Create : called when a new entry must be added. Reads values from the
+    //---          provided entry, providing default values
+    //---
+    //---------------------------------------------------------------------------
+    public String icon;
 
-		Element site     = node.getChild("site");
-		Element searches = node.getChild("searches");
+    //---------------------------------------------------------------------------
+    //---
+    //--- Update : called when an entry has changed and variables must be updated
+    //---
+    //---------------------------------------------------------------------------
+    private ArrayList<Search> alSearches = new ArrayList<Search>();
 
-		url      = Util.getParam(site, "url",  "");
-		icon     = Util.getParam(site, "icon", "");
+    //---------------------------------------------------------------------------
+    //---
+    //--- Other API methods
+    //---
+    //---------------------------------------------------------------------------
 
-		addSearches(searches);
-	}
+    public OaiPmhParams(DataManager dm) {
+        super(dm);
+    }
 
-	//---------------------------------------------------------------------------
-	//---
-	//--- Update : called when an entry has changed and variables must be updated
-	//---
-	//---------------------------------------------------------------------------
+    //---------------------------------------------------------------------------
 
-	public void update(Element node) throws BadInputEx
-	{
-		super.update(node);
+    public void create(Element node) throws BadInputEx {
+        super.create(node);
 
-		Element site     = node.getChild("site");
-		Element searches = node.getChild("searches");
+        Element site = node.getChild("site");
+        Element searches = node.getChild("searches");
 
-		url      = Util.getParam(site,  "url",  url);
-		icon     = Util.getParam(site,  "icon", icon);
+        url = Util.getParam(site, "url", "");
+        icon = Util.getParam(site, "icon", "");
+        xslfilter = Util.getParam(site, "xslfilter", "");
 
-		//--- if some search queries are given, we drop the previous ones and
-		//--- set these new ones
+        addSearches(searches);
+    }
 
-		if (searches != null)
-			addSearches(searches);
-	}
+    //---------------------------------------------------------------------------
 
-	//---------------------------------------------------------------------------
-	//---
-	//--- Other API methods
-	//---
-	//---------------------------------------------------------------------------
+    public void update(Element node) throws BadInputEx {
+        super.update(node);
 
-	public Iterable<Search> getSearches() { return alSearches; }
+        Element site = node.getChild("site");
+        Element searches = node.getChild("searches");
 
-	//---------------------------------------------------------------------------
+        url = Util.getParam(site, "url", url);
+        icon = Util.getParam(site, "icon", icon);
+        xslfilter = Util.getParam(site, "xslfilter", "");
 
-	public boolean isSearchEmpty() { return alSearches.isEmpty(); }
+        //--- if some search queries are given, we drop the previous ones and
+        //--- set these new ones
 
-	//---------------------------------------------------------------------------
+        if (searches != null)
+            addSearches(searches);
+    }
 
-	public OaiPmhParams copy()
-	{
-		OaiPmhParams copy = new OaiPmhParams(dm);
-		copyTo(copy);
+    //---------------------------------------------------------------------------
+    //---
+    //--- Private methods
+    //---
+    //---------------------------------------------------------------------------
 
-		copy.url  = url;
-		copy.icon = icon;
+    public Iterable<Search> getSearches() {
+        return alSearches;
+    }
 
-		copy.setValidate(getValidate());
+    //---------------------------------------------------------------------------
+    //---
+    //--- Variables
+    //---
+    //---------------------------------------------------------------------------
 
-		for (Search s : alSearches)
-			copy.alSearches.add(s.copy());
+    public boolean isSearchEmpty() {
+        return alSearches.isEmpty();
+    }
 
-		return copy;
-	}
+    public OaiPmhParams copy() {
+        OaiPmhParams copy = new OaiPmhParams(dm);
+        copyTo(copy);
 
-	//---------------------------------------------------------------------------
-	//---
-	//--- Private methods
-	//---
-	//---------------------------------------------------------------------------
+        copy.url = url;
+        copy.icon = icon;
+        copy.xslfilter = xslfilter;
 
-	private void addSearches(Element searches) throws BadInputEx
-	{
-		alSearches.clear();
+        copy.setValidate(getValidate());
 
-		if (searches == null)
-			return;
+        for (Search s : alSearches)
+            copy.alSearches.add(s.copy());
 
-		for (Object o : searches.getChildren("search"))
-		{
-			Element search = (Element) o;
+        return copy;
+    }
 
-			alSearches.add(new Search(search));
-		}
-	}
+    private void addSearches(Element searches) throws BadInputEx {
+        alSearches.clear();
 
-	//---------------------------------------------------------------------------
-	//---
-	//--- Variables
-	//---
-	//---------------------------------------------------------------------------
+        if (searches == null)
+            return;
 
-	public String url;
-	public String icon;
+        for (Object o : searches.getChildren("search")) {
+            Element search = (Element) o;
 
-	private ArrayList<Search> alSearches = new ArrayList<Search>();
+            alSearches.add(new Search(search));
+        }
+    }
 }
 
 //=============================================================================

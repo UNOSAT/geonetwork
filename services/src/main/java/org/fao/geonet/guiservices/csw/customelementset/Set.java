@@ -31,6 +31,7 @@ import org.fao.geonet.utils.Log;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -39,32 +40,25 @@ import java.util.List;
 
 /**
  * Save custom element sets.
- *
  */
 @Controller("admin.config.csw.customelementset.save")
 public class Set {
     /**
      * Saves custom element sets.
-     *
-     * @param xpathList
-     * @return
-     * @throws Exception
      */
 
-    @RequestMapping(value = "/{lang}/admin.config.csw.customelementset.save", produces = {
-            MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
-    public @ResponseBody
+    @RequestMapping(value = "/{lang}/admin.config.csw.customelementset.save",
+        method = {RequestMethod.POST, RequestMethod.PUT},
+        produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public
+    @ResponseBody
     OkResponse exec(@RequestParam("xpath") List<String> xpathList) throws Exception {
         saveCustomElementSets(xpathList);
         return new OkResponse();
-	}
+    }
 
     /**
-     *
      * Processes parameters and saves custom element sets in database.
-     *
-     * @param xpathList
-     * @throws Exception
      */
     private void saveCustomElementSets(List<String> xpathList) throws Exception {
         CustomElementSetRepository customElementSetRepository = ApplicationContextHolder.get().getBean(CustomElementSetRepository.class);
@@ -74,7 +68,7 @@ public class Set {
 
         customElementSetRepository.deleteAll();
 
-        for(String xpath : xpathList) {
+        for (String xpath : xpathList) {
             CustomElementSet customElementSet = new CustomElementSet();
             customElementSet.setXpath(xpath);
 

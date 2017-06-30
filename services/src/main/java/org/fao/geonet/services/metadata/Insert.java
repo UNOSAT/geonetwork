@@ -24,9 +24,11 @@
 package org.fao.geonet.services.metadata;
 
 import com.google.common.collect.Maps;
+
 import jeeves.constants.Jeeves;
 import jeeves.server.ServiceConfig;
 import jeeves.server.context.ServiceContext;
+
 import org.fao.geonet.GeonetContext;
 import org.fao.geonet.Util;
 import org.fao.geonet.constants.Geonet;
@@ -37,10 +39,12 @@ import org.fao.geonet.domain.MetadataType;
 import org.fao.geonet.exceptions.BadParameterEx;
 import org.fao.geonet.kernel.DataManager;
 import org.fao.geonet.kernel.mef.Importer;
+import org.fao.geonet.kernel.mef.MEFLib;
 import org.fao.geonet.kernel.setting.SettingManager;
 import org.fao.geonet.repository.MetadataRepository;
 import org.fao.geonet.repository.Updater;
 import org.fao.geonet.services.NotInReadOnlyModeService;
+import org.fao.geonet.utils.FilePathChecker;
 import org.fao.geonet.utils.Xml;
 import org.jdom.Element;
 
@@ -49,11 +53,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
 import javax.annotation.Nonnull;
 
 /**
  * Inserts a new metadata to the system (data is validated).
  */
+@Deprecated
 public class Insert extends NotInReadOnlyModeService {
     //--------------------------------------------------------------------------
     //---
@@ -95,14 +101,17 @@ public class Insert extends NotInReadOnlyModeService {
         Element xml = Xml.loadString(data, false);
 
         // Apply a stylesheet transformation if requested
-        if (!style.equals("_none_"))
+        if (!style.equals("_none_")) {
+            FilePathChecker.verify(style);
+
             xml = Xml.transform(xml, stylePath.resolve(style));
+        }
 
         String schema = Util.getParam(params, Params.SCHEMA, null);
         if (schema == null) {
             schema = dataMan.autodetectSchema(xml);
             if (schema == null) {
-            throw new BadParameterEx("Can't detect schema for metadata automatically.", "schema is unknown");
+                throw new BadParameterEx("Can't detect schema for metadata automatically.", "schema is unknown");
             }
         }
         if (validate) DataManager.validateMetadata(schema, xml, context);
@@ -120,7 +129,7 @@ public class Insert extends NotInReadOnlyModeService {
             }
         }
         String uuidAction = Util.getParam(params, Params.UUID_ACTION,
-                Params.NOTHING);
+            Params.NOTHING);
 
         String date = new ISODate().toString();
 
@@ -133,15 +142,15 @@ public class Insert extends NotInReadOnlyModeService {
 
         // Import record
         Map<String, String> sourceTranslations = Maps.newHashMap();
-        Importer.importRecord(uuid, uuidAction, md, schema, 0,
-                gc.getBean(SettingManager.class).getSiteId(), gc.getBean(SettingManager.class).getSiteName(),
-                sourceTranslations, context, id, date, date, group, metadataType);
+        Importer.importRecord(uuid, MEFLib.UuidAction.parse(uuidAction), md, schema, 0,
+            gc.getBean(SettingManager.class).getSiteId(), gc.getBean(SettingManager.class).getSiteName(),
+            sourceTranslations, context, id, date, date, group, metadataType);
 
         int iId = Integer.parseInt(id.get(0));
 
 
         // Set template
-		dm.setTemplate(iId, metadataType, null);
+        dm.setTemplate(iId, metadataType, null);
 
         dm.activateWorkflowIfConfigured(context, id.get(0), group);
 
@@ -159,7 +168,7 @@ public class Insert extends NotInReadOnlyModeService {
                     if (hasCategory) {
                         Element categs = new Element("categories");
                         categs.addContent((new Element("category")).setAttribute(
-                                "name", category));
+                            "name", category));
 
                         Importer.addCategoriesToMetadata(metadata, categs, context);
                     }
@@ -181,6 +190,7 @@ public class Insert extends NotInReadOnlyModeService {
 
         return response;
     }
+
     ;
 
 }

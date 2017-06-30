@@ -1,3 +1,26 @@
+/*
+ * Copyright (C) 2001-2016 Food and Agriculture Organization of the
+ * United Nations (FAO-UN), United Nations World Food Programme (WFP)
+ * and United Nations Environment Programme (UNEP)
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
+ *
+ * Contact: Jeroen Ticheler - FAO - Viale delle Terme di Caracalla 2,
+ * Rome - Italy. email: geonetwork@osgeo.org
+ */
+
 package org.fao.geonet.repository.specification;
 
 import org.fao.geonet.domain.Metadata;
@@ -36,9 +59,7 @@ import static org.fao.geonet.repository.specification.MetadataSpecs.isType;
 /**
  * Test for MetadataSpecs.
  * <p/>
- * User: Jesse
- * Date: 9/4/13
- * Time: 10:08 PM
+ * User: Jesse Date: 9/4/13 Time: 10:08 PM
  */
 public class MetadataSpecsTest extends AbstractSpringDataTest {
     @Autowired
@@ -103,17 +124,17 @@ public class MetadataSpecsTest extends AbstractSpringDataTest {
         final MetadataCategory cat4 = _categoryRepo.save(MetadataCategoryRepositoryTest.newMetadataCategory(_inc));
 
         final Metadata metadata = newMetadata(_inc);
-        metadata.getCategories().add(cat1);
-        metadata.getCategories().add(cat2);
+        metadata.getMetadataCategories().add(cat1);
+        metadata.getMetadataCategories().add(cat2);
         Metadata md1 = _repository.save(metadata);
 
         final Metadata metadata2 = newMetadata(_inc);
-        metadata2.getCategories().add(cat1);
-        metadata2.getCategories().add(cat3);
+        metadata2.getMetadataCategories().add(cat1);
+        metadata2.getMetadataCategories().add(cat3);
         Metadata md2 = _repository.save(metadata2);
 
         final Metadata metadata3 = newMetadata(_inc);
-        metadata3.getCategories().add(cat2);
+        metadata3.getMetadataCategories().add(cat2);
         Metadata md3 = _repository.save(metadata3);
 
         List<Metadata> found = _repository.findAll(hasCategory(cat1), SortUtils.createSort(Metadata_.id));

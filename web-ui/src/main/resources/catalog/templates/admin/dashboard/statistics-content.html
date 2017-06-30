@@ -11,8 +11,9 @@
         </table>
 
         <button type="button" class="btn btn-small"
-          data-ng-click="csvExport([statistics.md.mainStatistics], $event)" data-translate=""
-          >csvExport</button>
+                data-ng-click="csvExport([statistics.md.mainStatistics], $event)" data-translate=""
+        >csvExport
+        </button>
       </div>
     </div>
   </div>
@@ -25,6 +26,7 @@
           <h2 data-translate="">mostPopular</h2>
           <form class="form-horizontal" role="form"
                 data-ng-search-form="" runSearch="true">
+              <input type="hidden" name="_csrf" value="{{csrf}}"/>
             <table class="table table-striped">
               <tr data-ng-repeat="md in searchResults.records">
                 <td>{{md.title || md.defaultTitle}}</td>
@@ -43,6 +45,7 @@
           <h2 data-translate="">bestRated</h2>
           <form class="form-horizontal" role="form"
                 data-ng-search-form="" runSearch="true">
+              <input type="hidden" name="_csrf" value="{{csrf}}"/>
             <table class="table table-striped">
               <tr data-ng-repeat="md in searchResults.records">
                 <td>{{md.title || md.defaultTitle}}</td>
@@ -60,7 +63,7 @@
         <h2>
           <span data-translate="">recordsBy</span>
           <select class="form-control" data-ng-model="currentIndicator"
-            data-ng-options="(key | translate) for (key, value) in searchInfo.facet"> </select>
+                  data-ng-options="(key | translate) for (key, value) in searchInfo.facet"> </select>
         </h2>
 
         <svg id="gn-stat-md-by-facet" class="gn-chart"/>

@@ -1,3 +1,26 @@
+/*
+ * Copyright (C) 2001-2016 Food and Agriculture Organization of the
+ * United Nations (FAO-UN), United Nations World Food Programme (WFP)
+ * and United Nations Environment Programme (UNEP)
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
+ *
+ * Contact: Jeroen Ticheler - FAO - Viale delle Terme di Caracalla 2,
+ * Rome - Italy. email: geonetwork@osgeo.org
+ */
+
 (function() {
   goog.provide('gn_catalog_service');
 
@@ -43,12 +66,7 @@
            * @return {HttpPromise} Future object
            */
         remove: function(id) {
-          var url = gnUrlUtils.append('md.delete?_content_type=json&',
-              gnUrlUtils.toKeyValue({
-                id: id
-              })
-              );
-          return $http.get(url);
+          return $http.delete('../api/records/' + id);
         },
 
         /**
@@ -63,12 +81,24 @@
          * @return {HttpPromise} Future object
          */
         validate: function(id) {
-          var url = gnUrlUtils.append('md.validate?_content_type=json&',
-              gnUrlUtils.toKeyValue({
-                id: id
-              })
-              );
-          return $http.get(url);
+          return $http.put('../api/records/' + id + '/validate');
+        },
+
+        /**
+         * @ngdoc method
+         * @name gnMetadataManager#validateDirectoryEntry
+         * @methodOf gnMetadataManager
+         *
+         * @description
+         * Validate a directory entry (shared object) from catalog
+         *
+         * @param {string} id Internal id of the directory entry
+         * @param {bool} newState true is validated, false is rejected
+         * @return {HttpPromise} Future object
+         */
+        validateDirectoryEntry: function(id, newState) {
+          var param = '?isvalid=' + (newState ? 'true' : 'false');
+          return $http.put('../api/records/' + id + '/validate' + param);
         },
 
         /**
@@ -84,70 +114,46 @@
            * @param {string} id Internal id of the metadata to be copied.
            * @param {string} groupId Internal id of the group of the metadata
            * @param {boolean} withFullPrivileges privileges to assign.
-           * @param {boolean} isTemplate type of the metadata
+           * @param {boolean|string} isTemplate type of the metadata (bool is
+           *  for TEMPLATE, other values are SUB_TEMPLATE and
+           *  TEMPLATE_OF_SUB_TEMPLATE)
            * @param {boolean} isChild is child of a parent metadata
-           * @param {string} metadataUuid, the uuid of the metadata to create
+           * @param {string} metadataUuid , the uuid of the metadata to create
            *                 (when metadata uuid is set to manual)
            * @return {HttpPromise} Future object
            */
-        copy: function(id, groupId, withFullPrivileges, 
+        copy: function(id, groupId, withFullPrivileges,
             isTemplate, isChild, metadataUuid) {
-          var url = gnUrlUtils.append('md.create',
-              gnUrlUtils.toKeyValue({
-                _content_type: 'json',
-                group: groupId,
-                id: id,
-                template: isTemplate ? (isTemplate === 's' ? 's' : 'y') : 'n',
-                child: isChild ? 'y' : 'n',
-                fullPrivileges: withFullPrivileges ? 'true' : 'false',
-                metadataUuid: metadataUuid
-              })
-              );
-          return $http.get(url);
-        },
+          // new md type determination
+          var mdType;
+          switch (isTemplate) {
+            case 'TEMPLATE_OF_SUB_TEMPLATE':
+              mdType = 'TEMPLATE_OF_SUB_TEMPLATE';
+              break;
 
-        /**
-           * @ngdoc method
-           * @name gnMetadataManager#import
-           * @methodOf gnMetadataManager
-           *
-           * @description
-           * Import a new from metadata from an XML snippet.
-           *
-           * @param {Object} data Params to send to md.insert service
-           * @return {HttpPromise} Future object
-           */
-        importMd: function(data) {
-          return $http({
-            url: 'md.insert?_content_type=json',
-            method: 'POST',
-            data: $.param(data),
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            case 'SUB_TEMPLATE':
+              mdType = 'SUB_TEMPLATE';
+              break;
+
+            case 'TEMPLATE':
+            case true:
+              mdType = 'TEMPLATE';
+              break;
+
+            default: mdType = 'METADATA';
+          }
+
+          var url = gnUrlUtils.toKeyValue({
+            metadataType: mdType,
+            sourceUuid: id,
+            isChildOfSource: isChild ? 'true' : 'false',
+            group: groupId,
+            isVisibleByAllGroupMembers: withFullPrivileges,
+            targetUuid: metadataUuid || ''
           });
-        },
-
-        /**
-         * @ngdoc method
-         * @name gnMetadataManager#importFromDir
-         * @methodOf gnMetadataManager
-         *
-         * @description
-         * Import records from a directory on the server.
-         *
-         * @param {Object} data Params to send to md.import service
-         * @return {HttpPromise} Future object
-         */
-        importFromDir: function(data) {
-          return $http({
-            url: 'md.import?_content_type=json&' + data,
-            method: 'GET',
-            transformResponse: function(defaults) {
-              try {
-                return JSON.parse(defaults);
-              }
-              catch (e) {
-                return defaults;
-              }
+          return $http.put('../api/records/duplicate?' + url, {
+            headers: {
+              'Accept': 'application/json'
             }
           });
         },
@@ -163,19 +169,11 @@
          * @param {Object} data Params to send to md.insert service
          * @return {HttpPromise} Future object
          */
-        importFromXml: function(data) {
-          return $http.post('md.insert?_content_type=json', data, {
-            headers: {'Content-Type':
-                  'application/x-www-form-urlencoded'},
-            transformResponse: function(defaults) {
-              try {
-                return JSON.parse(defaults);
-              }
-              catch (e) {
-                return defaults;
-              }
+        importFromXml: function(urlParams, xml) {
+          return $http.put('../api/records?' + urlParams, xml, {
+            headers: {
+              'Content-Type': 'application/xml'
             }
-
           });
         },
 
@@ -194,22 +192,21 @@
            * @param {boolean} isTemplate type of the metadata
            * @param {boolean} isChild is child of a parent metadata
            * @param {string} tab is the metadata editor tab to open
-           * @param {string} metadataUuid, the uuid of the metadata to create
+           * @param {string} metadataUuid , the uuid of the metadata to create
            *                 (when metadata uuid is set to manual)
            * @return {HttpPromise} Future object
            */
-        create: function(id, groupId, withFullPrivileges, 
+        create: function(id, groupId, withFullPrivileges,
             isTemplate, isChild, tab, metadataUuid) {
 
           return this.copy(id, groupId, withFullPrivileges,
-              isTemplate, isChild, metadataUuid).success(function(data) {
-            var path = '/metadata/' + data.id;
+              isTemplate, isChild, metadataUuid).success(function(id) {
+            var path = '/metadata/' + id;
             if (tab) {
               path += '/tab/' + tab;
             }
-            $location.path(path);
+            $location.path(path).search('justcreated');
           });
-          // TODO : handle creation error
         },
 
         /**
@@ -221,11 +218,34 @@
          * Get the metadata js object from catalog. Trigger a search and
          * return a promise.
          * @param {string} uuid of the metadata
+         * @param {string} isTemplate optional isTemplate value (s, t...)
          * @return {HttpPromise} of the $http get
          */
         getMdObjByUuid: function(uuid) {
           return $http.get('q?_uuid=' + uuid + '' +
-              '&fast=index&_content_type=json&buildSummary=false').
+              '&fast=index&_content_type=json&buildSummary=false' +
+              (isTemplate !== undefined ? '&isTemplate=' + isTemplate : '')).
+              then(function(resp) {
+                return new Metadata(resp.data.metadata);
+              });
+        },
+
+        /**
+         * @ngdoc method
+         * @name gnMetadataManager#getMdObjById
+         * @methodOf gnMetadataManager
+         *
+         * @description
+         * Get the metadata js object from catalog. Trigger a search and
+         * return a promise.
+         * @param {string} id of the metadata
+         * @param {string} isTemplate optional isTemplate value (s, t...)
+         * @return {HttpPromise} of the $http get
+         */
+        getMdObjById: function(id, isTemplate) {
+          return $http.get('q?_id=' + id + '' +
+              '&fast=index&_content_type=json&buildSummary=false' +
+              (isTemplate !== undefined ? '&_isTemplate=' + isTemplate : '')).
               then(function(resp) {
                 return new Metadata(resp.data.metadata);
               });
@@ -239,7 +259,7 @@
          * @description
          * Update the metadata object
          *
-         * @param {object } md to reload
+         * @param {object} md to reload
          * @return {HttpPromise} of the $http get
          */
         updateMdObj: function(md) {
@@ -262,112 +282,38 @@
    * @description
    * The `gnHttpServices` service provides KVP for all geonetwork
    * services used in the UI.
-   *
-   *  FIXME : links are too long for JSLint.
-   *
-   * {@link service/config-ui-metadata#services-
-   * documentation-config-ui-metadataxml_-service-mdcreate mdCreate}
-   * {@link service/config-ui-metadata#services-
-   * documentation-config-ui-metadataxml_-service-mdview mdView}
-   * {@link service/config-ui-metadata#services-
-   * documentation-config-ui-metadataxml_-service-mdcreate mdCreate}
-   * {@link service/config-ui-metadata#services-
-   * documentation-config-ui-metadataxml_-service-mdinsert mdInsert}
-   * {@link service/config-ui-metadata#services-
-   * documentation-config-ui-metadataxml_-service-mddelete mdDelete}
-   * {@link service/config-ui-metadata#services-
-   * documentation-config-ui-metadataxml_-service-mdedit mdEdit}
-   * {@link service/config-ui-metadata#services-
-   * documentation-config-ui-metadataxml_-service-mdeditsave mdEditSave}
-   * {@link service/config-ui-metadata#services-
-   * documentation-config-ui-metadataxml_-service-
-   * mdeditsaveonly mdEditSaveonly}
-   * {@link service/config-ui-metadata#services-
-   * documentation-config-ui-metadataxml_-service-
-   * mdeditsaveandclose mdEditSaveandclose}
-   * {@link service/config-ui-metadata#services-
-   * documentation-config-ui-metadataxml_-service-mdeditcancel mdEditCancel}
-   * {@link service/config-ui-metadata#services-
-   * documentation-config-ui-metadataxml_-service-mdrelations getRelations}
-   * {@link service/config-ui-metadata#services-
-   * documentation-config-ui-metadataxml_-service-mdsuggestion suggestionsList}
-   * {@link service/config-ui-metadata#services-
-   * documentation-config-ui-metadataxml_-service-mdvalidate getValidation}
-   *
-   * {@link service/config-service-admin-batchprocess
-   * #services-documentation-config-service-admin-
-   * batchprocessxml_-service-mdprocessing processMd}
-   * {@link service/config-service-admin-batchprocess
-   * #services-documentation-config-service-admin-
-   * batchprocessxml_-service-mdprocessingbatch processAll}
-   * {@link service/config-service-admin-batchprocess
-   * #services-documentation-config-service-admin-
-   * batchprocessxml_-service-mdprocessingbatchreport processReport}
-   *
-   * {@link service/config-service-admin#services-
-   * documentation-config-service-adminxml_-service-info info}
-   *
-   * {@link service/config-service-region#services-
-   * documentation-config-service-regionxml_-
-   * service-regionscategory regionsList}
-   * {@link service/config-service-region#services-
-   * documentation-config-service-regionxml_-service-regionslist region}
    */
 
   module.value('gnHttpServices', {
-    mdCreate: 'md.create?_content_type=json&',
-    mdView: 'md.view?_content_type=json&',
-    mdInsert: 'md.insert?_content_type=json&',
-    mdDelete: 'md.delete?_content_type=json&',
-    mdDeleteBatch: 'md.delete.batch',
-    mdEdit: 'md.edit?_content_type=json&',
-    mdEditSave: 'md.edit.save?_content_type=json&',
-    mdEditSaveonly: 'md.edit.saveonly?_content_type=json&',
-    mdEditSaveandclose: 'md.edit.save.and.close?_content_type=json&',
-    mdEditCancel: 'md.edit.cancel?_content_type=json&',
-    getRelations: 'md.relations?_content_type=json&',
-    suggestionsList: 'md.suggestion?_content_type=json&',
-    getValidation: 'md.validate?_content_type=json&',
-    mdSelect: 'metadata.select?_content_type=json', // TODO: CHANGE
-
     mdGetPDFSelection: 'pdf.selection.search', // TODO: CHANGE
     mdGetRDF: 'rdf.metadata.get',
     mdGetMEF: 'mef.export',
     mdGetXML19139: 'xml_iso19139',
     csv: 'csv.search',
 
-    mdPrivileges: 'md.privileges.update?_content_type=json&',
-    mdPrivilegesBatch: 'md.privileges.batch.update?_content_type=json&',
-    mdValidateBatch: 'md.validation',
     publish: 'md.publish',
     unpublish: 'md.unpublish',
 
-    processMd: 'md.processing',
     processAll: 'md.processing.batch',
     processReport: 'md.processing.batch.report',
     processXml: 'xml.metadata.processing',
 
-    info: 'info?_content_type=json',
-
-    country: 'regions.list?_content_type=json&categoryId=' +
-        'http://geonetwork-opensource.org/regions%23country',
-    regionsList: 'regions.category.list?_content_type=json&',
-    region: 'regions.list?_content_type=json&',
-
     suggest: 'suggest',
 
-    edit: 'md.edit',
     search: 'q',
     internalSearch: 'qi',
     subtemplate: 'subtemplate',
     lang: 'lang?_content_type=json&',
     removeThumbnail: 'md.thumbnail.remove?_content_type=json&',
     removeOnlinesrc: 'resource.del.and.detach', // TODO: CHANGE
-    geoserverNodes: 'geoserver.publisher?_content_type=json&',
     suggest: 'suggest',
     facetConfig: 'search/facet/config',
-    selectionLayers: 'selection.layers'
+    selectionLayers: 'selection.layers',
+
+    // wfs indexing
+    indexproxy: '../../index'
   });
+
 
   /**
    * @ngdoc service
@@ -430,7 +376,7 @@
           callService: function(serviceKey, params, httpConfig) {
 
             var config = {
-              url: gnHttpServices[serviceKey],
+              url: gnHttpServices[serviceKey] || serviceKey,
               params: params,
               method: 'GET'
             };
@@ -486,7 +432,8 @@
       isFeedbackEnabled: 'system.userFeedback.enable',
       isSearchStatEnabled: 'system.searchStats.enable',
       isHideWithHelEnabled: 'system.hidewithheldelements.enable'
-    }
+    },
+    'map.is3DModeAllowed': window.location.search.indexOf('with3d') !== -1
   });
 
   /**
@@ -501,10 +448,11 @@
    * Load the catalog config and push it to gnConfig.
    */
   module.factory('gnConfigService', [
-    '$q',
-    'gnHttp',
+    '$http', '$q',
     'gnConfig',
-    function($q, gnHttp, gnConfig) {
+    function($http, $q, gnConfig) {
+      var defer = $q.defer();
+      var loadPromise = defer.promise;
       return {
 
         /**
@@ -519,23 +467,26 @@
          * @return {HttpPromise} Future object
          */
         load: function() {
-          var defer = $q.defer();
-          gnHttp.callService('info',
-              {type: 'config'},
-              {cache: true}).then(function(response) {
-            angular.forEach(response.data, function(value, key) {
-              if (value == 'true' || value == 'false') {
-                response.data[key] = value === 'true';
-              }
-            });
-            angular.extend(gnConfig, response.data);
-            if (window.location.search.indexOf('with3d') !== -1) {
-              gnConfig['map.is3DModeAllowed'] = true;
-            }
-            defer.resolve(gnConfig);
-          });
-          return defer.promise;
+          return $http.get('../api/site/settings', {cache: true})
+              .then(function(response) {
+                angular.extend(gnConfig, response.data);
+                // Replace / by . in settings name
+                angular.forEach(gnConfig, function(value, key) {
+                  if (key.indexOf('/') !== -1) {
+                    gnConfig[key.replace(/\//g, '.')] = value;
+                    delete gnConfig[key];
+                  }
+                });
+                // Override parameter if set in URL
+                if (window.location.search.indexOf('with3d') !== -1) {
+                  gnConfig['map.is3DModeAllowed'] = true;
+                }
+                defer.resolve(gnConfig);
+              }, function() {
+                defer.reject();
+              });
         },
+        loadPromise: loadPromise,
 
         /**
          * @ngdoc method
@@ -576,7 +527,8 @@
         'securityConstraints', 'resourceConstraints', 'legalConstraints',
         'denominator', 'resolution', 'geoDesc', 'geoBox', 'inspirethemewithac',
         'status', 'status_text', 'crs', 'identifier', 'responsibleParty',
-        'mdLanguage', 'datasetLang', 'type', 'link'];
+        'mdLanguage', 'datasetLang', 'type', 'link', 'crsDetails'];
+      var listOfJsonFields = ['keywordGroup', 'crsDetails'];    // See below; probably not necessary
       var record = this;
       this.linksCache = [];
       $.each(listOfArrayFields, function(idx) {
@@ -586,17 +538,41 @@
           record[field] = [record[field]];
         }
       });
+      $.each(listOfJsonFields, function(idx) {    // Note: this step does not seem to be necessary; TODO: remove or refactor
+        var field = listOfJsonFields[idx];
+        if (angular.isDefined(record[field])) {
+          try {
+            record[field] = angular.fromJson(record[field]);
+          } catch (e) {}
+        }
+      });
+
+      // Create a structure that reflects the transferOption/onlinesrc tree
+      var links = [];
+      angular.forEach(this.link, function(link) {
+        var linkInfo = formatLink(link);
+        var idx = linkInfo.group - 1;
+        if (!links[idx]) {
+          links[idx] = [linkInfo];
+        }
+        else if (angular.isArray(links[idx])) {
+          links[idx].push(linkInfo);
+        }
+      });
+      this.linksTree = links;
     };
 
     function formatLink(sLink) {
       var linkInfos = sLink.split('|');
       return {
         name: linkInfos[0],
+        title: linkInfos[0],
         url: linkInfos[2],
         desc: linkInfos[1],
         protocol: linkInfos[3],
         contentType: linkInfos[4],
-        group: linkInfos[5] ? parseInt(linkInfos[5]) : undefined
+        group: linkInfos[5] ? parseInt(linkInfos[5]) : undefined,
+        applicationProfile: linkInfos[6]
       };
     }
     function parseLink(sLink) {
@@ -613,11 +589,20 @@
       isPublished: function() {
         return this['geonet:info'].isPublishedToAll === 'true';
       },
+      isValid: function() {
+        return this.valid === '1';
+      },
+      hasValidation: function() {
+        return (this.valid > -1);
+      },
       isOwned: function() {
         return this['geonet:info'].owner === 'true';
       },
       getOwnerId: function() {
         return this['geonet:info'].ownerId;
+      },
+      getGroupOwner: function() {
+        return this['geonet:info'].owner;
       },
       getSchema: function() {
         return this['geonet:info'].schema;
@@ -627,11 +612,30 @@
             'false' : 'true';
       },
 
-
-
       getLinks: function() {
         return this.link;
       },
+      getLinkGroup: function(layer) {
+        var links = this.getLinksByType('OGC');
+        for (var i = 0; i < links.length; ++i) {
+          var link = links[i];
+          if (link.name == layer.getSource().getParams().LAYERS) {
+            return link.group;
+          }
+        }
+      },
+      /**
+       * Get all links of the metadata of the given types.
+       * The types are strings in arguments.
+       * You can give the exact matching with # ('#OG:WMS') or just find an
+       * occurence for the match ('OGC').
+       * You can passe several types to find ('OGC','WFS', '#getCapabilities')
+       *
+       * If the first argument is a number, you do the search within the link
+       * group (search only onlinesrc in the given transferOptions).
+       *
+       * @return {*} an Array of links
+       */
       getLinksByType: function() {
         var ret = [];
 

@@ -1,5 +1,6 @@
 <div class="layerTree">
   <form role="form">
+              <input type="hidden" name="_csrf" value="{{csrf}}"/>
     <div class="form-group">
       <div data-ng-show="catServicesList.length > 0">
         <div class="dropdown">
@@ -14,7 +15,7 @@
             <li data-ng-repeat="srv in catServicesList">
               <a href="" data-ng-click="setUrl(srv)"
                  title="{{srv.desc}}">
-                {{srv.title}} ({{srv.url}})
+                {{srv.title}} ({{srv.url}}) - {{srv.type}}
               </a>
             </li>
           </ul>
@@ -31,7 +32,7 @@
                placeholder="{{'serviceUrl' | translate}}"/>
         <ul class="dropdown-menu" role="menu" data-ng-show="servicesList.length > 0">
           <li data-ng-repeat="srv in servicesList">
-          <a href="" data-ng-click="setUrl(srv.url)" title="{{srv.url}}">
+            <a href="" data-ng-click="setUrl(srv)" title="{{srv.url}}">
               {{srv.name}}
             </a>
           </li>

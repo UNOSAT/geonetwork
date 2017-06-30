@@ -30,7 +30,7 @@
     'blueimp.fileupload'
   ])
 
-  .directive('gnFileStore', [
+      .directive('gnFileStore', [
         'gnFileStoreService',
         '$translate',
         '$rootScope',
@@ -71,7 +71,7 @@
                   scope.loadMetadataResources();
                 }, function(data) {
                   $rootScope.$broadcast('StatusUpdated', {
-                    title: $translate('resourceUploadError'),
+                    title: $translate.instant('resourceUploadError'),
                     error: {
                       message: (data.errorThrown || data.statusText) +
                           (angular.isFunction(data.response) ?
@@ -96,7 +96,7 @@
 
               var uploadResourceFailed = function(e, data) {
                 $rootScope.$broadcast('StatusUpdated', {
-                  title: $translate('resourceUploadError'),
+                  title: $translate.instant('resourceUploadError'),
                   error: {
                     message: data.errorThrown +
                         angular.isDefined(
@@ -122,13 +122,14 @@
                   scope.queue = [];
                   scope.filestoreUploadOptions = {
                     autoUpload: scope.autoUpload,
-                    url: '../api/0.1/metadata/' + scope.uuid +
-                        '/resources?share=' + defaultStatus,
+                    url: '../api/0.1/records/' + scope.uuid +
+                        '/attachments?visibility=' + defaultStatus,
                     dropZone: $('#' + scope.id),
                     singleUpload: false,
                     // TODO: acceptFileTypes: /(\.|\/)(xml|skos|rdf)$/i,
                     done: uploadResourceSuccess,
-                    fail: uploadResourceFailed
+                    fail: uploadResourceFailed,
+                    headers: {'X-XSRF-TOKEN': $rootScope.csrf}
                   };
                 }
               });

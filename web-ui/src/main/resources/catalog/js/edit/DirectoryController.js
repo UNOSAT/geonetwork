@@ -1,11 +1,41 @@
+/*
+ * Copyright (C) 2001-2016 Food and Agriculture Organization of the
+ * United Nations (FAO-UN), United Nations World Food Programme (WFP)
+ * and United Nations Environment Programme (UNEP)
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
+ *
+ * Contact: Jeroen Ticheler - FAO - Viale delle Terme di Caracalla 2,
+ * Rome - Italy. email: geonetwork@osgeo.org
+ */
+
 (function() {
   goog.provide('gn_directory_controller');
 
   goog.require('gn_catalog_service');
   goog.require('gn_facets');
+  goog.require('gn_directoryassociatedmd');
+  goog.require('gn_mdtypewidget');
 
-  var module = angular.module('gn_directory_controller',
-      ['gn_catalog_service', 'gn_facets']);
+  var module = angular.module('gn_directory_controller', [
+    'gn_catalog_service',
+    'gn_facets',
+    'gn_directoryassociatedmd',
+    'pascalprecht.translate',
+    'gn_mdtypewidget'
+  ]);
 
   /**
    * Controller to create new metadata record.
@@ -16,37 +46,61 @@
     'gnSearchManagerService',
     'gnUtilityService',
     'gnEditor',
+    'gnUrlUtils',
     'gnCurrentEdit',
     'gnMetadataManager',
     'gnGlobalSettings',
-    function($scope, $routeParams, $http, 
+    'gnConfig',
+    function($scope, $routeParams, $http,
         $rootScope, $translate, $compile,
-            gnSearchManagerService, 
-            gnUtilityService,
-            gnEditor,
-            gnCurrentEdit,
-            gnMetadataManager,
-            gnGlobalSettings) {
-
-      $scope.isTemplate = 's';
+        gnSearchManagerService,
+        gnUtilityService,
+        gnEditor,
+        gnUrlUtils,
+        gnCurrentEdit,
+        gnMetadataManager,
+        gnGlobalSettings,
+        gnConfig) {
+      $scope.gnConfig = gnConfig;
       $scope.hasEntries = false;
       $scope.mdList = null;
       $scope.activeType = null;
       $scope.activeEntry = null;
       $scope.ownerGroup = null;
-      $scope.searchObj = {params: {
-        _isTemplate: 's',
-        any: '*',
-        _root: '',
-        sortBy: 'title',
-        sortOrder: 'reverse',
-        resultType: 'subtemplates'
-      }};
+      $scope.searchObj = {
+        selectionBucket: 'd101',
+        params: {
+          _isTemplate: 's',
+          any: '',
+          _root: '',
+          sortBy: 'title',
+          resultType: 'subtemplates'
+        },
+        sortbyValues: [
+          {
+            sortBy: 'title'
+          },
+          {
+            sortBy: 'owner'
+          },
+          {
+            sortBy: 'changeDate',
+            sortOrder: 'reverse'
+          }
+        ]
+      };
       $scope.paginationInfo = {
         pages: -1,
         currentPage: 1,
-        hitsPerPage: 10
+        hitsPerPage: 20
       };
+
+      // TODO: actually check permission
+      $scope.userCanEditTemplates = true;
+      $scope.currentEditorAction = '';    // can be: newEntry, newTemplate, editEntry, editTemplate
+
+      // a list of templates (simplified index objects)
+      $scope.templates = [];
 
       $scope.modelOptions = angular.copy(gnGlobalSettings.modelOptions);
 
@@ -74,9 +128,9 @@
       };
 
       var init = function() {
-        $http.get('admin.group.list?_content_type=json', {cache: true}).
+        $http.get('../api/users', {cache: true}).
             success(function(data) {
-              $scope.groups = data !== 'null' ? data : null;
+              $scope.groups = data;
 
               // Select by default the first group.
               if ($scope.ownerGroup === null && data) {
@@ -84,39 +138,67 @@
               }
             });
 
-        searchEntries();
+        refreshEntriesInfo();
       };
 
-      var searchEntries = function() {
-        $scope.tpls = null;
+      // this refreshes the entry types list & templates available
+      // it does NOT fetch actual entries
+      var refreshEntriesInfo = function() {
+        // fetch templates list & return simplified objects to be used
+        // in the template dropdown
         gnSearchManagerService.search('qi?_content_type=json&' +
-            'template=s&fast=index&summaryOnly=true&resultType=subtemplates').
-            then(function(data) {
-              $scope.$broadcast('setPagination', $scope.paginationInfo);
-              $scope.mdList = data;
-              $scope.hasEntries = data.count != '0';
-              var types = [];
-              angular.forEach(data.facet.subTemplateTypes, function(value) {
-                if ($.inArray(value, dataTypesToExclude) === -1) {
-                  types.push(value['@name']);
-                }
-              });
-              types.sort();
-              $scope.mdTypes = types;
-
-              // Select the default one or the first one
-              if ($scope.activeType &&
-                  $.inArray($scope.activeType, $scope.mdTypes) !== -1) {
-                $scope.selectType($scope.activeType);
-              } else if (defaultType &&
-                  $.inArray(defaultType, $scope.mdTypes) !== -1) {
-                $scope.selectType(defaultType);
-              } else if ($scope.mdTypes[0]) {
-                $scope.selectType($scope.mdTypes[0]);
-              } else {
-                // No templates available ?
+          'template=t&fast=index&resultType=subtemplates&buildSummary=false')
+          .then(function (data) {
+            $scope.templates = data.metadata.map(function (md) {
+              return {
+                root: $.isArray(md.root) ? md.root[0] : md.root,
+                "geonet:info": md['geonet:info'],
+                isTemplate: md.isTemplate,
+                title: md.title
               }
             });
+          });
+
+        // fetch all entries + templates
+        var entryType = $scope.userCanEditTemplates ? 's or t' : 's';
+        gnSearchManagerService.search('qi?_content_type=json&' +
+          'template=' + entryType + '&fast=index&summaryOnly=true&resultType=subtemplates').
+          then(function(data) {
+            $scope.$broadcast('setPagination', $scope.paginationInfo);
+            $scope.mdList = data;
+            $scope.hasEntries = data.count != '0';
+
+            // get types info & sort them
+            $scope.mdTypes = data.facet.subTemplateTypes.map(
+              function (type) {
+                return {
+                  name: type['@name'],
+                  count: type['@count']
+                }
+              }
+            );
+            $scope.mdTypes.sort(function (a, b) {
+              var nameA = a.name;
+              var nameB = b.name;
+              return nameA < nameB ? -1 : (nameA > nameB ? 1 : 0);
+            })
+            var typeNames = $scope.mdTypes.map(function (t) {
+              return t.name;
+            });
+
+            // Select the default one or the first one
+            if ($scope.activeType &&
+                $.inArray(defaultType, typeNames) !== -1) {
+              $scope.selectType($scope.activeType);
+            } else if (defaultType &&
+                $.inArray(defaultType, typeNames) !== -1) {
+              $scope.selectType(defaultType);
+            } else if ($scope.mdTypes[0]) {
+              $scope.selectType($scope.mdTypes[0].name);
+            } else {
+              // No templates available ?
+            }
+          });
       };
 
       /**
@@ -126,7 +208,8 @@
         if (type) {
           $scope.searchObj.params._root = type;
         }
-        $scope.$broadcast('resetSearch', $scope.searchObj.params);
+        $scope.$broadcast('clearResults');
+        $scope.$broadcast('search');
         return false;
       };
 
@@ -154,9 +237,18 @@
           // and the newly created attributes.
           // Save to not lose current edits in main field.
           gnEditor.save(false)
-            .then(function() {
+              .then(function() {
                 gnEditor.add(gnCurrentEdit.id, ref, name,
                     insertRef, position, attribute);
+              }).then(function() {
+                // success. Nothing to do.
+              }, function(rejectedValue) {
+                $rootScope.$broadcast('StatusUpdated', {
+                  title: $translate.instant('runServiceError'),
+                  error: rejectedValue,
+                  timeout: 0,
+                  type: 'danger'
+                });
               });
         } else {
           gnEditor.add(gnCurrentEdit.id, ref, name,
@@ -178,41 +270,59 @@
         return false;
       };
       $scope.save = function(refreshForm) {
-        gnEditor.save(refreshForm)
-          .then(function(form) {
+        var promise = gnEditor.save(refreshForm)
+            .then(function(form) {
               $scope.savedStatus = gnCurrentEdit.savedStatus;
               $rootScope.$broadcast('StatusUpdated', {
-                title: $translate('saveMetadataSuccess'),
+                title: $translate.instant('saveMetadataSuccess'),
                 timeout: 2
               });
             }, function(error) {
               $scope.savedStatus = gnCurrentEdit.savedStatus;
               $rootScope.$broadcast('StatusUpdated', {
-                title: $translate('saveMetadataError'),
+                title: $translate.instant('saveMetadataError'),
                 error: error,
                 timeout: 0,
                 type: 'danger'});
             });
         $scope.savedStatus = gnCurrentEdit.savedStatus;
-        return false;
+        return promise;
       };
-      $scope.close = function() {
-        gnEditor.save(false)
-          .then(function(form) {
+      $scope.saveAndClose = function() {
+        return gnEditor.save(false)
+            .then(function(form) {
               $scope.gnCurrentEdit = '';
-              $scope.selectEntry(null);
-              searchEntries();
+              $scope.closeEditor();
+              refreshEntriesInfo();
             }, function(error) {
               $rootScope.$broadcast('StatusUpdated', {
-                title: $translate('saveMetadataError'),
+                title: $translate.instant('saveMetadataError'),
                 error: error,
                 timeout: 0,
                 type: 'danger'});
             });
-
-        return false;
+      };
+      $scope.switchTypeAndSave = function(refreshForm) {
+        gnCurrentEdit.isTemplate = gnCurrentEdit.isTemplate === 't' ? 's' : 't';
+        $('#template')[0].value = gnCurrentEdit.isTemplate;
+        if ($scope.activeEntry) {
+          $scope.activeEntry.isTemplate = gnCurrentEdit.isTemplate;
+        }
+        return $scope.save(refreshForm);
       };
 
+      /**
+       * Update textarea containing XML when the ACE editor change.
+       * See form-builder-xml.xsl.
+       */
+      $scope.xmlEditorChange = function(e) {
+        // TODO: Here we could check if XML is valid based on ACE info
+        // and disable save action ?
+        $('textarea[name=data]').val(e[1].getSession().getValue());
+      };
+      $scope.xmlEditorLoaded = function(e) {
+        // TODO: Adjust height of editor based on screen size ?
+      };
       /**
        * When the form is loaded, this function is called.
        * Use it to retrieve form variables or initialize
@@ -226,83 +336,186 @@
       // switching from one entry to another
       var i = 0;
 
-      /**
-       * Open the editor for the selected entry
-       */
-      $scope.selectEntry = function(e) {
-        // TODO: alert when changing from
-        // import action to editing to avoid
-        // losing information.
-        $scope.isImporting = false;
-        $scope.activeEntry = e;
-
-        if (e) {
-          angular.extend(gnCurrentEdit, {
-            id: e['geonet:info'].id,
-            formId: '#gn-editor-' + e['geonet:info'].id,
-            tab: 'simple',
-            displayTooltips: false,
-            compileScope: $scope,
-            sessionStartTime: moment()
-          });
-
-          $scope.gnCurrentEdit = gnCurrentEdit;
-          $scope.editorFormUrl = gnEditor
-            .buildEditUrlPrefix('md.edit') +
-              '&starteditingsession=yes&random=' + i++;
-        }
-      };
-
-      $scope.isImporting = false;
-      $scope.importData = {
-        data: null,
-        insert_mode: 0,
-        template: 's',
-        fullPrivileges: 'y'
-      };
-
-
-      $scope.startImportEntry = function() {
-        $scope.selectEntry(null);
-        $scope.isImporting = true;
-        $scope.importData = {
-          data: null,
-          insert_mode: 0,
-          template: 's',
-          fullPrivileges: 'y',
-          group: $scope.groups[0].id
-        };
-      };
-
-      $scope.importEntry = function(formId) {
-        gnMetadataManager.importMd($scope.importData).then(
-            function() {
-              searchEntries();
-              $scope.isImporting = false;
-              $scope.importData = null;
+      $scope.importEntry = function(xml) {
+        gnMetadataManager.importFromXml(
+            gnUrlUtils.toKeyValue($scope.importData), xml).then(
+            function(r) {
+              if (r.status === 400) {
+                $rootScope.$broadcast('StatusUpdated', {
+                  title: $translate.instant('saveMetadataError'),
+                  error: r.data,
+                  timeout: 0,
+                  type: 'danger'});
+              } else {
+                refreshEntriesInfo();
+                $scope.closeEditor();
+              }
             }
         );
       };
 
-      $scope.startSharing = function() {
-        $('#gn-share').modal('show');
+      // ACTIONS
+
+      $scope.delEntry = function (e) {
+        $scope.delEntryId = e['geonet:info'].id;
+        $('#gn-confirm-delete').modal('show');
+      };
+      $scope.confirmDelEntry = function (e) {
+        if (!$scope.delEntryId) {
+          return;
+        }
+        gnMetadataManager.remove($scope.delEntryId).then(
+          refreshEntriesInfo);
+        $scope.delEntryId = null;
       };
 
+      $scope.copyEntry = function (e) {
+        //md.create?id=181&group=2&isTemplate=s&currTab=simple
+        gnMetadataManager.copy(e['geonet:info'].id, $scope.ownerGroup,
+          fullPrivileges,
+          e.isTemplate === 't' ? 'TEMPLATE_OF_SUB_TEMPLATE' : 'SUB_TEMPLATE'
+        ).then(refreshEntriesInfo);
+      };
+
+      // this is not used for now
+      $scope.convertToTemplate = function (e) {
+        if (e.isTemplate !== 's') {
+          $rootScope.$broadcast('StatusUpdated', {
+            title: $translate.instant('notADirectoryEntry'),
+            error: '',
+            timeout: 0,
+            type: 'danger'});
+          return;
+        }
+
+        // conversion to template is done by duplicating into template type
+        // the original entry is kept
+        gnMetadataManager.copy(e['geonet:info'].id, $scope.ownerGroup,
+          fullPrivileges,
+          'TEMPLATE_OF_SUB_TEMPLATE').then(refreshEntriesInfo);
+      };
+
+      $scope.createFromTemplate = function (e) {
+        if (e.isTemplate !== 't') {
+          $rootScope.$broadcast('StatusUpdated', {
+            title: $translate.instant('notADirectoryEntryTemplate'),
+            error: '',
+            timeout: 0,
+            type: 'danger'});
+          return;
+        }
+
+        // a copy of the template is created & opened
+        gnMetadataManager.copy(e['geonet:info'].id, $scope.ownerGroup,
+          fullPrivileges,
+          'SUB_TEMPLATE')
+          .then(function (response) {
+            refreshEntriesInfo();
+            return gnMetadataManager.getMdObjById(response.data, 's or t');
+          })
+          .then(function (md) {
+            $scope.startEditing(md);
+          });
+      };
+
+      $scope.validateEntry = function (e) {
+        gnMetadataManager.validateDirectoryEntry(e['geonet:info'].id, true)
+          .then(function () {
+            refreshEntriesInfo();
+            return gnMetadataManager.getMdObjById(e['geonet:info'].id, 's or t');
+          })
+          .then(function (e) {
+            if ($scope.activeEntry) {
+              $scope.activeEntry = e;
+            }
+          });
+      };
+
+      $scope.rejectEntry = function (e) {
+        gnMetadataManager.validateDirectoryEntry(e['geonet:info'].id, false)
+          .then(function () {
+            refreshEntriesInfo();
+            return gnMetadataManager.getMdObjById(e['geonet:info'].id, 's or t');
+          })
+          .then(function (e) {
+            if ($scope.activeEntry) {
+              $scope.activeEntry = e;
+            }
+          });
+      };
+
+      // begin creation of a new entry
+      $scope.startImporting = function (asTemplate) {
+        $scope.activeEntry = null;
+        $scope.currentEditorAction =
+          (asTemplate ? 'newTemplate' : 'newEntry');
+
+        // import data depends on type (template or entry)
+        $scope.importData = {
+          metadataType: asTemplate ? 'TEMPLATE_OF_SUB_TEMPLATE'
+            : 'SUB_TEMPLATE',
+          group: $scope.groups[0].id
+        };
+      };
+
+      // begin edition of an entry
+      $scope.startEditing = function (e) {
+        $scope.activeEntry = e;
+        $scope.currentEditorAction =
+          (e.isTemplate === 't' ? 'editTemplate' : 'editEntry');
+
+        var id = e['geonet:info'].id;
+        angular.extend(gnCurrentEdit, {
+          id: id,
+          formId: '#gn-editor-' + id,
+          tab: 'simple',
+          displayTooltips: false,
+          compileScope: $scope,
+          sessionStartTime: moment(),
+          isTemplate: e.isTemplate
+        });
+
+        $scope.gnCurrentEdit = gnCurrentEdit;
+        $scope.editorFormUrl = gnEditor
+            .buildEditUrlPrefix('editor') +
+            '&starteditingsession=yes&random=' + i++;
+      };
+
+      $scope.closeEditor = function (e) {
+        $scope.activeEntry = null;
+        $scope.currentEditorAction = '';
+        $scope.xml = '';
+      }
+
+      $scope.startPermissionsEdit = function (e) {
+        $scope.activeEntry = e;
+        $('#gn-share').modal('show');
+      };
       $scope.$on('PrivilegesUpdated', function() {
+        $scope.activeEntry = null;
         $('#gn-share').modal('hide');
       });
 
-      $scope.delEntry = function(e) {
-        // md.delete?uuid=b09b1b16-769f-4dad-b213-fc25cfa9adc7
-        gnMetadataManager.remove(e['geonet:info'].id).then(searchEntries);
-      };
+      // UI utils
+      $scope.getOwnerName = function (e) {
+        return e.userinfo.split('|')[0];
+      }
+      $scope.getCreateDate = function (e) {
+        return moment(e['geonet:info'].createDate).format('LLL');
+      }
+      $scope.getChangeDate = function (e) {
+        return moment(e['geonet:info'].changeDate).format('LLL');
+      }
 
-      $scope.copyEntry = function(e) {
-        //md.create?id=181&group=2&isTemplate=s&currTab=simple
-        gnMetadataManager.copy(e['geonet:info'].id, $scope.ownerGroup,
-            fullPrivileges,
-            's').then(searchEntries);
-      };
+      // switch to templates (b === true) or entries (b === false)
+      $scope.showTemplates = function (b) {
+        $scope.searchObj.params._isTemplate = b === true ? 't' : 's';   // temp
+        $scope.$broadcast('clearResults');
+        $scope.$broadcast('search');
+      }
+      $scope.templatesShown = function () {
+        return $scope.searchObj.params._isTemplate === 't';
+      }
 
       init();
     }
