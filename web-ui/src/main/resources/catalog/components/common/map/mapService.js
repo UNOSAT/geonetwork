@@ -1010,21 +1010,23 @@
                   if (version) {
                     o.version = version;
                   }
-                  olL = $this.addWmsToMap(map, o);
 
-                  if (!angular.isArray(olL.get('errors'))) {
-                    olL.set('errors', []);
-                  }
                   var errormsg = $translate.instant(
-                      'layerNotfoundInCapability', {
-                        layer: name,
-                        url: url
-                      });
+                    'layerNotfoundInCapability', {
+                      layer: name,
+                      url: url
+                    });
                   errors.push(errormsg);
                   console.warn(errormsg);
 
-                  olL.get('errors').push(errors);
-
+                  if(!createOnly) {
+                    olL = $this.addWmsToMap(map, o);
+                    if (!angular.isArray(olL.get('errors'))) {
+                      olL.set('errors', []);
+                    }
+                    olL.get('errors').push(errors);
+                  }
+                  
                   gnWmsQueue.error(o);
                   o.layer = olL;
                   defer.reject(o);
