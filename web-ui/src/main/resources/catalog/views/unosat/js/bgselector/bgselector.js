@@ -43,7 +43,7 @@
     this.isBackgroundSelectorClosed = true;
     this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
     this.gnMap_ = gnMap;
-    this['bgLayers'] = bgLayers;
+    this.bgLayers = bgLayers;
     this.layerCache = {};
 
     this.setLayer(bgLayers[1]);
@@ -102,7 +102,7 @@
   gn.BgSelectorController.prototype.createLayer_ = function(layerSpec) {
     var layer;
     if(layerSpec.layer != 'voidLayer') {
-      layer = this.gnMap_.createLayerForType(this.map, layerSpec.layer, layerSpec.opts);
+      layer = this.gnMap_.createLayerForType(layerSpec.layer, layerSpec.opts, undefined, this.map);
     }
     else {
       layer = new ol.layer.Tile();

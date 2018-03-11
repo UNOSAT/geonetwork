@@ -5,7 +5,7 @@
   var module = angular.module('un-catalog', []);
   module.constant('unCatalogUrl', '../../catalog/views/unosat/data/layers.json');
   module.value('ngeoLayertreeTemplateUrl',
-      '../../catalog/views/unosat/js/catalog/layertrees.html');
+    '../../catalog/views/unosat/js/catalog/layertrees.html');
 
   gn.catalogDirective = function() {
     return {
@@ -17,9 +17,9 @@
       controllerAs: 'catalogCtrl',
       bindToController: true,
       template: '<div ngeo-layertree="catalogCtrl.tree" ' +
-          'ngeo-layertree-map="catalogCtrl.map" ' +
-          'ngeo-layertree-nodelayer="catalogCtrl.getLayer(node)" ' +
-          'class="themes-switcher collapse in"></div>'
+      'ngeo-layertree-map="catalogCtrl.map" ' +
+      'ngeo-layertree-nodelayer="catalogCtrl.getLayer(node)" ' +
+      'class="themes-switcher collapse in"></div>'
     };
   };
   module.directive('unCatalog', gn.catalogDirective);
@@ -51,7 +51,7 @@
         el = el.parent();
       }
       el.find('.fa').first().toggleClass('fa-minus-square')
-          .toggleClass('fa-plus-square');
+        .toggleClass('fa-plus-square');
     }
   };
 
@@ -67,16 +67,16 @@
     }
 
     var layer = this.gnMap_.createOlWMS(this.map,
-        {'LAYERS': node.layers},
-        {label: node.name, url: node.url, metadata: node.metadataUrl});
+      {'LAYERS': node.layers},
+      {label: node.name, url: node.url, metadata: node.metadataUrl});
 
     this.gnMap_.addWmsFromScratch(this.map, node.url, node.layers, true).then(
-        function(olLayer) {
-      layer.setSource(olLayer.getSource());
-          layer.setProperties(olLayer.getProperties());
-    }, function() {
-          layer.set('errors', ['not found']);
-        });
+      function(olLayer) {
+        layer.setSource(olLayer.getSource());
+        layer.setProperties(olLayer.getProperties());
+      }, function() {
+        layer.set('errors', ['not found']);
+      });
 
 
     layer.set('cextent', node.cextent);
@@ -85,7 +85,7 @@
   };
 
   module.controller('UnCatalogController',
-      gn.UnCatalogController);
+    gn.UnCatalogController);
 
   gn.UnCatalogController['$inject'] = [
     '$http',

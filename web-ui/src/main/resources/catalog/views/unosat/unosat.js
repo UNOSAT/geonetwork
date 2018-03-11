@@ -13,6 +13,7 @@
   goog.require('un-search');
   goog.require('un-mouseposition');
   goog.require('un-scaleselector');
+  goog.require('app.contrib');
 
   var module = angular.module('gn_search_unosat', [
     'gn_search',
@@ -25,7 +26,8 @@
     'un-layerinfo',
     'un-mouseposition',
     'un-scaleselector',
-    'gn_legendpanel_directive'
+    'gn_legendpanel_directive',
+    'app.contrib'
   ]);
 
   module.constant('defaultExtent', [604168.9251648698, 827653.5815669585, 3495323.0830233768, 2750197.7169957114]);
@@ -80,6 +82,20 @@
     });
 
     unLayerInfoService.getAllMetadatas();
+
+    // Hide Auth panel docuement click
+    $(document).click(function(e){
+      if(!$(e.target).hasClass('fa-user')) {
+        $scope.$apply(function() {
+          this.showAuth = false;
+        }.bind(this));
+      }
+    }.bind(this));
+
+    $('app-auth').click(function(e){
+      e.stopPropagation();
+    }.bind(this));
+
   };
 
   /**

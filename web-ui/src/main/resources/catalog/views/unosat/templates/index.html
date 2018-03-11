@@ -23,6 +23,8 @@
       <ul class="nav navbar-nav navbar-right">
         <un-search un-search-map="mainCtrl.map"></un-search>
       </ul>
+      <a href class="app-auth-btn" ng-click="mainCtrl.showAuth = !mainCtrl.showAuth"><span class="fa fa-user" ng-class="authenticated ? 'fa-user' : 'fa-user-times'" id="authBtn"></span></a>
+
     </div>
   </header>
 
@@ -191,6 +193,8 @@
     <!--Background selector-->
     <un-bg-selector un-bg-selector-map="::mainCtrl.map" class="ga-bg-desktop"></un-bg-selector>
   </div>
+  <app-auth ng-show="mainCtrl.showAuth"></app-auth>
+
   <footer ng-class="{'offset-left': mainCtrl.sidebarOpen()}">
     <un-scaleselector class="pull-right" map="mainCtrl.map">
     </un-scaleselector>
