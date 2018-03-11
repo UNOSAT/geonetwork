@@ -65,7 +65,7 @@
                  if (layer && layer.get('featureTooltip')) {
                    return feature;
                  }
-               }, undefined, function(layer){
+               }, undefined, function(layer) {
                 return layer instanceof ol.layer.Vector;
 
               });
@@ -145,7 +145,7 @@
           return (layer.getSource() instanceof ol.source.ImageWMS ||
               layer.getSource() instanceof ol.source.TileWMS) &&
               layer.getVisible();
-        });
+        }).reverse();
 
         coordinates = e.coordinate;
         this.registerTables(layers, e.coordinate);

@@ -49,6 +49,10 @@
     <name>gfc:inheritsTo</name>
   </fieldsWithFieldset>
 
+  <fieldsWithAnchorOption>
+    <name>gfc:code</name>
+  </fieldsWithAnchorOption>
+
   <!-- View configuration -->
   <views>
     <view name="default">
@@ -81,6 +85,9 @@
             in="/gfc:FC_FeatureCatalogue/gfc:featureType/gfc:FC_FeatureType"/>
         </section>
       </tab>
+      <flatModeExceptions>
+        <for name="gfc:code"/>
+      </flatModeExceptions>
     </view>
     <view name="advanced">
       <tab id="advanced">

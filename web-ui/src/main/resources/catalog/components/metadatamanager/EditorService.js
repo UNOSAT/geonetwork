@@ -146,6 +146,26 @@
              gnCurrentEdit.displayAttributes);
              return params.join('');
            },
+           load: function(url) {
+             var defer = $q.defer();
+             var scope = this;
+             $http.get(url,
+             {
+               headers: {'Content-Type':
+                 'application/x-www-form-urlencoded'}
+             }).success(function(data) {
+
+               var snippet = $(cleanData(data));
+               scope.refreshEditorForm(snippet);
+               gnCurrentEdit.working = false;
+               defer.resolve(snippet);
+             }).error(function(error) {
+               setStatus({msg: 'saveMetadataError', saving: false});
+               gnCurrentEdit.working = false;
+               defer.reject(error);
+             });
+             return defer.promise;
+           },
            /**
            * Save the metadata record currently in editing session.
            *
@@ -166,11 +186,34 @@
 
              $('.popover').remove();
 
+             function getFormParameters() {
+               var params = $(gnCurrentEdit.formId).serializeArray();
+               var formParams = {};
+               for (var i = 0; i < params.length; i++) {
+                 // Combine all XML snippet in the same parameters
+                 formParams[params[i].name] =
+                 (formParams[params[i].name] &&
+                     params[i].name.indexOf('_X') === 0) ?
+                     formParams[params[i].name] + '&&&' + params[i].value :
+                     params[i].value;
+               }
+               var serializedParams = '';
+               for (var key in formParams) {
+                 if (formParams.hasOwnProperty(key)) {
+                   serializedParams +=
+                   encodeURIComponent(key) + '=' +
+                   encodeURIComponent(formParams[key]) + '&';
+                 }
+               }
+               return serializedParams;
+             };
+
              gnCurrentEdit.working = true;
-             $http.post('../api/records/' + gnCurrentEdit.id + '/editor?' +
+             $http.post(
+             '../api/records/' + gnCurrentEdit.id + '/editor?' +
              (refreshForm ? '' : '&commit=true') +
              (terminate ? '&terminate=true' : ''),
-             $(gnCurrentEdit.formId).serialize(),
+             getFormParameters(),
              {
                headers: {'Content-Type':
                  'application/x-www-form-urlencoded'}
@@ -235,9 +278,9 @@
                // properly without removing them. There is maybe
                // references to DOM objects in the JS code which
                // make those objects not reachable by GC.
-               $(gnCurrentEdit.formId).find('*').remove();
+               $(gnCurrentEdit.containerId).find('*').remove();
 
-               $(gnCurrentEdit.formId).replaceWith(snippet);
+               $(gnCurrentEdit.containerId).replaceWith(snippet);
 
                if (gnCurrentEdit.compileScope) {
                  // Destroy previous scope
@@ -245,13 +288,17 @@
                    gnCurrentEdit.formScope.$destroy();
                  }
 
+                 // Update form values
+                 scope.onFormLoad();
+
                  // Compile against a new scope
                  gnCurrentEdit.formScope =
                  gnCurrentEdit.compileScope.$new();
                  $compile(snippet)(gnCurrentEdit.formScope);
+               } else {
+                 scope.onFormLoad();
                }
 
-               scope.onFormLoad();
              };
              if (form) {
                refreshForm(form);
@@ -295,6 +342,12 @@
                showValidationErrors:
                getInputValue('showvalidationerrors') == 'true',
                uuid: getInputValue('uuid'),
+               displayAttributes:
+               getInputValue('displayAttributes') == 'true',
+               displayTooltips:
+               getInputValue('displayTooltips') == 'true',
+               displayTooltipsMode:
+               getInputValue('displayTooltipsMode') || '',
                schema: getInputValue('schema'),
                version: getInputValue('version'),
                tab: getInputValue('currTab'),

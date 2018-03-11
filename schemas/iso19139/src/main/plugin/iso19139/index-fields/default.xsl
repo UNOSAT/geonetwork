@@ -81,6 +81,10 @@
   records only the default search. -->
   <xsl:variable name="flagNonObseleteRecords" select="false()"/>
 
+  <!-- Choose if WMS should be also indexed
+  as a KML layers to be loaded in GoogleEarth -->
+  <xsl:variable name="indexWmsAsKml" select="false()"/>
+
 
   <!-- The main metadata language -->
   <xsl:variable name="isoLangId">
@@ -106,6 +110,19 @@
       <xsl:if test="geonet:info/isTemplate != 's'">
         <Field name="_title" string="{string($_defaultTitle)}" store="true" index="true"/>
       </xsl:if>
+
+
+      <xsl:variable name="_defaultAbstract">
+        <xsl:call-template name="defaultAbstract">
+          <xsl:with-param name="isoDocLangId" select="$isoLangId"/>
+        </xsl:call-template>
+      </xsl:variable>
+
+      <Field name="_defaultAbstract"
+             string="{string($_defaultAbstract)}"
+             store="true"
+             index="true"/>
+
 
       <xsl:apply-templates select="*[name(.)='gmd:MD_Metadata' or @gco:isoType='gmd:MD_Metadata']"
                            mode="metadata"/>
@@ -161,11 +178,11 @@
                 gmd:identificationInfo/srv:SV_ServiceIdentification">
 
       <xsl:for-each select="gmd:citation/gmd:CI_Citation">
-        <xsl:for-each select="gmd:identifier/gmd:MD_Identifier/gmd:code/gco:CharacterString">
+        <xsl:for-each select="gmd:identifier/gmd:MD_Identifier/gmd:code/gco:CharacterString|gmd:identifier/gmd:MD_Identifier/gmd:code/gmx:Anchor">
           <Field name="identifier" string="{string(.)}" store="true" index="true"/>
         </xsl:for-each>
 
-        <xsl:for-each select="gmd:identifier/gmd:RS_Identifier/gmd:code/gco:CharacterString">
+        <xsl:for-each select="gmd:identifier/gmd:RS_Identifier/gmd:code/gco:CharacterString|gmd:identifier/gmd:RS_Identifier/gmd:code/gmx:Anchor">
           <Field name="identifier" string="{string(.)}" store="true" index="true"/>
         </xsl:for-each>
 
@@ -691,10 +708,16 @@
 
           <xsl:if test="contains($protocol, 'WWW:DOWNLOAD')">
             <Field name="download" string="true" store="false" index="true"/>
+            <Field name="_mdActions" string="mdActions-download" store="false" index="true"/>
           </xsl:if>
 
           <xsl:if test="contains($protocol, 'OGC:WMS') or $wmsLinkNoProtocol">
             <Field name="dynamic" string="true" store="false" index="true"/>
+            <Field name="_mdActions" string="mdActions-view" store="false" index="true"/>
+          </xsl:if>
+
+          <xsl:if test="contains($protocol, 'OGC:WPS')">
+            <Field name="_mdActions" string="mdActions-process" store="false" index="true"/>
           </xsl:if>
 
           <!-- ignore WMS links without protocol (are indexed below with mimetype application/vnd.ogc.wms_xml) -->
@@ -707,11 +730,14 @@
           <!-- Add KML link if WMS -->
           <xsl:if
             test="starts-with($protocol,'OGC:WMS') and string($linkage)!='' and string($title)!=''">
-            <!-- FIXME : relative path -->
-            <Field name="link" string="{concat($title, '|', $desc, '|',
-                                                '../../srv/en/google.kml?uuid=', /gmd:MD_Metadata/gmd:fileIdentifier/gco:CharacterString, '&amp;layers=', $title,
-                                                '|application/vnd.google-earth.kml+xml|application/vnd.google-earth.kml+xml', '|', $tPosition)}"
-                   store="true" index="false"/>
+
+            <xsl:if test="$indexWmsAsKml">
+              <!-- FIXME : relative path -->
+              <Field name="link" string="{concat($title, '|', $desc, '|',
+                                                  '../../srv/en/google.kml?uuid=', /gmd:MD_Metadata/gmd:fileIdentifier/gco:CharacterString, '&amp;layers=', $title,
+                                                  '|application/vnd.google-earth.kml+xml|application/vnd.google-earth.kml+xml', '|', $tPosition)}"
+                     store="true" index="false"/>
+            </xsl:if>
           </xsl:if>
 
           <!-- Try to detect Web Map Context by checking protocol or file extension -->
@@ -1036,9 +1062,5 @@
   </xsl:template>
 
   <!-- ========================================================================================= -->
-  <!-- xlinks -->
-  <xsl:template mode="index" match="@xlink:href">
-    <Field name="xlink" string="{string(.)}" store="true" index="true"/>
-  </xsl:template>
 
 </xsl:stylesheet>

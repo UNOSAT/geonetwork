@@ -59,7 +59,7 @@
           'enabled': true,
           'languages': {
             'eng': 'en',
-            'dut': 'du',
+            'dut': 'nl',
             'fre': 'fr',
             'ger': 'ge',
             'kor': 'ko',
@@ -68,7 +68,9 @@
             'cat': 'ca',
             'fin': 'fi',
             'ice': 'is',
-            'ita' : 'it'
+            'ita' : 'it',
+            'rus': 'ru',
+            'chi': 'zh'
           }
         },
         'home': {
@@ -127,7 +129,7 @@
           'formatter': {
             'list': [{
               'label': 'full',
-              'url' : '../api/records/{{md.getUuid()}}/' +
+              'url' : '../api/records/{{uuid}}/' +
                   'formatters/xsl-view?root=div&view=advanced'
             }]
           },
@@ -139,27 +141,19 @@
             'downloads': ['DOWNLOAD'],
             'layers': ['OGC'],
             'maps': ['ows']
-          }
+          },
+          'isFilterTagsDisplayedInSearch': false
         },
         'map': {
           'enabled': true,
           'appUrl': '../../srv/{{lang}}/catalog.search#/map',
           'is3DModeAllowed': true,
           'isSaveMapInCatalogAllowed': true,
-          'bingKey':
-              'AnElW2Zqi4fI-9cYx1LHiQfokQ9GrNzcjOh_p_0hkO1yo78ba8zTLARcLBIf8H6D',
+          'isExportMapAsImageEnabled': false,
           'storage': 'sessionStorage',
-          'map': '../../map/config-viewer.xml',
           'listOfServices': {
             'wms': [],
             'wmts': []
-          },
-          'useOSM': true,
-          'context': '',
-          'layer': {
-            'url': 'http://www2.demis.nl/mapserver/wms.asp?',
-            'layers': 'Countries',
-            'version': '1.1.1'
           },
           'projection': 'EPSG:3857',
           'projectionList': [{
@@ -168,11 +162,44 @@
           }, {
             'code': 'EPSG:3857',
             'label': 'Google mercator (EPSG:3857)'
-          }]
+          }],
+          'disabledTools': {
+            'processes': false,
+            'addLayers': false,
+            'layers': false,
+            'filter': false,
+            'contexts': false,
+            'print': false,
+            'mInteraction': false,
+            'graticule': false,
+            'syncAllLayers': false,
+            'drawVector': false
+          },
+          'graticuleOgcService': {},
+          'map-viewer': {
+            'context': '../../map/config-viewer.xml',
+            'extent': [0, 0, 0, 0],
+            'layers': []
+          },
+          'map-search': {
+            'context': '../../map/config-viewer.xml',
+            'extent': [0, 0, 0, 0],
+            'layers': []
+          },
+          'map-editor': {
+            'context': '',
+            'extent': [0, 0, 0, 0],
+            'layers': [{'type': 'osm'}]
+          }
         },
+        'geocoder': 'https://secure.geonames.org/searchJSON',
         'editor': {
           'enabled': true,
-          'appUrl': '../../srv/{{lang}}/catalog.edit'
+          'appUrl': '../../srv/{{lang}}/catalog.edit',
+          'isUserRecordsOnly': false,
+          'isFilterTagsDisplayed': false,
+          'createPageTpl':
+              '../../catalog/templates/editor/new-metadata-horizontal.html'
         },
         'admin': {
           'enabled': true,
@@ -195,7 +222,7 @@
       requireProxy: [],
       gnCfg: angular.copy(defaultConfig),
       gnUrl: '',
-      docUrl: 'http://geonetwork-opensource.org/manuals/trunk/',
+      docUrl: 'http://geonetwork-opensource.org/manuals/3.4.x/',
       //docUrl: '../../doc/',
       modelOptions: {
         updateOn: 'default blur',
@@ -205,21 +232,42 @@
         }
       },
       current: null,
+      shibbolethEnabled: false,
       init: function(config, gnUrl, gnViewerSettings, gnSearchSettings) {
-        // Remap some old settings with new one
-        angular.extend(this.gnCfg, config, {});
+        // start from the default config to make sure every field is present
+        // and override with config arg if required
+        angular.merge(this.gnCfg, config, {});
+
+        // secial case: languages (replace with object from config if available)
+        this.gnCfg.mods.header.languages = angular.extend({
+          mods: {
+            header: {
+              languages: {}
+            }
+          }
+        }, config).mods.header.languages;
+
         this.gnUrl = gnUrl || '../';
         this.proxyUrl = this.gnUrl + '../proxy?url=';
         gnViewerSettings.mapConfig = this.gnCfg.mods.map;
         angular.extend(gnSearchSettings, this.gnCfg.mods.search);
         this.isMapViewerEnabled = this.gnCfg.mods.map.enabled;
         gnViewerSettings.bingKey = this.gnCfg.mods.map.bingKey;
-        gnViewerSettings.owsContext = this.gnCfg.mods.map.context;
-        gnViewerSettings.wmsUrl = this.gnCfg.mods.map.layer.url;
-        gnViewerSettings.layerName = this.gnCfg.mods.map.layer.name;
+        gnViewerSettings.defaultContext =
+          gnViewerSettings.mapConfig['map-viewer'].context;
+        gnViewerSettings.geocoder = this.gnCfg.mods.geocoder;
       },
       getDefaultConfig: function() {
         return angular.copy(defaultConfig);
+      },
+      // this returns a copy of the default config without the languages object
+      // this way, the object can be used as reference for a complete ui
+      // settings page
+      getMergeableDefaultConfig: function() {
+        var copy = angular.copy(defaultConfig);
+        copy.mods.header.languages = {};
+        copy.mods.search.grid.related = [];
+        return copy;
       }
     };
   }());
@@ -311,19 +359,17 @@
   module.controller('GnCatController', [
     '$scope', '$http', '$q', '$rootScope', '$translate',
     'gnSearchManagerService', 'gnConfigService', 'gnConfig',
-    'gnGlobalSettings', '$location', 'gnUtilityService', 'gnSessionService',
-    'gnLangs', 'gnAdminMenu', 'gnViewerSettings', 'gnSearchSettings', '$cookies',
+    'gnGlobalSettings', '$location', 'gnUtilityService',
+    'gnSessionService', 'gnLangs', 'gnAdminMenu',
+    'gnViewerSettings', 'gnSearchSettings', '$cookies',
     function($scope, $http, $q, $rootScope, $translate,
-            gnSearchManagerService, gnConfigService, gnConfig,
-            gnGlobalSettings, $location, gnUtilityService, gnSessionService,
-            gnLangs, gnAdminMenu, gnViewerSettings, gnSearchSettings, $cookies) {
+             gnSearchManagerService, gnConfigService, gnConfig,
+             gnGlobalSettings, $location, gnUtilityService,
+             gnSessionService, gnLangs, gnAdminMenu,
+             gnViewerSettings, gnSearchSettings, $cookies) {
       $scope.version = '0.0.1';
 
 
-      //Display or not the admin menu
-      if ($location.absUrl().indexOf('/admin.console') != -1) {
-        $scope.viewMenuAdmin = true;
-      }else {$scope.viewMenuAdmin = false}
       //Update Links for social media
       $scope.socialMediaLink = $location.absUrl();
       $scope.$on('$locationChangeSuccess', function(event) {
@@ -361,7 +407,8 @@
       $scope.langLabels = {'eng': 'English', 'dut': 'Nederlands',
         'fre': 'Français', 'ger': 'Deutsch', 'kor': '한국의',
         'spa': 'Español', 'cat': 'Català', 'cze': 'Czech',
-        'ita': 'Italiano', 'fin': 'Suomeksi', 'ice': 'Íslenska'};
+        'ita': 'Italiano', 'fin': 'Suomeksi', 'ice': 'Íslenska',
+        'rus': 'русский', 'chi': '中文'};
       $scope.url = '';
       $scope.gnUrl = gnGlobalSettings.gnUrl;
       $scope.gnCfg = gnGlobalSettings.gnCfg;
@@ -369,6 +416,7 @@
       $scope.logoPath = gnGlobalSettings.gnUrl + '../images/harvesting/';
       $scope.isMapViewerEnabled = gnGlobalSettings.isMapViewerEnabled;
       $scope.isDebug = window.location.search.indexOf('debug') !== -1;
+      $scope.shibbolethEnabled = gnGlobalSettings.shibbolethEnabled;
 
 
       $scope.layout = {
@@ -382,9 +430,16 @@
       //Comment the following lines if you want to remove csrf support
       $http.defaults.xsrfHeaderName = 'X-XSRF-TOKEN';
       $http.defaults.xsrfCookieName = 'XSRF-TOKEN';
-      $scope.$watch(function() { return $cookies.get('XSRF-TOKEN'); }, function(value){
-        $rootScope.csrf=value;
-      }) ;
+      $scope.$watch(function() {
+        return $cookies.get($http.defaults.xsrfCookieName);
+      },
+      function(value) {
+        $rootScope.csrf = value;
+      });
+      //If no csrf, ask for one:
+      if (!$rootScope.csrf) {
+        $http.post('info?type=me');
+      }
       //Comment the upper lines if you want to remove csrf support
 
       /**
@@ -419,6 +474,21 @@
           });
         }
       });
+
+      // login url for inline signin form in top toolbar
+      $scope.signInFormAction = '../../signin#' + $location.path();
+
+      // when the login input have focus, do not close the dropdown/popup
+      $scope.focusLoginPopup = function() {
+        $('.signin-dropdown #inputUsername, .signin-dropdown #inputPassword')
+            .one('focus', function() {
+              $(this).parents('.dropdown-menu').addClass('show');
+            });
+        $('.signin-dropdown #inputUsername, .signin-dropdown #inputPassword')
+            .one('blur', function() {
+              $(this).parents('.dropdown-menu').removeClass('show');
+            });
+      };
 
       /**
        * Catalog facet summary providing
@@ -511,8 +581,10 @@
 
 
         // Retrieve user information if catalog is online
+        // append a random number to avoid caching in IE11
         var userLogin = catInfo.then(function(value) {
-          return $http.get('../api/me').
+          return $http.get('../api/me?_random=' +
+              Math.floor(Math.random() * 10000)).
               success(function(me, status) {
                 if (angular.isObject(me)) {
                   angular.extend($scope.user, me);

@@ -15,6 +15,7 @@ web/src/main/webapp/scripts/lib/*
 web/src/main/webapp/images/logos/*
 web/src/main/webapp/images/statTmp
 web/src/main/webapp/WEB-INF/data/wro4j*.db
+web/src/main/webResources/WEB-INF/classes/git.properties
 web/logs/
 web/jcs_caching/
 web/*.db
@@ -76,9 +77,13 @@ web/src/main/webapp/WEB-INF/data/data/upload/
 transifex/transifex-format/
 datadir_*
 es/elasticsearch-*
+es/es-dashboards/kibana-*
 web/src/main/webapp/WEB-INF/data/harvester_*
 camel-harvesters/wfsfeature-harvester/logs
 web/src/main/webapp/doc/en
 web/src/main/webapp/doc/fr
 web/src/main/webapp/WEB-INF/data/data/backup
+web/src/main/webapp/WEB-INF/data/node_less_files
+web/src/main/webapp/WEB-INF/data/node_less_files/gn_dynamic_style.json
 schemas/*/doc/*/*.rst
+*.old

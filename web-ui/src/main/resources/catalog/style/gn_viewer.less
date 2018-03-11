@@ -16,6 +16,10 @@
     right: 0;
   }
 
+  fieldset legend {
+    margin-bottom: 2px;
+  }
+
   .gn-layertree-filter {
     margin: 0 0 15px 0px;
     position:relative;
@@ -84,8 +88,9 @@
     .clear {
       position: absolute;
       top: .75em;
-      right: .75em;
+      right: 3.5em;
       color: #666;
+      z-index: 99;
       &:hover {
         cursor: pointer;
         color: #222;
@@ -97,7 +102,7 @@
     top: @viewport-padding;
     right: 0;
     width: 2.8em;
-    button {
+    button, [role="button"] {
       margin-bottom: .2em;
       border-right-width: none;
       border-top-right-radius: 0;
@@ -106,21 +111,25 @@
       width: 2.8em;
       transition: background @transition-params;
       &.active {
-        width: 3.1em;
+        width: 3.0em;
         border-left: medium none;
         border-radius: 0px;
-        margin-left: -0.3em;
+        margin-left: -0.2em;
         background: none repeat scroll 0% 0% rgba(0, 0, 0, 0.7);
         border-color: transparent;
         color: #FFF;
       }
+    }
+
+    .tools-spacer {
+      height: 1.4em;
     }
   }
   .control-tools {
     top: auto;
     bottom: @viewport-padding;
   }
-  .panel {
+  & > .panel {
     background: rgba(255,255,255,.8);
   }
   .panel-tools {
@@ -133,10 +142,19 @@
     max-width: ~"calc(100% - 4em)";
     overflow-y: auto;
     transition: opacity @transition-params;
+    h3 {
+      margin-top: 15px;
+    }
     li[gn-layermanager-item] {
       .fa-arrows-alt,.gn-layer-ordering {
         opacity: 0;
         transition: opacity @transition-params;
+      }
+      label {
+        padding: 0px;
+        display: block;
+        margin-bottom: 0px;
+
       }
     }
     .gn-layer-outofrange > label {
@@ -149,19 +167,7 @@
       }
     }
     .list-group-item {
-      background: inherit;
       transition: max-height @transition-params;
-      .btn-cog {
-         float: right;
-         margin-right: -.6em;
-         margin-top: -.5em;
-         background: inherit;
-         padding: 6px 8px;
-       }
-      .btn-cog-left {
-        float: left;
-        padding: 6px 14px;
-      }
       &:hover {
         .fa-arrows-alt, .gn-layer-ordering {
           opacity: 1
@@ -173,21 +179,6 @@
       & > label {
         font-size: 90%;
         max-width: 72%;
-      }
-      &.active {
-        background: rgba(255,255,255,.6);
-        & > label {
-          font-weight: bold;
-        }
-        .glyphicon-cog:before {
-          content: "";
-        }
-        .details {
-          display: block;
-        }
-        .btn-group {
-          margin-top: 1em;
-        }
       }
     }
     .btn-group.gn-layer-btn {
@@ -203,9 +194,13 @@
       margin: .2em;
     }
     .baselayer {
-      margin: 0 15px;
       .dropdown-menu {
         width: 100%;
+      }
+    }
+    .gn-layer-actions {
+      [ngeo-popover-anchor] {
+        text-decoration: none;
       }
     }
     .unfold {
@@ -224,7 +219,9 @@
     .details {
       font-size: 90%;
       margin: 0 0 .5em 0;
-      display: none;
+      p {
+        overflow: auto;
+      }
       .delete {
         .btn-xs;
         .pull-right;
@@ -239,20 +236,15 @@
       max-height: 44em;
       overflow-y: auto;
       .gn-layer-ordering {
-        position: absolute;
-        right: 4em;
+        margin-top: -4px;
+        margin-right: -10px;
         .fa {
-          display: block;
-          color: #666;
-          font-size: 12px;
-          &:hover, &:focus {
-            text-decoration: none;
-            color: @link-color;
-          }
-          &:only-child {
-            margin-top: .4em;
-          }
+          padding: 0px 10px;
+          font-size: 0.8em;
         }
+      }
+      ul {
+        margin-bottom: 4px;
       }
     }
     .metadata {
@@ -262,26 +254,9 @@
       font-style: italic;
       font-size: 13px;
     }
-  }
-
-  .panel-ncwms {
-    .btn-sm {
-    }
-    input[type=date] {
-      width: 7.2em;
-      display: inline-block;
-    }
-    .ui-slider {
-      margin-left: .5em;
-    }
-    .fa.pull-right {
-      margin-left: 0;
-    }
-    .fa-spinner .fa-magic {
-      display: none;
-    }
     label {
-      padding-top: .3em;
+      padding: 10px 0;
+      font-weight: normal;
     }
   }
 
@@ -298,14 +273,14 @@
     }
   }
 
-  .collapsed {
-    max-height: 0;
-    min-height: 0;
-    overflow-y: hidden;
-    border: 0;
-    margin: 0;
-    padding: 0;
-  }
+  //.collapsed {
+  //  max-height: 0;
+  //  min-height: 0;
+  //  overflow-y: hidden;
+  //  border: 0;
+  //  margin: 0;
+  //  padding: 0;
+  //}
   .force-hide {
     opacity: 0;
     pointer-events: none;
@@ -570,7 +545,7 @@
   }
 }
 
-gn-features-tables {
+gn-features-tables, .gn-viewer-info-pane {
   display          : block;
   position         : absolute;
   bottom           : 1em;
@@ -605,18 +580,62 @@ gn-features-tables {
     font-size : 24px;
     margin    : .25em .4em 0 0;
   }
+
+  .profile {
+    width: 100%;
+    min-height: 20em;
+    height: 200px;
+    overflow-x: auto;
+    svg {
+      width: auto;
+    }
+    .overlay {
+      width: 100%;
+    }
+  }
 }
 
 gn-wps-process-form {
   .popover-parent {
     position: relative;
-    .dropdown-menu {
-      padding:5px;
-    }
   }
 
   ul {
     list-style: none;
+  }
+
+  .panel {
+    background: none;
+    margin-bottom: 0px;
+    border: none;
+    box-shadow: none;
+
+    .panel-heading {
+      height: 2em;
+      line-height: 1.6em;
+
+      .close {
+        margin-right: -0.2em;
+      }
+    }
+  }
+
+  .form-group .output-selection {
+    display: inline-block;
+  }
+  .form-group .input-group {
+    margin-bottom: 6px;
+  }
+}
+
+gn-geometry-tool .btn-group {
+  display: flex;
+  .btn {
+    flex-basis: initial !important;
+    flex-grow: 1;
+    &.btn-icon {
+      flex-grow: 0 !important;
+    }
   }
 }
 
@@ -624,3 +643,60 @@ gn-wps-process-form {
    background-color: rgba(255,255,255,0.4);
    border: solid 2px red;
  }
+
+.layermanager-item-menu {
+  margin: -9px -14px;
+  ul {
+    li {
+      padding: 8px 10px !important;
+      border-top: 1px solid #ccc;
+      a {
+        font-size: 14px;
+      }
+      &:first-child {
+        border-top: 0;
+      }
+      label {
+        color: #757575;
+      }
+    }
+    input[type="range"] {
+      width: 100% !important;
+    }
+  }
+}
+
+[gn-ows-context] {
+  ul.gn-resultview li.gn-grid {
+    width: 150px;
+    min-width: 150px;
+    max-height: 170px;
+    padding: 2px;
+    margin: 2px;
+    font-size: 80%;
+    text-align: center;
+  }
+  .gn-md-thumbnail {
+    float:left;
+    width: 110px;
+    height: 110px;
+    margin: 2px !important;
+  }
+}
+[data-gn-search-layer-for-map] {
+  .gn-md-thumbnail .gn-img-thumbnail {
+    width: 40px;
+    height: 40px;
+    margin: 2px !important;
+  }
+}
+
+// heatmap overlay with count info
+.heatmap-overlay {
+  border-radius: 3px;
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 6px;
+  line-height: 1em;
+  color: white;
+  pointer-events: none;
+}

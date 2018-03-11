@@ -69,12 +69,18 @@
                  attribute = ' gco:nilReason="' + scope.status + '"';
                }
 
+               var booleanXmlSnippet = (isNil) ? '' : '<' +
+               booleanElement + '>' + scope.status +
+               '</' + booleanElement + '>';
+
                scope.xmlSnippet = '<' + scope.tagName +
-               ' xmlns:' + elementNs + '="' + gnSchemaManagerService.findNamespaceUri(elementNs, gnCurrentEdit.schema) + '"' +
-               ' xmlns:' + booleanElementNs + '="' +  gnSchemaManagerService.findNamespaceUri(booleanElementNs, gnCurrentEdit.schema) + '"' +
-               attribute + '><' + booleanElement + '>' +
-               (isNil ? '' : scope.status) +
-               '</' + booleanElement + '></' + scope.tagName + '>';
+               ' xmlns:' + elementNs + '="' +
+               gnSchemaManagerService.findNamespaceUri(elementNs,
+                   gnCurrentEdit.schema) + '"' +
+               ' xmlns:' + booleanElementNs + '="' +
+               gnSchemaManagerService.findNamespaceUri(booleanElementNs,
+                   gnCurrentEdit.schema) + '"' +
+               attribute + '>' + booleanXmlSnippet + '</' + scope.tagName + '>';
              }
 
              scope.$watch('status', build);
@@ -86,8 +92,8 @@
                  // templateFieldDirective initialized first so
                  // that the template is properly computed.
                  $timeout(function() {
-                     $(scope.id).val(scope.xmlSnippet);
-                     $(scope.id).change();
+                   $(scope.id).val(scope.xmlSnippet);
+                   $(scope.id).change();
                  });
                }
              });

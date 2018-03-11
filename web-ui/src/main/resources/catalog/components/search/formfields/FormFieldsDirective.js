@@ -118,7 +118,7 @@
               var field = $(element).tagsinput('input');
               field.typeahead({
                 minLength: 0,
-                hint: true,
+                hint: scope.$eval(attrs.gnTypeaheadDisableHint) ? false : true,
                 highlight: true
               }, angular.extend({
                 name: 'datasource',
@@ -271,6 +271,8 @@
             if (attrs.profile) {
               url = '../api/groups?profile=' + attrs.profile;
             }
+            var optional = attrs.hasOwnProperty('optional');
+
             $http.get(url, {cache: true}).
                 success(function(data) {
                   //data-ng-if is not correctly updating groups.
@@ -284,6 +286,12 @@
                     });
                   } else {
                     scope.groups = data;
+                  }
+                  if (optional) {
+                    scope.groups.unshift({
+                      id: 'undefined',
+                      name: ''
+                    });
                   }
 
                   // Select by default the first group.
@@ -332,8 +340,6 @@
               values: '=gnSortbyValues'
             },
             link: function(scope, element, attrs, searchFormCtrl) {
-              scope.params.sortBy = scope.params.sortBy ||
-                  scope.values[0].sortBy;
               scope.sortBy = function(v) {
                 angular.extend(scope.params, v);
                 searchFormCtrl.triggerSearch(true);
@@ -572,7 +578,7 @@
               var addBlankValueAndSetDefault = function() {
                 var blank = {label: '', code: ''};
                 if (scope.infos != null && scope.infos.length &&
-                  scope.allowBlank !== undefined) {
+                    scope.allowBlank !== undefined) {
                   scope.infos.unshift(blank);
                 }
                 // Search default value
@@ -666,7 +672,8 @@
               {key: 'METADATA', value: 'METADATA'},
               {key: 'TEMPLATE', value: 'TEMPLATE'},
               {key: 'SUB_TEMPLATE', value: 'SUB_TEMPLATE'},
-              {key: 'TEMPLATE_OF_SUB_TEMPLATE', value: 'TEMPLATE_OF_SUB_TEMPLATE'}
+              {key: 'TEMPLATE_OF_SUB_TEMPLATE',
+                value: 'TEMPLATE_OF_SUB_TEMPLATE'}
             ];
           }
         };
@@ -706,7 +713,9 @@
             scope: {
               crs: '=?',
               value: '=',
-              map: '='
+              required: '=',
+              map: '=',
+              readOnly: '<'
             },
             templateUrl: '../../catalog/components/search/formfields/' +
                 'partials/bboxInput.html',
@@ -751,6 +760,7 @@
               dragboxInteraction.active = false;
 
               scope.clear = function() {
+                scope.valueInternalChange = true;
                 scope.value = '';
                 scope.extent = extentFromValue(scope.value);
                 scope.updateMap();
@@ -779,14 +789,14 @@
                 scope.extent = extent.map(function(coord) {
                   return Math.round(coord * 10000) / 10000;
                 });
-                scope.value = valueFromExtent(scope.extent);
-                scope.updateMap();
+                scope.onBboxChange();
 
                 scope.$apply();
               });
               scope.dragboxInteraction = dragboxInteraction;
 
               scope.onBboxChange = function() {
+                scope.valueInternalChange = true;
                 scope.value = valueFromExtent(scope.extent);
                 scope.updateMap();
               };
@@ -795,6 +805,18 @@
                 clearMap();
                 scope.map.removeLayer(layer);
               });
+
+              // watch external change of value
+              if (scope.$eval(attrs['watchValueChange'])) {
+                scope.$watch('value', function(newValue) {
+                  if (scope.valueInternalChange) {
+                    scope.valueInternalChange = false;
+                  } else {
+                    scope.extent = extentFromValue(newValue);
+                    scope.updateMap();
+                  }
+                });
+              }
             }
           };
         }

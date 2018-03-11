@@ -974,6 +974,10 @@ public abstract class AbstractHarvester<T extends HarvestResult> {
          */
         settingMan.add(ID_PREFIX + siteId, "ownerId", params.getOwnerId());
         /**
+         * User selected by user who created or updated this node.
+         */
+        settingMan.add(ID_PREFIX + siteId, "ownerUser", params.getOwnerIdUser());
+        /**
          * Group selected by user who created or updated this node.
          */
         settingMan.add(ID_PREFIX + siteId, "ownerGroup", params.getOwnerIdGroup());
@@ -987,6 +991,7 @@ public abstract class AbstractHarvester<T extends HarvestResult> {
 
         settingMan.add(ID_PREFIX + optionsId, "every", params.getEvery());
         settingMan.add(ID_PREFIX + optionsId, "oneRunOnly", params.isOneRunOnly());
+        settingMan.add(ID_PREFIX + optionsId, "overrideUUID", params.getOverrideUuid());
         settingMan.add(ID_PREFIX + optionsId, "status", status);
 
         //--- setup content node ---------------------------------------

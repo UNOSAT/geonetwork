@@ -181,6 +181,18 @@
                 var keywordsAutocompleter = new Bloodhound({
                   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
                   queryTokenizer: Bloodhound.tokenizers.whitespace,
+                  sorter: config.orderById == 'true' ?
+                  function(a, b) {
+                    var nameA = a.props.uri.toUpperCase();
+                    var nameB = b.props.uri.toUpperCase();
+                    if (nameA < nameB) {
+                      return -1;
+                    }
+                    if (nameA > nameB) {
+                      return 1;
+                    }
+                    return 0;
+                  } : null,
                   limit: config.max || this.DEFAULT_NUMBER_OF_RESULTS,
                   remote: {
                     wildcard: 'QUERY',
@@ -212,7 +224,6 @@
                   thesaurus: thesaurus,
                   id: keywordUris instanceof Array ?
                       keywordUris.join(',') : keywordUris || '',
-                  multiple: keywordUris instanceof Array ? 'true' : 'false',
                   transformation: transformation || 'to-iso19139-keyword'
                 };
                 if (lang) {
@@ -221,7 +232,8 @@
                 if (textgroupOnly) {
                   params.textgroupOnly = textgroupOnly;
                 }
-                var url = gnUrlUtils.append('thesaurus.keyword',
+                var url = gnUrlUtils.append(
+                '../api/registries/vocabularies/keyword',
                     gnUrlUtils.toKeyValue(params)
                     );
                 $http.get(url, { cache: true }).

@@ -24,10 +24,23 @@
 (function() {
 
   goog.provide('gn_related_directive');
+
+
+
+
+
+
+
+
+  goog.require('gn_atom');
+  goog.require('gn_related_observer_directive');
   goog.require('gn_relatedresources_service');
+  goog.require('gn_wms');
+  goog.require('gn_wmts');
 
   var module = angular.module('gn_related_directive', [
-    'gn_relatedresources_service'
+    'gn_relatedresources_service', 'gn_related_observer_directive', 'gn_wms',
+    'gn_wmts', 'gn_atom'
   ]);
 
   /**
@@ -86,8 +99,10 @@
           [
         'gnRelatedService',
         'gnGlobalSettings',
+        'gnSearchSettings',
         'gnRelatedResources',
-        function(gnRelatedService, gnGlobalSettings, gnRelatedResources) {
+        function(gnRelatedService, gnGlobalSettings,
+                 gnSearchSettings, gnRelatedResources) {
           return {
             restrict: 'A',
             templateUrl: function(elem, attrs) {
@@ -104,21 +119,41 @@
               user: '=',
               hasResults: '=?'
             },
+            require: '?^gnRelatedObserver',
             link: function(scope, element, attrs, controller) {
               var promise;
+              var elem = element[0];
+              scope.lang = scope.lang || scope.$parent.lang;
+              element.on('$destroy', function() {
+                // Unregister the directive in the observer if it is defined
+                if (controller) {
+                  controller.unregisterGnRelated(elem);
+                }
+              });
+
+              if (controller) {
+                // Register the directive in the observer
+                controller.registerGnRelated(elem);
+              }
+
               scope.updateRelations = function() {
-                scope.relations = [];
+                scope.relations = null;
                 if (scope.uuid) {
                   scope.relationFound = false;
+                  if (controller) {
+                    controller.startGnRelatedRequest(elem);
+                  }
                   (promise = gnRelatedService.get(
                      scope.uuid, scope.types)
                   ).then(function(data) {
-                       scope.relations = {};
                        angular.forEach(data, function(value, idx) {
-                         if (value) {
-                           scope.relationFound = true;
-                           scope.hasResults = true;
-                         }
+                         if (!value) { return; }
+
+                         // init object if required
+                         scope.relations = scope.relations || {};
+                         scope.relationFound = true;
+                         scope.hasResults = true;
+
                          if (!scope.relations[idx]) {
                            scope.relations[idx] = [];
                          }
@@ -136,7 +171,14 @@
                            scope.relations[idx] = value;
                          }
                        });
-                     });
+                       if (controller) {
+                          controller.finishRequest(elem, scope.relationFound);
+                        }
+                     } , function() {
+                      if (controller) {
+                        controller.finishRequest(elem, false);
+                      }
+                  });
                 }
               };
 
@@ -146,12 +188,15 @@
               scope.hasAction = function(mainType) {
                 var fn = gnRelatedResources.map[mainType].action;
                 // If function name ends with ToMap do not display the action
-                if (fn.name.match(/.*ToMap$/) &&
+                if (fn && fn.name && fn.name.match(/.*ToMap$/) &&
                    gnGlobalSettings.isMapViewerEnabled === false) {
                   return false;
                 }
                 return angular.isFunction(fn);
               };
+
+              scope.isLayerProtocol = gnRelatedService.isLayerProtocol;
+
               scope.config = gnRelatedResources;
 
               scope.$watchCollection('md', function(n, o) {

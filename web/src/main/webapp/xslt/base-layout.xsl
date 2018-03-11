@@ -68,6 +68,9 @@
       and a facet search to get main site information.
       -->
       <body data-ng-controller="GnCatController">
+
+        <div data-gn-alert-manager=""></div>
+
         <xsl:choose>
           <xsl:when test="ends-with($service, 'nojs')">
             <!-- No JS degraded mode ... -->
@@ -77,7 +80,9 @@
             </div>
           </xsl:when>
           <xsl:otherwise>
-
+            <xsl:if test="$isJsEnabled">
+              <xsl:call-template name="no-js-alert"/>
+            </xsl:if>
             <!-- AngularJS application -->
             <xsl:if test="$angularApp != 'gn_search' and $angularApp != 'gn_viewer' and $angularApp != 'gn_formatter_viewer'">
               <div class="navbar navbar-default gn-top-bar"
@@ -90,9 +95,6 @@
             <xsl:if test="$isJsEnabled">
               <xsl:call-template name="javascript-load"/>
             </xsl:if>
-            <xsl:if test="$isJsEnabled">
-              <xsl:call-template name="no-js-alert"/>
-            </xsl:if>
           </xsl:otherwise>
         </xsl:choose>
       </body>
@@ -102,7 +104,7 @@
 
   <xsl:template name="no-js-alert">
     <noscript>
-      <div class="alert" data-ng-hide="">
+      <div class="alert alert-warning" data-ng-hide="">
         <strong>
           <xsl:value-of select="$i18n/warning"/>
         </strong>

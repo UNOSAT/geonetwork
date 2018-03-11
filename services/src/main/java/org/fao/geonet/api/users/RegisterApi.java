@@ -26,6 +26,8 @@ package org.fao.geonet.api.users;
 import org.fao.geonet.api.API;
 import org.fao.geonet.api.ApiUtils;
 import org.fao.geonet.api.tools.i18n.LanguageUtils;
+import org.fao.geonet.api.users.model.UserRegisterDto;
+import org.fao.geonet.api.users.recaptcha.RecaptchaChecker;
 import org.fao.geonet.domain.Group;
 import org.fao.geonet.domain.Profile;
 import org.fao.geonet.domain.ReservedGroup;
@@ -76,10 +78,10 @@ public class RegisterApi {
     @Autowired
     LanguageUtils languageUtils;
 
-
     @ApiOperation(value = "Create user account",
         nickname = "registerUser",
-        notes = "User is created with a registered user profile. Password is sent by email. Catalog administrator is also notified.")
+        notes = "User is created with a registered user profile. username field is ignored and the email is used as " +
+            "username. Password is sent by email. Catalog administrator is also notified.")
     @RequestMapping(
         value = "/actions/register",
         method = RequestMethod.PUT,
@@ -90,11 +92,9 @@ public class RegisterApi {
         @ApiParam(value = "User details",
             required = true)
         @RequestBody
-            User user,
+            UserRegisterDto userRegisterDto,
         HttpServletRequest request)
         throws Exception {
-
-
 
         Locale locale = languageUtils.parseAcceptLanguage(request.getLocales());
         ResourceBundle messages = ResourceBundle.getBundle("org.fao.geonet.api.Messages", locale);
@@ -105,17 +105,45 @@ public class RegisterApi {
         boolean selfRegistrationEnabled = sm.getValueAsBool(Settings.SYSTEM_USERSELFREGISTRATION_ENABLE);
         if (!selfRegistrationEnabled) {
             return new ResponseEntity<>(String.format(
-                    messages.getString("self_registration_disabled")
+                messages.getString("self_registration_disabled")
             ), HttpStatus.PRECONDITION_FAILED);
         }
 
+        boolean recaptchaEnabled = sm.getValueAsBool(Settings.SYSTEM_USERSELFREGISTRATION_RECAPTCHA_ENABLE);
+
+        if (recaptchaEnabled) {
+            boolean validRecaptcha = RecaptchaChecker.verify(userRegisterDto.getCaptcha(),
+                sm.getValue(Settings.SYSTEM_USERSELFREGISTRATION_RECAPTCHA_SECRETKEY));
+            if (!validRecaptcha) {
+                return new ResponseEntity<>(
+                    messages.getString("recaptcha_not_valid"), HttpStatus.PRECONDITION_FAILED);
+            }
+        }
+
         final UserRepository userRepository = context.getBean(UserRepository.class);
-        if (userRepository.findOneByEmail(user.getEmail()) != null) {
+        if (userRepository.findOneByEmail(userRegisterDto.getEmail()) != null) {
             return new ResponseEntity<>(String.format(
                 messages.getString("user_with_that_email_found"),
-                user.getEmail()
+                userRegisterDto.getEmail()
             ), HttpStatus.PRECONDITION_FAILED);
         }
+
+        if (userRepository.findByUsernameIgnoreCase(userRegisterDto.getEmail()).size() != 0) {
+            // username is ignored and the email is used as username in selfregister
+            return new ResponseEntity<>(String.format(
+                messages.getString("user_with_that_username_found"),
+                userRegisterDto.getEmail()
+            ), HttpStatus.PRECONDITION_FAILED);
+        }
+
+        User user = new User();
+
+        // user.setUsername(userRegisterDto.getUsername());
+        user.setName(userRegisterDto.getName());
+        user.setOrganisation(userRegisterDto.getOrganisation());
+        user.setProfile(Profile.findProfileIgnoreCase(userRegisterDto.getProfile()));
+        user.getAddresses().add(userRegisterDto.getAddress());
+        user.getEmailAddresses().add(userRegisterDto.getEmail());
 
 
         String password = User.getRandomPassword();
@@ -125,7 +153,7 @@ public class RegisterApi {
         user.setUsername(user.getEmail());
         Profile requestedProfile = user.getProfile();
         user.setProfile(Profile.RegisteredUser);
-        userRepository.save(user);
+        user = userRepository.save(user);
 
         Group targetGroup = getGroup(context);
         if (targetGroup != null) {
@@ -168,7 +196,7 @@ public class RegisterApi {
             sm.getNodeURL(),
             sm.getSiteName()
         );
-        if (!MailUtil.sendMail(catalogAdminEmail, subject, message, null, sm)) {
+        if (!MailUtil.sendMail(user.getEmail(), subject, message, null, sm)) {
             return new ResponseEntity<>(String.format(
                 messages.getString("mail_error")), HttpStatus.PRECONDITION_FAILED);
         }

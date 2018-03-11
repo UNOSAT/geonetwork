@@ -128,35 +128,73 @@
       replace: true,
       templateUrl: '../../catalog/components/viewer/graticule/partials/' +
           'graticule.html',
+      scope: true,
       link: function(scope, element, attrs) {
+        var graticuleOgcService = scope.$eval(attrs['graticuleOgcService']);
+        var graticule = null;
 
-        var map = scope.$eval(attrs['gnGraticuleBtn']);
-
-        var graticule = new ol.Graticule({
-          strokeStyle: new ol.style.Stroke({
-            color: 'rgba(255,120,0,0.9)',
-            width: 1,
-            lineDash: [0.5, 1]
-          })
-        });
-
-        Object.defineProperty(graticule, 'active', {
-          get: function() {
-            return !!graticule.getMap();
-          },
-          set: function(val) {
-            if (val) {
-              graticule.setMap(map);
-              map.on('postcompose', renderCoords);
-
-            } else {
-              graticule.setMap(null);
-              map.un('postcompose', renderCoords);
-            }
+        // for now, only WMS services are supported by the directive
+        if (graticuleOgcService) {
+          if (!graticuleOgcService.layer || !graticuleOgcService.url) {
+            console.error('Missing property for graticule layer ' +
+                '(required: \'url\', \'layer\'):\n', graticuleOgcService);
+            return;
           }
-        });
+
+          graticule = new ol.layer.Image({
+            source: new ol.source.ImageWMS({
+              url: graticuleOgcService.url,
+              params: { 'LAYERS': graticuleOgcService.layer },
+              ratio: 1
+            })
+          });
+          graticule.background = true;  // do not save it in context
+          graticule.setZIndex(1000);    // TODO: uncomment after OL upgrade
+          graticule.setVisible(false);  // hidden by default
+
+          // 'active' prop makes ogc layer visible/invisible
+          Object.defineProperty(graticule, 'active', {
+            get: function() {
+              return graticule.getVisible();
+            },
+            set: function(val) {
+              // add layer to map if not already done
+              var map = scope.$eval(attrs['gnGraticuleBtn']);
+              if (map.getLayers().getArray().indexOf(graticule) === -1) {
+                map.addLayer(graticule);
+              }
+              graticule.setVisible(val);
+            }
+          });
+        } else {
+          graticule = new ol.Graticule({
+            strokeStyle: new ol.style.Stroke({
+              color: 'rgba(255,120,0,0.9)',
+              width: 1,
+              lineDash: [0.5, 1]
+            })
+          });
+
+          // 'active' prop adds or remove ol.Graticule object
+          Object.defineProperty(graticule, 'active', {
+            get: function() {
+              return !!graticule.getMap();
+            },
+            set: function(val) {
+              if (val) {
+                graticule.setMap(map);
+                map.on('postcompose', renderCoords);
+
+              } else {
+                graticule.setMap(null);
+                map.un('postcompose', renderCoords);
+              }
+            }
+          });
+        }
         scope.graticule = graticule;
 
+        var map = scope.$eval(attrs['gnGraticuleBtn']);
         var transform = ol.proj.getTransform(map.getView().getProjection(),
             'EPSG:4326');
 
@@ -200,7 +238,7 @@
             transform(intersectionPoint, lonLat);
             textStyle = getTextStyle(lonLat[0], 0, 10, 'EW');
             vectorContext.setTextStyle(textStyle);
-            vectorContext.drawPointGeometry(point);
+            vectorContext.drawGeometry(point);
             vectorContext.setTextStyle(null);
 
           }
@@ -226,7 +264,7 @@
             transform(intersectionPoint, lonLat);
             textStyle = getTextStyle(lonLat[1], -30, 0, 'NS');
             vectorContext.setTextStyle(textStyle);
-            vectorContext.drawPointGeometry(point, null);
+            vectorContext.drawGeometry(point, null);
             vectorContext.setTextStyle(null);
 
           }

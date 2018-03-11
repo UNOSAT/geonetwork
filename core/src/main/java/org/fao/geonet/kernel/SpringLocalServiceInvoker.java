@@ -37,6 +37,10 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.lang.StringUtils;
+
 public class SpringLocalServiceInvoker {
 
     @Autowired
@@ -63,6 +67,10 @@ public class SpringLocalServiceInvoker {
     public Object invoke(String uri) throws Exception {
         MockHttpServletRequest request = prepareMockRequestFromUri(uri);
         MockHttpServletResponse response = new MockHttpServletResponse();
+        return invoke(request, response);
+    }
+
+    public Object invoke(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         HandlerExecutionChain handlerExecutionChain = requestMappingHandlerMapping.getHandler(request);
         HandlerMethod handlerMethod = (HandlerMethod) handlerExecutionChain.getHandler();
@@ -72,24 +80,49 @@ public class SpringLocalServiceInvoker {
         servletInvocableHandlerMethod.setHandlerMethodReturnValueHandlers(returnValueHandlers);
         servletInvocableHandlerMethod.setDataBinderFactory(webDataBinderFactory);
 
-        return servletInvocableHandlerMethod.invokeForRequest(new ServletWebRequest(request, response), null, new Object[0]);
+        Object o = servletInvocableHandlerMethod.invokeForRequest(new ServletWebRequest(request, response), null, new Object[0]);
+        // check whether we need to further process a "forward:" response
+        if (o instanceof String) {
+          String checkForward = (String)o;
+          if (checkForward.startsWith("forward:")) {
+            //
+            // if the original url ends with the first component of the fwd url, then concatenate them, otherwise
+            // just invoke it and hope for the best...
+            // eg. local://srv/api/records/urn:marlin.csiro.au:org:1_organisation_name
+            // returns forward:urn:marlin.csiro.au:org:1_organisation_name/formatters/xml
+            // so we join the original url and the forwarded url as:
+            // /api/records/urn:marlin.csiro.au:org:1_organisation_name/formatters/xml and invoke it.
+            //
+            String fwdUrl = StringUtils.substringAfter(checkForward,"forward:");
+						String lastComponent = StringUtils.substringAfterLast(request.getRequestURI(),"/");
+            if (lastComponent.length() > 0 && StringUtils.startsWith(fwdUrl, lastComponent)) {
+							return invoke(request.getRequestURI()+StringUtils.substringAfter(fwdUrl,lastComponent));
+						} else {
+							return invoke(fwdUrl);	
+           	} 
+          }
+        }
+        return o;
     }
 
+    /**
+     * prepareMockRequestFromUri will search for spring services that match
+     * the request and execute them. Typically used for the local:// xlink
+     * speed up. Accepts urls prefixed with local://<nodename> eg. 
+     * local://srv/api/records/.. 
+     * but also urls prefixed with the nodename only eg. '/srv/api/records/..'
+     */
     private MockHttpServletRequest prepareMockRequestFromUri(String uri) {
-        String requestURI = uri.replace("local://" + nodeId, "").split("\\?")[0];
+        String requestURI = uri.replace("local:/","").replace("/"+nodeId, "").split("\\?")[0];
         MockHttpServletRequest request = new MockHttpServletRequest("GET", requestURI);
         request.setSession(new MockHttpSession());
-        boolean doesUriContainsParams = uri.indexOf("?") > 0;
-        if (doesUriContainsParams) {
-            String[] splits = uri.split("\\?");
-            if (splits.length > 1) {
-                String params = splits[1];
-                for (String param : params.split("&")) {
-                    String[] parts = param.split("=");
-                    String name = parts[0];
-                    String value = parts[1];
-                    request.addParameter(name, value);
-                }
+        String[] splits = uri.split("\\?");
+        if (splits.length > 1) {
+            String params = splits[1];
+            for (String param : params.split("&")) {
+                String[] parts = param.split("=");
+                String name = parts[0];
+                request.addParameter(name, parts.length == 2 ? parts[1] : "");
             }
         }
         return request;

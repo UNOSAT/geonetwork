@@ -5,6 +5,20 @@
 @import (less) "../lib/jquery.ext/jquery.fileupload-ui.css";
 @import "gn.less";
 
+
+@import "../lib/style/bootstrap/less/glyphicons.less";
+
+//url is wrong on original file
+// Import the fonts
+@font-face {
+  font-family: 'Glyphicons Halflings';
+  src: ~"url('../catalog/lib/style/bootstrap/fonts/@{icon-font-name}.eot')";
+  src: ~"url('../catalog/lib/style/bootstrap/fonts/@{icon-font-name}.eot?#iefix') format('embedded-opentype')",
+       ~"url('../catalog/lib/style/bootstrap/fonts/@{icon-font-name}.woff') format('woff')",
+       ~"url('../catalog/lib/style/bootstrap/fonts/@{icon-font-name}.ttf') format('truetype')",
+       ~"url('../catalog/lib/style/bootstrap/fonts/@{icon-font-name}.svg#@{icon-font-svg-id}') format('svg')";
+}
+
 body {
 }
 
@@ -92,7 +106,6 @@ input[type=text], input[type=number], select {
 
 .gn-editor-container {
   padding: 20px 5px;
-  margin-top: 60px;
 }
 
 @media only screen and (max-width: 815px) {
@@ -108,11 +121,6 @@ input[type=text], input[type=number], select {
 
 
 #gn-directory-container {
-  // note: this could be useful in other places in gn.less
-  .flex-spacer {
-    flex-grow: 1;
-  }
-
   .gn-facet-dropdown {
     min-width: 300px;
     padding: 0px 10px;
@@ -140,12 +148,16 @@ input[type=text], input[type=number], select {
     }
   }
 
+  .search-options-header.row {
+    margin-left: -15px;
+    margin-right: -15px;
+  }
+
   .directory-entries-list {
-    margin: 0 1em;
+    margin: 0.7em 0em;
+    padding: 0px;
 
     & > li {
-      display: flex;
-      flex-direction: column;
       @padding: 6px;
 
       & > *:not(:last-child) {
@@ -154,23 +166,6 @@ input[type=text], input[type=number], select {
 
       & > * > *:not(:last-child) {
         margin-right: @padding;
-      }
-
-      .entry-title {
-        display: flex;
-        flex-direction: row;
-
-        a {
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          min-width: 0px;
-        }
-
-        .badge {
-          flex-shrink: 0;
-          border-radius: 3px;
-        }
       }
 
       .entry-info {
@@ -182,11 +177,6 @@ input[type=text], input[type=number], select {
         }
       }
     }
-  }
-
-  .search-options-header {
-    display: flex;
-    flex-direction: row;
   }
 
   .entry-editor {
@@ -226,14 +216,29 @@ input[type=text], input[type=number], select {
       }
     }
   }
+
+  .dropdown-menu {
+    max-width: 40em;
+  }
 }
 
 .gn-editor-board {
   .table.gn-results-editor td {
-    padding: 6px;
-
-    .gn-record-details {
-      padding-left: 38px;
+    padding: 6px 3px;
+    .btn-group {
+      margin-top: 3px;
+      .btn-single {
+        border-radius: 4px;
+      }
+    }
+    .col-lg-8, .col-md-8, .col-lg-4, .col-md-4 {
+      padding-left: 0;
+      padding-right: 0;
+    }
+    @media (min-width: @screen-md-min) {
+      .btn-group {
+        float: right;
+      }
     }
   }
 }
@@ -303,6 +308,17 @@ form.gn-editor {
 
   .form-group {
     margin-bottom: 0px;
+  }
+  div.well {
+    .form-group {
+      margin-bottom: 10px;
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+    .btn + .form-group {
+      margin-top: 10px;
+    }
   }
 
   legend {
@@ -471,7 +487,8 @@ form.gn-editor {
       padding-right: 0px;
   }
 
-  label.gn-required:after, .gn-required > label:after {
+  label.gn-required:after, .gn-required > label:after,
+  label.gn-mandatory:after, .gn-mandatory > label:after {
       content: "*";
       font-size: 2.5em;
       margin: 7px 0 0 7px;
@@ -573,6 +590,12 @@ table.gn-data-store {
     text-align: center;
   }
 }
+/* verical layout for the add metadata page */
+#gn-new-metadata-container.new-metadata-vertical {
+  .gn-record-type > a.list-group-item {
+    text-align: left;
+  }
+}
 
 .gn-schematron-title {
   word-wrap: break-word;
@@ -588,21 +611,6 @@ table.gn-data-store {
 
 .schematron-result-list-label-info .text-info {
   color: @label-primary-bg;
-}
-
-.gn-multilingual-field {
-  .nav > li > a {
-    padding: 2px 5px;
-    margin-top: 2px;
-    font-size: 8px;
-  }
-  .label {
-    line-height: 2;
-    font-size: 8px;
-  }
-  .no-data a {
-    color: @gray-light;
-  }
 }
 
 .gn-batch-editor {
@@ -647,6 +655,23 @@ form.gn-tab-xml {
         width: 75%;
       }
     }
+  }
+}
+
+// search filter boxes
+// search terms
+.searchterm {
+  margin: 0 5px 5px 0;
+  max-width: 100%;
+  span {
+    max-width: 98%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    float: left;
+  }
+  i {
+    margin-top: -15px;
+    margin-left: 5px;
   }
 }
 
@@ -709,9 +734,6 @@ form.gn-tab-xml {
     strong {
       font-weight: normal;
     }
-    .fa {
-      display: none;
-    }
   }
 
   ng-pluralize {
@@ -737,11 +759,6 @@ gn-directory-associated-md {
     margin: 8px 12px;
     width: 30em;
     display: block;
-  }
-
-  // general purpose flex spacer
-  .spacer {
-    flex-grow: 1;
   }
 
   .form-controls {
@@ -777,18 +794,19 @@ gn-directory-associated-md {
 // md type widget (used only in editor for now)
 gn-md-type-widget {
   display: inline-block;
-
   & > div {
     border-radius: 1000px;
-    width: 1.8em;
-    height: 1.8em;
-    line-height: 2em;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
     text-align: center;
-    font-size: 0.9em;
+    font-size: 14px;
     position: relative;
     color: white;
     margin-top: -0.2em;
+    margin-bottom: -0.4em;
     background-color: @gray-light;
+    overflow: hidden;
 
     &.valid-status-1 {
       background-color: @gray-light;
@@ -812,5 +830,26 @@ gn-md-type-widget {
       left: 0px;
       right: 0px;
     }
+  }
+}
+.gn-editor-board {
+  .table.gn-results-editor td {
+    gn-md-type-widget {
+      margin-top: 5px;
+    }
+  }
+}
+
+
+gn-bounding-polygon {
+  label {
+    font-size: 0.9em;
+    line-height: 0.8em;
+    margin-bottom: 0px;
+  }
+
+  textarea {
+    font-family: Consolas, monospace;
+    font-size: 0.9em;
   }
 }

@@ -34,10 +34,19 @@
    * @description
    */
   module.directive('gnMainViewer', [
-    'gnMap', 'gnConfig', 'gnSearchLocation',
-    'gnSearchSettings', 'gnViewerSettings',
-    function(gnMap, gnConfig, gnSearchLocation,
-             gnSearchSettings, gnViewerSettings) {
+    'gnMap',
+    'gnConfig',
+    'gnSearchLocation',
+    'gnMetadataManager',
+    'gnSearchSettings',
+    'gnViewerSettings',
+    'gnAlertService',
+    'gnMeasure',
+    'gnViewerService',
+    '$location', '$q', '$translate',
+    function(gnMap, gnConfig, gnSearchLocation, gnMetadataManager,
+             gnSearchSettings, gnViewerSettings, gnAlertService, gnMeasure,
+             gnViewerService, $location, $q, $translate) {
       return {
         restrict: 'A',
         replace: true,
@@ -55,14 +64,41 @@
                 kml: false
               };
 
+              /** these URL can be set by the viewer service **/
+              scope.addLayerUrl = {
+                wms: '',
+                wmts: ''
+              };
+
               /** Define object to receive measure info */
               scope.measureObj = {};
+
+              /** measure interaction */
+              scope.mInteraction = gnMeasure.create(scope.map,
+                  scope.measureObj, scope);
 
               /** Define vector layer used for drawing */
               scope.drawVector;
 
-              /** print definition */
-              scope.activeTools = {};
+              /** active tool selector */
+              scope.activeTools = {
+                addLayers: false,
+                contexts: false,
+                filter: false,
+                layers: false,
+                print: false,
+                processes: false
+              };
+
+              /** optional tabs **/
+              scope.disabledTools = gnViewerSettings.mapConfig.disabledTools;
+
+              /** wps process tabs */
+              scope.wpsTabs = {
+                byUrl: true,
+                recent: false
+              };
+              scope.selectedWps = {};
 
               scope.zoom = function(map, delta) {
                 gnMap.zoom(map, delta);
@@ -125,6 +161,139 @@
                 scope.ol3d.setEnabled(
                     scope.is3dEnabled = !scope.ol3d.getEnabled());
               };
+
+              function addLayerFromLocation(config) {
+                if (angular.isUndefined(config.name)) {
+                  // This is a service without a layer name
+                  // Display the add layer from service panel
+
+                  gnViewerService.openTool('addLayers', 'services');
+                  scope.activeTools.addLayers = true;
+                  scope.addLayerTabs.services = true;
+                  scope.addLayerUrl[config.type || 'wms'] = config.url;
+                } else if (config.name) {
+                  gnViewerService.openTool('layers');
+
+                  var loadLayerPromise = gnMap[
+                      config.type === 'wmts' ?
+                      'addWmtsFromScratch' : 'addWmsFromScratch'
+                      ](
+                      scope.map, config.url,
+                      config.name, undefined, config.md);
+
+                  loadLayerPromise.then(function(layer) {
+                    if (layer) {
+                      gnMap.feedLayerWithRelated(layer, config.group);
+
+                      var extent = layer.get('cextent') || layer.get('extent');
+                      gnAlertService.addAlert({
+                        msg: $translate.instant('layerAdded', {
+                          layer: layer.get('label'),
+                          extent: extent ? extent.join(',') : ''
+                        }),
+                        type: 'success'
+                      }, 5000);
+                    }
+
+
+                  }, function(error) {
+                    console.log(error);
+                  });
+                }
+              };
+
+              // Define UI status based on the location parameters
+              function initFromLocation() {
+
+                // Add command allows to add element to the map
+                // based on an array of objects.
+                var addCmd = $location.search()['add'];
+                if (addCmd) {
+                  addCmd = angular.fromJson(decodeURIComponent(addCmd));
+
+                  angular.forEach(addCmd, function(config) {
+
+                    var layer = gnMap.getLayerInMap(scope.map,
+                        config.name, config.url);
+                    if (layer !== null) {
+                      var extent = layer.get('cextent') || layer.get('extent');
+                      gnAlertService.addAlert({
+                        msg: $translate.instant('layerIsAlreadyInMap', {
+                          layer: config.name,
+                          url: config.url,
+                          extent: extent ? extent.join(',') : ''
+                        }),
+                        delay: 5000,
+                        type: 'warning'});
+                      // TODO: You may want to add more than one time
+                      // a layer with different styling for example ?
+                      // Ask confirmation to the user ?
+                      gnViewerService.openTool('layers');
+                      return;
+                    }
+
+
+                    // Collect the md info from a search
+                    if (config.uuid) {
+                      gnMetadataManager.
+                          getMdObjByUuid(config.uuid).then(function(md) {
+                            config.md = md;
+                            // TODO : If there is no config.layer
+                            // try to extract them from the md and
+                            // add all layers from the records.
+                            addLayerFromLocation(config);
+                          }, function(nullMd) {
+                            // BTW, the metadataUrl from the capability
+                            // may provide a link to the metadata record
+                            scope.$emit('StatusUpdated', {
+                              msg: $translate.instant(
+                              'layerWillBeAddedToMapButRecordNotFound', {
+                                uuid: config.uuid,
+                                layer: config.name,
+                                url: config.url
+                              }),
+                              timeout: 0,
+                              type: 'warning'});
+                            addLayerFromLocation(config);
+                          });
+                    } else {
+                      addLayerFromLocation(config);
+                    }
+                  });
+                }
+
+                var activateCmd = $location.search()['activate'];
+                if (activateCmd) {
+                  var layers = activateCmd.split(',');
+                  for (var i = 0; i < layers.length; i++) {
+                    var layer = gnMap.getLayerInMap(scope.map, layers[i]);
+                    layer.visible = true;
+                  }
+                }
+
+                if (activateCmd || addCmd) {
+                  // Replace location with action by a stateless path
+                  // to not being able to replay the action with browser
+                  // history.
+                  $location.path('/map')
+                      .search('add', null)
+                      .search('activate', null)
+                      .replace();
+                }
+
+
+                // Define which tool is active
+                if ($location.search()['tool']) {
+                  scope.activeTools[$location.search()['tool']] = true;
+                }
+
+                if ($location.search()['extent']) {
+                  scope.map.getView().fit(
+                      $location.search()['extent'].split(','),
+                      scope.map.getSize());
+                }
+              };
+
               // Turn off 3D mode when not using it because
               // it slow down the application.
               // TODO: improve
@@ -134,25 +303,10 @@
                 }
               });
 
+              scope.$on('$locationChangeSuccess', function(next, current) {
+                initFromLocation();
+              });
 
-
-
-              scope.zoomToYou = function(map) {
-                if (navigator.geolocation) {
-                  navigator.geolocation.getCurrentPosition(function(position) {
-                    var position = new ol.geom.Point([
-                      position.coords.longitude,
-                      position.coords.latitude]);
-                    map.getView().setCenter(
-                        position.transform(
-                        'EPSG:4326',
-                        map.getView().getProjection()).getFirstCoordinate()
-                    );
-                  });
-                } else {
-
-                }
-              };
               var div = document.createElement('div');
               div.className = 'overlay';
               var overlay = new ol.Overlay({
@@ -161,6 +315,58 @@
               });
               scope.map.addOverlay(overlay);
 
+              // watch open tool specified by the service; this will allow code
+              // from anywhere to interact with the viewer tabs
+              // note: this uses a deep equality to check the tool properties
+              scope.$watchCollection(function() {
+                return gnViewerService.getOpenedTool();
+              }, function(openedTool) {
+                // open the correct tool using gi-btn magic
+                switch (openedTool.name.toLowerCase()) {
+                  case 'addlayers':
+                    scope.activeTools.addLayers = true; break;
+                  case 'contexts':
+                    scope.activeTools.contexts = true; break;
+                  case 'filter':
+                    scope.activeTools.filter = true; break;
+                  case 'layers':
+                    scope.activeTools.layers = true; break;
+                  case 'print':
+                    scope.activeTools.print = true; break;
+                  case 'processes':
+                    scope.activeTools.processes = true; break;
+                  case 'measure':
+                    scope.mInteraction.active = true; break;
+                  case 'annotations':
+                    scope.drawVector.active = true; break;
+                }
+
+                // handle addlayers tab & url
+                if (scope.activeTools.addLayers) {
+                  switch (openedTool.tab) {
+                    case 'wms':
+                    case 'wmts':
+                      scope.addLayerUrl[openedTool.tab] = openedTool.url;
+                      break;
+                  }
+                  scope.addLayerTabs.services = true;
+                }
+
+                // handle processes tool
+                if (scope.activeTools.processes && openedTool.url) {
+                  scope.wpsTabs.byUrl = true;
+                  scope.selectedWps.url = openedTool.url;
+                }
+
+
+                openedTool.name = '';
+              }, true);
+
+              // ogc graticule
+              var ogcGraticule = gnViewerSettings.mapConfig.graticuleOgcService;
+              if (ogcGraticule && ogcGraticule.layer && ogcGraticule.url) {
+                scope.graticuleOgcService = ogcGraticule;
+              }
             },
             post: function postLink(scope, iElement, iAttrs, controller) {
               //TODO: find another solution to render the map
@@ -229,6 +435,11 @@
         };
       }]);
 
+  /**
+   * @ngdoc directive
+   * @name gn_viewer_directive:gnvToolsBtn
+   * @deprecated Use giBtn and giBtnGroup instead
+   */
   module.directive('gnvToolsBtn', [
     function() {
       return {
@@ -261,6 +472,11 @@
       };
     }]);
 
+  /**
+   * @ngdoc directive
+   * @name gn_viewer_directive:gnvClosePanel
+   * @deprecated Use giBtn and giBtnGroup instead
+   */
   module.directive('gnvClosePanel', [
     function() {
       return {

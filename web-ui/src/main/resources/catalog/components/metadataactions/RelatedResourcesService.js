@@ -47,75 +47,79 @@
         'gnMap',
         'gnOwsCapabilities',
         'gnSearchSettings',
+        'gnViewerSettings',
         'ngeoDecorateLayer',
         'gnSearchLocation',
         'gnOwsContextService',
         'gnWfsService',
+        'gnAlertService',
         '$filter',
-        function(gnMap, gnOwsCapabilities, gnSearchSettings,
+        function(gnMap, gnOwsCapabilities, gnSearchSettings, gnViewerSettings,
             ngeoDecorateLayer, gnSearchLocation, gnOwsContextService,
-            gnWfsService, $filter) {
+            gnWfsService, gnAlertService, $filter) {
 
           this.configure = function(options) {
             angular.extend(this.map, options);
           };
 
-          var addWMSToMap = function(link, md) {
-            // Link is localized when using associated resource service
-            // and is not when using search
-            var url = $filter('gnLocalized')(link.url) || link.url;
-            var layerName = $filter('gnLocalized')(link.title) || link.title;
-            if (layerName) {
-              gnMap.addWmsFromScratch(gnSearchSettings.viewerMap,
-                 url, layerName, false, md);
-            } else {
-              gnMap.addOwsServiceToMap(url, 'WMS');
-            }
-
-            gnSearchLocation.setMap();
+          /**
+           * Check if the link contains a valid layer protocol
+           * as configured in gnSearchSettings and check if it
+           * has a layer name.
+           *
+           * If not, then only service information is displayed.
+           *
+           * @param {object} link
+           * @return {boolean}
+           */
+          this.isLayerProtocol = function(link) {
+            return Object.keys(link.title).length > 0 &&
+               gnSearchSettings.mapProtocols.layers.
+               indexOf(link.protocol) > -1;
           };
+
+          var addWMSToMap = gnViewerSettings.resultviewFns.addMdLayerToMap;
 
 
           var addWFSToMap = function(link, md) {
             var url = $filter('gnLocalized')(link.url) || link.url;
-            var ftName = $filter('gnLocalized')(link.title);
-            if (ftName) {
-              gnMap.addWfsFromScratch(gnSearchSettings.viewerMap,
-                 url, ftName, false, md);
-            } else {
+
+            var isServiceLink =
+               gnSearchSettings.mapProtocols.services.
+               indexOf(link.protocol) > -1;
+
+            var isGetFeatureLink =
+               (url.toLowerCase().indexOf('request=getfeature') > -1);
+
+            if (isServiceLink && !isGetFeatureLink) {
               gnMap.addOwsServiceToMap(url, 'WFS');
+            } else {
+              var ftName = '';
+
+              if (isGetFeatureLink) {
+                var name = 'typename';
+                var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+                var results = regex.exec(url);
+
+                if (results) {
+                  ftName = decodeURIComponent(results[1].replace(/\+/g, ' '));
+                }
+              } else {
+                ftName = $filter('gnLocalized')(link.title);
+              }
+
+              if (ftName) {
+                gnMap.addWfsFromScratch(gnSearchSettings.viewerMap,
+                   url, ftName, false, md);
+              } else {
+                gnMap.addOwsServiceToMap(url, 'WFS');
+              }
             }
             gnSearchLocation.setMap();
           };
 
 
-          function addWMTSToMap(link, md) {
-            var url = $filter('gnLocalized')(link.url) || link.url;
-            if (link.name &&
-                (angular.isArray(link.name) && link.name.length > 0)) {
-              angular.forEach(link.name, function(name) {
-                gnOwsCapabilities.getWMTSCapabilities(url).then(
-                   function(capObj) {
-                     var layerInfo = gnOwsCapabilities.getLayerInfoFromCap(
-                     name, capObj, uuid);
-                     gnMap.addWmtsToMapFromCap(
-                     gnSearchSettings.viewerMap, layerInfo, capObj);
-                   });
-              });
-              gnSearchLocation.setMap();
-            } else if (link.name && !angular.isArray(link.name)) {
-              gnOwsCapabilities.getWMTSCapabilities(url).then(
-                  function(capObj) {
-                    var layerInfo = gnOwsCapabilities.getLayerInfoFromCap(
-                   link.name, capObj, uuid);
-                    gnMap.addWmtsToMapFromCap(
-                        gnSearchSettings.viewerMap, layerInfo, capObj);
-                  });
-              gnSearchLocation.setMap();
-            } else {
-              gnMap.addOwsServiceToMap(url, 'WMTS');
-            }
-          };
+          var addWMTSToMap = gnViewerSettings.resultviewFns.addMdLayerToMap;
 
           function addKMLToMap(record, md) {
             var url = $filter('gnLocalized')(record.url) || record.url;
@@ -138,11 +142,19 @@
 
           var openLink = function(record, link) {
             var url = $filter('gnLocalized')(record.url) || record.url;
-            if (url.indexOf('http') == 0 ||
-                url.indexOf('ftp') == 0) {
+            if (url && (url.indexOf('\\') == 0 ||
+               url.indexOf('http') == 0 ||
+               url.indexOf('ftp') == 0)) {
               return window.open(url, '_blank');
-            } else {
+            } else if (url && url.indexOf('www.') == 0) {
+              return window.open('http://' + url, '_blank');
+            } else if (record.title && record.title != '') {
               return window.location.assign(record.title);
+            } else {
+              gnAlertService.addAlert({
+                msg: 'Unable to open link',
+                type: 'success'
+              });
             }
           };
 
@@ -150,6 +162,11 @@
             'WMS' : {
               iconClass: 'fa-globe',
               label: 'addToMap',
+              action: addWMSToMap
+            },
+            'WMSSERVICE' : {
+              iconClass: 'fa-globe',
+              label: 'addServiceLayersToMap',
               action: addWMSToMap
             },
             'WMTS' : {
@@ -162,13 +179,22 @@
               label: 'addToMap',
               action: addWFSToMap
             },
+            'ATOM' : {
+              iconClass: 'fa-globe',
+              label: 'download'
+            },
             'WCS' : {
               iconClass: 'fa-globe',
               label: 'fileLink',
               action: null
             },
-            'MAP' : {
+            'SOS' : {
               iconClass: 'fa-globe',
+              label: 'fileLink',
+              action: null
+            },
+            'MAP' : {
+              iconClass: 'fa-map',
               label: 'mapLink',
               action: addMapToMap
             },
@@ -276,18 +302,29 @@
           };
 
           this.getType = function(resource, type) {
+            resource.locTitle = $filter('gnLocalized')(resource.title);
+            resource.locDescription = $filter('gnLocalized')(resource.description);
+            resource.locUrl = $filter('gnLocalized')(resource.url);
             var protocolOrType = resource.protocol + resource.serviceType;
             // Cas for links
             if (angular.isString(protocolOrType) &&
                 angular.isUndefined(resource['geonet:info'])) {
               if (protocolOrType.match(/wms/i)) {
-                return 'WMS';
+                if (this.isLayerProtocol(resource)) {
+                  return 'WMS';
+                } else {
+                  return 'WMSSERVICE';
+                }
               } else if (protocolOrType.match(/wmts/i)) {
                 return 'WMTS';
               } else if (protocolOrType.match(/wfs/i)) {
                 return 'WFS';
               } else if (protocolOrType.match(/wcs/i)) {
                 return 'WCS';
+              } else if (protocolOrType.match(/sos/i)) {
+                return 'SOS';
+              } else if (protocolOrType.match(/atom/i)) {
+                return 'ATOM';
               } else if (protocolOrType.match(/ows-c/i)) {
                 return 'MAP';
               } else if (protocolOrType.match(/db:/i)) {
@@ -309,8 +346,11 @@
                 } else {
                   return 'LINKDOWNLOAD';
                 }
-              // Anything that is not matched before, gets the link icon
-              } else {
+              } else if (protocolOrType.match(/dataset/i)) {
+                return 'LINKDOWNLOAD';
+              } else if (protocolOrType.match(/link/i)) {
+                return 'LINK';
+              } else if (protocolOrType.match(/website/i)) {
                 return 'LINK';
               }
             }

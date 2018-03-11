@@ -330,10 +330,18 @@
       $scope.getTpl = function(pageMenu) {
         $scope.type = pageMenu.defaultTab;
         $.each(pageMenu.tabs, function(index, value) {
-          if (value.type === $routeParams.tab) {
+          if ((angular.isUndefined($routeParams.dashboard) &&
+              value.type === $routeParams.tab) || (
+              angular.isDefined($routeParams.dashboard) &&
+              value.href.indexOf(
+              encodeURIComponent($routeParams.dashboard)) !== -1)
+          ) {
             $scope.type = $routeParams.tab;
+            $scope.href = value.href;
           }
         });
+        //do not try to load undefined.html
+        if (!pageMenu || !pageMenu.folder || !$scope.type) return '';
         return tplFolder + pageMenu.folder + $scope.type + '.html';
       };
 

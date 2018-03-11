@@ -58,6 +58,10 @@ public abstract class AbstractParams {
     public static final String TRANSLATIONS = "translations";
     private static final long MAX_EVERY = Integer.MAX_VALUE;
 
+    public enum OverrideUuid {
+        SKIP, OVERRIDE, RANDOM
+    }
+
     //---------------------------------------------------------------------------
     //---
     //--- Variables
@@ -79,6 +83,7 @@ public abstract class AbstractParams {
     private String ownerIdGroup;
     
     private String ownerIdUser;
+    private OverrideUuid overrideUuid;
 
 
     private List<Privileges> alPrivileges = new ArrayList<>();
@@ -179,6 +184,9 @@ public abstract class AbstractParams {
         setEvery(Util.getParam(opt, "every", "0 0 0 * * ?"));
 
         setOneRunOnly(Util.getParam(opt, "oneRunOnly", false));
+        setOverrideUuid(
+                OverrideUuid.valueOf(
+                        Util.getParam(opt, "overrideUuid",  OverrideUuid.SKIP.name())));
 
         getTrigger();
 
@@ -254,6 +262,10 @@ public abstract class AbstractParams {
         setEvery(Util.getParam(opt, "every", getEvery()));
         setOneRunOnly(Util.getParam(opt, "oneRunOnly", isOneRunOnly()));
 
+        setOverrideUuid(
+                OverrideUuid.valueOf(
+                        Util.getParam(opt, "overrideUuid", getOverrideUuid().name())));
+
         getTrigger();
 
         setImportXslt(Util.getParam(content, "importxslt", getImportXslt()));
@@ -298,6 +310,7 @@ public abstract class AbstractParams {
         copy.setUuid(getUuid());
         copy.setTranslations(getTranslations());
         copy.setOwnerId(getOwnerId());
+        copy.setOwnerIdUser(getOwnerIdUser());
         copy.setOwnerIdGroup(getOwnerIdGroup());
 
         copy.setUseAccount(isUseAccount());
@@ -306,6 +319,7 @@ public abstract class AbstractParams {
 
         copy.setEvery(getEvery());
         copy.setOneRunOnly(isOneRunOnly());
+        copy.setOverrideUuid(getOverrideUuid());
 
         copy.setImportXslt(getImportXslt());
         copy.setValidate(getValidate());
@@ -572,4 +586,13 @@ public abstract class AbstractParams {
     public void setOwnerIdUser(String ownerIdUser) {
         this.ownerIdUser = ownerIdUser;
     }
+
+    public OverrideUuid getOverrideUuid() {
+        return overrideUuid;
+    }
+
+    public void setOverrideUuid(OverrideUuid overrideUuid) {
+        this.overrideUuid = overrideUuid;
+    }
+
 }

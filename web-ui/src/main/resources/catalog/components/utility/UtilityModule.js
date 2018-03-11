@@ -70,36 +70,36 @@
       })
       .filter('striptags', function() {
         return function(value, allowed) {
-          
+
           if (angular.isArray(value)) {
-            
+
             allowed = (((allowed || '') + '').toLowerCase().
                 match(/<[a-z][a-z0-9]*>/g) || []).join('');
             var tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
                 commentsAndPhpTags = /<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi;
-            
+
             var finalText = '';
-            
+
             angular.forEach(value, function(content, key) {
-              if(content) {
-                finalText +=  content.replace(commentsAndPhpTags, '').
-                replace(tags, function($0, $1) {
-                  return allowed.indexOf(
+              if (content) {
+                finalText += content.replace(commentsAndPhpTags, '').
+                    replace(tags, function($0, $1) {
+                      return allowed.indexOf(
                           '<' + $1.toLowerCase() + '>') > -1 ? $0 : '';
-                });
-              } 
+                    });
+              }
             });
-            
+
             return finalText;
           }
-          
-          
+
+
           if (!value) {
             return value;
-          } 
-          
-          if(angular.isString(value)) {
-          
+          }
+
+          if (angular.isString(value)) {
+
             allowed = (((allowed || '') + '').toLowerCase().
                 match(/<[a-z][a-z0-9]*>/g) || []).join('');
             var tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
@@ -109,9 +109,9 @@
                   return allowed.indexOf(
                           '<' + $1.toLowerCase() + '>') > -1 ? $0 : '';
                 });
-          } 
-          
-          
+          }
+
+
         };
       })
 
@@ -122,6 +122,38 @@
           return text ? String(text).replace(/<[^>]+>+/gm, '') : '';
         };
       })
+
+      /* filter to check if a link is a getcapabilities request */
+      .filter('asGetCapabilities', function() {
+        return function(input,protocol,version) {
+          if (!input) return "";
+          //check protocol
+          if (!protocol) protocol = "WMS"
+          //check if starts with http
+          if (input.indexOf("http")!=0) input="http://"+input;
+          //check if capabilities is there
+          if (input.toLowerCase().indexOf("getcapabilities")==-1){
+            if (input.indexOf('\?')==-1) input=input+"?";
+            input=input+"&request=GetCapabilities&service="+protocol.toUpperCase()+(typeof(version)!='undefined'?("&version="+version):"");
+          }
+          return input;
+        };
+      })
+
+      /* filter to check if a value is an array, and if so,
+         return param or empty string quite some of the gn json returns
+         empty array if undefined or empty string was intended */
+      .filter('asArray', function() {
+        return function(input) {
+          if (!input) return [];
+          if (angular.isArray(input)) {
+            return input;
+          } else {
+            return [input];
+          }
+        };
+      })
+
 
       /* filter to check if a value is an empty array, and if so,
          return param or empty string quite some of the gn json returns

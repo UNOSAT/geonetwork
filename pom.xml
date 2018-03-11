@@ -29,7 +29,7 @@
   <groupId>org.geonetwork-opensource</groupId>
   <artifactId>geonetwork</artifactId>
   <packaging>pom</packaging>
-  <version>3.3.0-SNAPSHOT</version>
+  <version>3.4.2-SNAPSHOT</version>
   <name>GeoNetwork opensource</name>
   <description>GeoNetwork opensource is a standards based, Free and
     Open Source catalog application to manage spatially referenced
@@ -136,7 +136,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-clean-plugin</artifactId>
-          <version>2.5</version>
+          <version>2.6.1</version>
         </plugin>
         <plugin>
           <groupId>net.alchim31.maven</groupId>
@@ -512,6 +512,11 @@
         <version>${httpcomponents.version}</version>
       </dependency>
       <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpmime</artifactId>
+        <version>${httpcomponents.version}</version>
+      </dependency>
+      <dependency>
         <groupId>xerces</groupId>
         <artifactId>xercesImpl</artifactId>
         <version>2.11.0</version>
@@ -836,6 +841,12 @@
         <groupId>org.postgis</groupId>
         <artifactId>postgis-jdbc</artifactId>
         <version>1.3.3</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.postgis</groupId>
+            <artifactId>postgis-stubs</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.postgresql</groupId>
@@ -948,7 +959,7 @@
       <dependency>
         <groupId>io.springfox</groupId>
         <artifactId>springfox-swagger2</artifactId>
-        <version>2.4.0</version>
+        <version>2.3.1</version>
       </dependency>
       <!-- Persistence dependencies -->
       <dependency>
@@ -1261,21 +1272,27 @@
     <jetty.port>8080</jetty.port>
     <jetty.stop.port>8090</jetty.stop.port>
 
-    <!-- Begin es and camel stuffs -->
-    <es.version>5.4.0</es.version>
-    <es.version.md5>3f28a77368118aec107be24ec9fb6498</es.version.md5>
+    <es.version>5.6.1</es.version>
+    <es.version.md5>9b426819d29ef8dd499c593629feede8</es.version.md5>
     <es.port>9200</es.port>
     <es.host>localhost</es.host>
     <es.url>http://${es.host}:${es.port}</es.url>
     <es.index.features>features</es.index.features>
-    <es.username></es.username>
-    <es.password></es.password>
+    <es.index.records>records</es.index.records>
+    <es.index.searchlogs>searchlogs</es.index.searchlogs>
+
     <!-- to load spring configurations related to es and camel,
     you should use maven "es" profile (defined in web).
     Devs may note that normally (not in this case), many spring profiles can
     be defined at the same time: "active.profiles.spring" is overriden
     in web.xml. -->
     <es.spring.profile></es.spring.profile>
+    <es.username></es.username>
+    <es.password></es.password>
+
+    <kb.version.md5>e44777c3fb7ccfa4300884ce72869180</kb.version.md5>
+    <kb.port>5601</kb.port>
+    <kb.url>http://localhost:${kb.port}</kb.url>
 
     <jms.url>tcp://localhost:61616</jms.url>
     <activemq.version>5.6.0</activemq.version>

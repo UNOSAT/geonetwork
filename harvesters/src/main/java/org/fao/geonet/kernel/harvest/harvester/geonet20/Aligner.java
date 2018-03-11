@@ -195,7 +195,7 @@ public class Aligner {
                 //--- maybe the metadata was unretrievable
 
                 if (id != null) {
-                    dataMan.indexMetadata(id, true);
+                    dataMan.indexMetadata(id, true, null);
                 }
             }
         }
@@ -239,6 +239,11 @@ public class Aligner {
         metadata.getHarvestInfo().
             setHarvested(true).
             setUuid(params.getUuid());
+
+        try {
+            metadata.getSourceInfo().setGroupOwner(Integer.valueOf(params.getOwnerIdGroup()));
+        } catch (NumberFormatException e) {
+        }
 
         @SuppressWarnings("unchecked")
         List<Element> categories = info.getChildren("category");

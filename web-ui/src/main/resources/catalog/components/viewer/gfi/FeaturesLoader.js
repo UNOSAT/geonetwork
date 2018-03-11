@@ -50,7 +50,6 @@
     this.$injector = $injector;
     this.$http = this.$injector.get('$http');
     this.urlUtils = this.$injector.get('gnUrlUtils');
-    this.gnProxyUrl = this.$injector.get('gnGlobalSettings').proxyUrl;
 
     this.layer = config.layer;
     this.map = config.map;
@@ -65,9 +64,6 @@
     return this.loading;
   };
 
-  geonetwork.GnFeaturesLoader.prototype.proxyfyUrl = function(url) {
-    return this.gnProxyUrl + encodeURIComponent(url);
-  };
 
   /**
    *
@@ -88,6 +84,13 @@
         map = this.map,
         coordinates = this.coordinates;
 
+    var uuid;
+    if(layer.get('md')) {
+      uuid = layer.get('md').getUuid();
+    } else if(layer.get('metadataUuid')) {
+      uuid = layer.get('metadataUuid');
+    }
+
     var uri = layer.getSource().getGetFeatureInfoUrl(
         coordinates,
         map.getView().getResolution(),
@@ -99,36 +102,49 @@
     uri += '&FEATURE_COUNT=2147483647';
 
     this.loading = true;
-    this.promise = this.$http.get(
-        this.proxyfyUrl(uri)).then(function(response) {
-
-          this.loading = false;
-          if (layer.ncInfo) {
-            var doc = ol.xml.parse(response.data);
-            var props = {};
-            ['longitude', 'latitude', 'time', 'value'].forEach(function(v) {
-              var node = doc.getElementsByTagName(v);
-              if (node && node.length > 0) {
-                props[v] = ol.xml.getAllTextContent(node[0], true);
-              }
-            });
-            this.features = (props.value && props.value != 'none') ?
-                [new ol.Feature(props)] : [];
-          } else {
-            var format = new ol.format.WMSGetFeatureInfo();
-            this.features = format.readFeatures(response.data, {
-              featureProjection: map.getView().getProjection()
-            });
+    this.promise = this.$http.get(uri).then(function(response) {
+      this.loading = false;
+      if (layer.ncInfo) {
+        var doc = ol.xml.parse(response.data);
+        var props = {};
+        ['longitude', 'latitude', 'time', 'value'].forEach(function(v) {
+          var node = doc.getElementsByTagName(v);
+          if (node && node.length > 0) {
+            props[v] = ol.xml.getAllTextContent(node[0], true);
           }
+        });
+        this.features = (props.value && props.value != 'none') ?
+                [new ol.Feature(props)] : [];
+      } else {
+        var format = new ol.format.WMSGetFeatureInfo();
+        this.features = format.readFeatures(response.data, {
+          featureProjection: map.getView().getProjection()
+        });
+      }
 
-          return this.features;
+      return this.features;
 
-        }.bind(this), function() {
+    }.bind(this), function() {
 
-          this.loading = false;
-          this.error = true;
+      this.loading = false;
+      this.error = true;
 
-        }.bind(this));
+    }.bind(this));
+
+        this.dictionary = null;
+
+        if(uuid) {
+          this.dictionary = this.$http.get('../api/records/'+uuid+'/featureCatalog?_content_type=json')
+          .then(function(response) {
+            if(response.data['decodeMap']!=null) {
+              return response.data['decodeMap'];
+            } else {
+              return null;
+        	}
+          }.bind(this), function(err) {
+        	return null;
+          }.bind(this));
+        }
 
   };
 
@@ -136,11 +152,42 @@
     var pageList = [5, 10, 50, 100];
     var exclude = ['FID', 'boundedBy', 'the_geom', 'thegeom'];
     var $filter = this.$injector.get('$filter');
+    var $q = this.$injector.get('$q');
 
-    return this.promise.then(function(features) {
+    var promises = [
+      this.promise,
+      this.dictionary
+      ];
+
+    return $q.all(promises).then(function(data) {
+
+      features = data[0];
+      dictionary = data[1];
+
       if (!features || features.length == 0) {
         return;
       }
+
+      var data = features.map(function(f) {
+        var obj = f.getProperties();
+        Object.keys(obj).forEach(function(key) {
+          if (exclude.indexOf(key) == -1) {
+            var value = obj[key];
+            if (!(obj[key] instanceof Object)) {
+              obj[key] = $filter('linky')(obj[key], '_blank');
+              if (obj[key]) {
+                obj[key] = obj[key].replace(/>(.)*</, ' ' +
+                    'target="_blank">' + linkTpl + '<');
+              }
+            } else {
+              // Exclude objects which will not be displayed properly
+              exclude.push(key);
+            }
+          }
+        });
+        return obj;
+      });
+
       var columns = Object.keys(features[0].getProperties()).map(function(x) {
         return {
           field: x,
@@ -151,21 +198,20 @@
         };
       });
 
+      if(dictionary  != null) {
+        for (var i = 0; i < columns.length; i++) {
+          if(!angular.isUndefined(dictionary[columns[i]['field']])) {
+            var title = dictionary[columns[i]['field']][0];
+            var desc = dictionary[columns[i]['field']][1];
+            columns[i]['title']  = title;
+            columns[i]['titleTooltip']  = desc;
+          } 
+        }
+      }
+
       return {
         columns: columns,
-        data: features.map(function(f) {
-          var obj = f.getProperties();
-          Object.keys(obj).forEach(function(key) {
-            if (exclude.indexOf(key) == -1) {
-              obj[key] = $filter('linky')(obj[key], '_blank');
-              if (obj[key]) {
-                obj[key] = obj[key].replace(/>(.)*</, ' ' +
-                    'target="_blank">' + linkTpl + '<');
-              }
-            }
-          });
-          return obj;
-        }),
+        data: data,
         pagination: true,
         pageSize: pageList[1],
         pageList: pageList
@@ -313,8 +359,9 @@
 
     // get an update index request url with geometry filter based on a point
     var url = this.indexObject.baseUrl;
-    var state = this.indexObject.getState();
-    var searchQuery = this.indexObject.getSearhQuery(state);
+    var state = angular.extend({}, this.indexObject.getState());
+    state.params = state.qParams;
+    var coordinates = this.coordinates;
 
     this.loading = true;
     defer.resolve({
@@ -322,61 +369,16 @@
       contentType: 'application/json',
       method: 'POST',
       queryParams: function(p) {
-
-        // TODO: Should use indexObject.search_ ?
-        var params = angular.extend({},
-            {
-              query: {query_string: {query: searchQuery}}},
-            {
-              size: p.limit,
-              from: p.offset
-            });
+        var queryObject = this.indexObject.buildESParams(state, {},
+            p.offset || 0, p.limit || 10000);
         if (p.sort) {
-          params.sort = [];
+          queryObject.sort = [];
           var sort = {};
           sort[p.sort] = {'order' : p.order};
-          params.sort.push(sort);
+          queryObject.sort.push(sort);
         }
-
-
-        if (state.geometry || this.coordinates) {
-          var geomFilter = {};
-          if (state.geometry) {
-            geomFilter = {'geo_shape': {
-              'geom': {
-                'shape': {
-                  'type': 'envelope',
-                  'coordinates': state.geometry
-                },
-                'relation': 'intersects'
-              }
-            }
-            };
-          } else if (this.coordinates) {
-            var coords = ol.proj.transform(this.coordinates,
-                map.getView().getProjection(), 'EPSG:4326');
-            geomFilter = {'geo_distance' : {
-              'distance': map.getView().getResolution() / 400 + 'km',
-              'geom': {
-                'lat': coords[1],
-                'lon': coords[0]
-              }
-            }
-            };
-          }
-          params.query = {
-            'bool': {
-              'must': {
-                'query_string': params.query.query_string || '*:*'
-              },
-              'filter': geomFilter
-            }
-          };
-        }
-
-        return JSON.stringify(params);
-      },
-      //data: scope.data.response.docs,
+        return JSON.stringify(queryObject);
+      }.bind(this),
       responseHandler: function(res) {
         this.count = res.hits.total;
         var rows = [];

@@ -108,6 +108,7 @@ public final class Geonet {
         public static final String SEARCH_Z3950_CLIENT = "z3950Client.xsl";
         public static final String SEARCH_Z3950_SERVER = "z3950Server.xsl";
         public static final String UPDATE_FIXED_INFO = "update-fixed-info.xsl";
+        public static final String UPDATE_FIXED_INFO_SUBTEMPLATE = "update-fixed-info-subtemplate.xsl";
         public static final String UPDATE_CHILD_FROM_PARENT_INFO = "update-child-from-parent-info.xsl";
         public static final String EXTRACT_UUID = "extract-uuid.xsl";
         public static final String EXTRACT_SKOS_FROM_ISO19135 = "xml_iso19135ToSKOS.xsl";
@@ -512,6 +513,8 @@ public final class Geonet {
             public static final String CROSSES = "crosses";
             public static final String TOUCHES = "touches";
             public static final String WITHIN = "within";
+            public static final String WITHIN_BBOX = "within_bbox";
+            public static final String OVERLAPS_BBOX = "overlaps_bbox";
         }
 
         /**
@@ -557,14 +560,12 @@ public final class Geonet {
         public static final String BACKUP_DIR = "backupDir";
         public static final String SCHEMAPLUGINS_DIR = "schemaPluginsDir";
         public static final String CODELIST_DIR = "codeListDir";
+        public static final String NODE_LESS_DIR = "node_less_files";
         public static final String DIR = "dir";
         public static final String SUMMARY_CONFIG = "summaryConfig";
         public static final String LUCENE_CONFIG = "luceneConfig";
         public static final String GUI_CONFIG = "guiConfig";
         public static final String PREFERRED_SCHEMA = "preferredSchema";
-        public static final String STAT_LOG_SPATIAL_OBJECTS = "statLogSpatialObjects";
-        public static final String STAT_LUCENE_TERMS_EXCLUDE = "statLuceneTermsExclude";
-        public static final String STAT_LOG_ASYNCH = "statLogAsynch";
         public static final String MAX_WRITES_IN_TRANSACTION = "maxWritesInTransaction";
         public static final String SUBVERSION_PATH = "subversionPath";
         public static final String STATUS_ACTIONS_CLASS = "statusActionsClass";
@@ -668,5 +669,6 @@ public final class Geonet {
         public static final String ID = "_id";
         public static final String ANY = "any";
         public static final String LOCALE = "locale";
+		public static final String IS_PUBLISHED_TO_ALL = "_isPublishedToAll";
     }
 }

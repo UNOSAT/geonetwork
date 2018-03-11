@@ -88,7 +88,7 @@
     <xsl:variable name="dateTypeElementRef"
                   select="../gn:element/@ref"/>
 
-    <div class="form-group gn-field gn-title gn-required"
+    <div class="form-group gn-field gn-date gn-required"
          id="gn-el-{$dateTypeElementRef}"
          data-gn-field-highlight="">
       <label class="col-sm-2 control-label">
@@ -130,7 +130,7 @@
 
         <!-- Create form for all existing attribute (not in gn namespace)
          and all non existing attributes not already present. -->
-        <div class="well well-sm gn-attr {if ($isDisplayingAttributes) then '' else 'hidden'}">
+        <div class="well well-sm gn-attr {if ($isDisplayingAttributes = true()) then '' else 'hidden'}">
           <xsl:apply-templates mode="render-for-field-for-attribute"
                                select="
             ../../@*|
@@ -164,11 +164,11 @@
     <xsl:variable name="labelConfig"
                   select="gn-fn-metadata:getLabel($schema, name(), $labels, name(..), $isoType, $xpath)"/>
     <xsl:variable name="dateTypeElementRef"
-                  select="../gn:element/@ref"/>
+                  select="gn:element/@ref"/>
 
     <xsl:variable name="isRequired" select="gn:element/@min = 1 and gn:element/@max = 1"/>
 
-    <div class="form-group gn-field gn-title {if ($isRequired) then 'gn-required' else ''}"
+    <div class="form-group gn-field gn-date {if ($isRequired) then 'gn-required' else ''}"
          id="gn-el-{$dateTypeElementRef}"
          data-gn-field-highlight="">
       <label class="col-sm-2 control-label">
@@ -184,7 +184,7 @@
 
         <!-- Create form for all existing attribute (not in gn namespace)
          and all non existing attributes not already present. -->
-        <div class="well well-sm gn-attr {if ($isDisplayingAttributes) then '' else 'hidden'}">
+        <div class="well well-sm gn-attr {if ($isDisplayingAttributes = true()) then '' else 'hidden'}">
           <xsl:apply-templates mode="render-for-field-for-attribute"
                                select="
             ../../@*|
@@ -196,8 +196,7 @@
       </div>
       <div class="col-sm-1 gn-control">
         <xsl:call-template name="render-form-field-control-remove">
-          <xsl:with-param name="editInfo" select="../gn:element"/>
-          <xsl:with-param name="parentEditInfo" select="../../gn:element"/>
+          <xsl:with-param name="editInfo" select="gn:element"/>
         </xsl:call-template>
       </div>
     </div>

@@ -40,7 +40,12 @@
       <list>
         <sec:filter-chain pattern="/srv/swagger-resources/**" filters=""/>
         <sec:filter-chain pattern="/srv/v2/**" filters=""/>
+
+        <!-- TODO: This needs to be secured to not access private info -->
         <sec:filter-chain pattern="/index/**" filters=""/>
+
+        <sec:filter-chain pattern="/dashboards/**" filters=""/>
+
         <sec:filter-chain pattern="/doc/**" filters=""/>
         <!-- wroAPI is protected for admin only
         This is causing issue on node-change-warning page.
@@ -78,7 +83,7 @@
 
   <bean id="coreFilterChain" class="org.springframework.security.web.DefaultSecurityFilterChain">
     <constructor-arg>
-      <bean class="org.springframework.security.web.util.AntPathRequestMatcher">
+      <bean class="org.springframework.security.web.util.matcher.AntPathRequestMatcher">
         <constructor-arg value="/**"/>
       </bean>
     </constructor-arg>
@@ -117,18 +122,20 @@
   <bean id="preAuthenticationFilter" class="jeeves.config.springutil.PassthroughFilter"/>
   <bean id="securityContextPersistenceFilter"
         class="org.springframework.security.web.context.SecurityContextPersistenceFilter">
-    <property name="securityContextRepository" ref="securityContextRepository"/>
+    <!-- repo -->
+    <constructor-arg ref="securityContextRepository"/>
   </bean>
 
   <bean id="authenticationManager"
         class="org.springframework.security.authentication.ProviderManager">
-    <property name="providers">
+    <constructor-arg>
+      <!-- providers -->
       <list>
         <!-- Check if the preAuthenticationFilter has already authenticated user -->
         <ref bean="preFilterAuthenticationProvider"/>
         <ref bean="geonetworkAuthenticationProvider"/>
       </list>
-    </property>
+    </constructor-arg>
   </bean>
 
   <bean id="securityContextRepository"
@@ -302,7 +309,8 @@
 
   <bean id="accessDecisionManager"
         class="org.springframework.security.access.vote.AffirmativeBased">
-    <property name="decisionVoters">
+    <constructor-arg>
+      <!-- decisionVoters -->
       <list>
         <bean class="org.springframework.security.access.vote.RoleHierarchyVoter">
           <constructor-arg ref="roleHierarchy"/>
@@ -311,18 +319,23 @@
         <bean class="org.springframework.security.web.access.expression.WebExpressionVoter"/>
         <bean class="org.springframework.security.access.vote.AuthenticatedVoter"/>
       </list>
-    </property>
+    </constructor-arg>
   </bean>
 
+  <bean id="anonymousUser" class="org.springframework.security.core.userdetails.memory.UserAttribute">
+    <property name="password" value="anonymousUser"/>
+    <property name="authoritiesAsString" value ="ROLE_ANONYMOUS"/>
+  </bean>
   <bean id="anonymousFilter"
         class="org.springframework.security.web.authentication.AnonymousAuthenticationFilter">
-    <property name="key" value="GeonetworkAnonymousUser"/>
-    <property name="userAttribute" value="anonymousUser,ROLE_ANONYMOUS"/>
+    <constructor-arg value="GeonetworkAnonymousUser" />
+    <constructor-arg value="#{anonymousUser.password}" />
+    <constructor-arg value="#{anonymousUser.authorities}" />
   </bean>
 
   <bean id="anonymousProvider"
         class="org.springframework.security.authentication.AnonymousAuthenticationProvider">
-    <property name="key" value="GeonetworkAnonymousUser"/>
+    <constructor-arg name="key" value="GeonetworkAnonymousUser"/>
   </bean>
 
   <bean id="sessionMgmtFilter"
@@ -346,12 +359,26 @@
     <constructor-arg>
       <ref bean="csrfTokenRepository"/>
     </constructor-arg>
+
+    <property name="requireCsrfProtectionMatcher" ref="geonetworkCsrfSecurityRequestMatcher" />
   </bean>
-  
+
   <bean class="org.fao.geonet.security.web.csrf.CookieCsrfTokenRepository"
         id="csrfTokenRepository">
     <property name="cookieHttpOnly" value="false"/>
   </bean>
-      
 
+  <!-- RequestMatcher to exclude CSRF token from CSW requests -->
+  <bean id="geonetworkCsrfSecurityRequestMatcher"
+        class="org.fao.geonet.security.web.csrf.GeonetworkCsrfSecurityRequestMatcher">
+    <constructor-arg>
+      <set>
+        <!-- CSW requests -->
+        <value>/[a-zA-Z0-9_\-]+/[a-z]{2,3}/csw-publication!?.*</value>
+        <value>/[a-zA-Z0-9_\-]+/[a-z]{2,3}/csw-.*</value>
+        <value>/[a-zA-Z0-9_\-]+/[a-z]{2,3}/csw!?.*</value>
+        <value>/[a-zA-Z0-9_\-]+/[a-z]{2,3}/xml.search!?</value>
+      </set>
+    </constructor-arg>
+  </bean>
 </beans>

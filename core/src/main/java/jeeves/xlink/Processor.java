@@ -123,16 +123,6 @@ public final class Processor {
     //--------------------------------------------------------------------------
 
     /**
-     * Uncache all XLinks child of the input XML document.
-     */
-    public static Element uncacheXLink(Element xml) {
-        searchXLink(xml, ACTION_UNCACHE, null);
-        return xml;
-    }
-
-    //--------------------------------------------------------------------------
-
-    /**
      * Remove all XLinks child of the input XML document.
      */
     public static Element removeXLink(Element xml) {
@@ -164,19 +154,6 @@ public final class Processor {
     //--------------------------------------------------------------------------
 
     /**
-     * Remove an XLink from the cache.
-     */
-    public static void removeFromCache(String xlinkUri) throws CacheException {
-
-        JeevesJCS xlinkCache = JeevesJCS.getInstance(XLINK_JCS);
-        if (xlinkCache.get(xlinkUri) != null) {
-            xlinkCache.remove(xlinkUri);
-        }
-    }
-
-    //--------------------------------------------------------------------------
-
-    /**
      * Clear the cache.
      */
     public static void clearCache() throws CacheException {
@@ -194,16 +171,6 @@ public final class Processor {
         if (cachedFragment == null) {
             xlinkCache.put(uri.toLowerCase(), fragment);
         }
-    }
-
-    //--------------------------------------------------------------------------
-
-    /**
-     * Resolves an xlink
-     */
-    public static Element resolveXLink(String uri, ServiceContext srvContext) throws IOException, JDOMException, CacheException {
-        String idSearch = null;
-        return resolveXLink(uri, idSearch, srvContext);
     }
 
     //--------------------------------------------------------------------------
@@ -305,13 +272,6 @@ public final class Processor {
         return uri;
     }
 
-    public static void addUriMapper(URIMapper mapper) {
-        uriMapper.add(mapper);
-    }
-
-    public static void removeUriMapper(URIMapper mapper) {
-        uriMapper.add(mapper);
-    }
 
     //--------------------------------------------------------------------------
 
@@ -376,18 +336,12 @@ public final class Processor {
             if (Log.isDebugEnabled(Log.XLINK_PROCESSOR))
                 Log.debug(Log.XLINK_PROCESSOR, "will resolve href '" + hrefUri + "'");
             String idSearch = null;
-            int hash = hrefUri.indexOf('#');
-            if (hash > 0 && hash != hrefUri.length() - 1) {
-                idSearch = hrefUri.substring(hash + 1);
-                hrefUri = hrefUri.substring(0, hash);
+
+            String error = doXLink(hrefUri, idSearch, xlink, action, srvContext);
+            if (error != null) {
+                errors.add(error);
             }
 
-            if (hash != 0) { // skip local xlinks eg. xlink:href="#details"
-                String error = doXLink(hrefUri, idSearch, xlink, action, srvContext);
-                if (error != null) {
-                    errors.add(error);
-                }
-            }
         }
 
         return errors;
