@@ -44,7 +44,10 @@
     this.map = null;
     this.setMap_();
     this.measureObj = {};
+    this.layersOpen = true;
     this.legendOpen = false;
+    this.catalogOpen = false;
+    this.toolsActive = false;
     this.drawVector;
     this.unLayerState = unLayerState;
     this.gnPopup = gnPopup;
@@ -162,8 +165,7 @@
   };
 
   gn.MainController.prototype.sidebarOpen = function() {
-    return this.layersOpen || this.contextOpen || this.printOpen ||
-        this.drawOpen || this.importOpen;
+    return this.layersOpen;
   };
 
   gn.MainController.prototype.infopanelOpen = function() {

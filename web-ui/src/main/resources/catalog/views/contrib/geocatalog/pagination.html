@@ -1,0 +1,18 @@
+<div class="gn-pager" data-ng-show="config.pages > 0">
+
+  <!--Amount and pagination position-->
+  <span class="pagination-info" translate=""
+        data-translate-values="{from:'{{config.from}}', to:'{{config.to}}', total:'{{config.resultsCount}}'}">
+    paginationInfo
+  </span>
+
+  <!--Previous and Next buttons-->
+  <button class="btn btn-link" data-ng-class="config.currentPage == 1 ? 'disabled' : ''" data-ng-click="previous()">
+    <i class="fa fa-angle-left"></i>
+  </button>
+  <button class="btn btn-link" data-ng-class="config.currentPage == config.pages ? 'disabled' : ''" data-ng-click="next()">
+    <i class="fa fa-angle-right"></i>
+  </button>
+
+
+</div>

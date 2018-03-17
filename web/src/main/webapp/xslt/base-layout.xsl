@@ -69,7 +69,7 @@
       -->
       <body data-ng-controller="GnCatController">
 
-        <div data-gn-alert-manager=""></div>
+        <!--unosat <div data-gn-alert-manager=""></div>-->
 
         <xsl:choose>
           <xsl:when test="ends-with($service, 'nojs')">

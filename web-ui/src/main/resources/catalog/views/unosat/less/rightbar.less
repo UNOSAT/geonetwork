@@ -1,0 +1,88 @@
+.app-tools {
+  height: 100%;
+  position: relative;
+  display: block;
+  float: right;
+  background-color: lighten(@brand-primary, @standard-variation);
+
+  .app-tools-content {
+    width: @right-panel-width;
+    margin-right: -@right-panel-width;
+    transition: margin-right 0.2s ease;
+    float: right;
+    height: 100%;
+    overflow: auto;
+
+    &.app-active {
+      margin-right: 0;
+    }
+
+    .close {
+      padding: 0;
+      line-height: @half-app-margin;
+      margin-bottom: @app-margin;
+    }
+
+    textarea {
+      resize: vertical;
+    }
+
+    .app-tools-content-heading {
+      @color: lighten(@text-color, @standard-variation);
+      color: @color;
+      padding-bottom: @app-margin;
+      margin-bottom: @app-margin;
+      margin-top: @grid-gutter-width / 2;
+      border-bottom: 1px solid @color;
+    }
+
+    &.app-geocatalog-open {
+      width: 55rem;
+    }
+  }
+
+  .app-bar {
+    background-color: @brand-primary;
+    border-left: 1px solid @border-color;
+
+    float: right;
+    height: 100%;
+    position: relative;
+    z-index: 5;
+
+    > .btn + .btn {
+      margin-top: -1px;
+    }
+
+    .btn {
+      width: 100%;
+      color:white;
+      border-width: 0;
+      background-color: @brand-primary;
+      margin-left: 0;
+      border-radius: 0 !important;
+      &:hover {
+        background-color: lighten(@brand-primary, @standard-variation);
+      }
+    }
+
+    .btn-group-vertical {
+      width: 100%;
+      .btn {
+        border: 1px solid @border-color;
+        border-right-width: 0;
+        border-left-width: 0;
+
+        &.active,
+        &:active {
+          box-shadow: none;
+        }
+        &.active {
+          background-color: lighten(@brand-primary, @standard-variation);
+          border-left: 1px solid lighten(@brand-primary, @standard-variation);
+          margin-left: -1px;
+        }
+      }
+    }
+  }
+}

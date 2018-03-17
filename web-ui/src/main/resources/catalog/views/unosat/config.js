@@ -105,9 +105,6 @@ if(!goog) {
           /** Facets configuration */
           searchSettings.facetsSummaryType = 'hits';
 
-          viewerSettings.bingKey = 'AnElW2Zqi4fI-9cYx1LHiQfokQ9GrNzcjOh_' +
-              'p_0hkO1yo78ba8zTLARcLBIf8H6D';
-
           viewerSettings.singleTileWMS = true;
 
           /*
@@ -149,14 +146,6 @@ if(!goog) {
 
           /* Default search by option */
           searchSettings.sortbyDefault = searchSettings.sortbyValues[0];
-
-          /* Custom templates for search result views */
-          searchSettings.resultViewTpls = [{
-                  tplUrl: '../../catalog/components/search/resultsview/' +
-                  'partials/viewtemplates/grid.html',
-                  tooltip: 'Grid',
-                  icon: 'fa-th'
-                }];
 
           // For the time being metadata rendering is done
           // using Angular template. Formatter could be used

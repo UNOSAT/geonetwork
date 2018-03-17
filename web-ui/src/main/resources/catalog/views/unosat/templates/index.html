@@ -12,8 +12,8 @@
           <span>Système d'information des ressources en eau du Tchad</span>
         </div>
       </div>
-      <div class="nav navbar-nav">
-        <div id="toptools" class="hidden-sm hidden-xs">
+      <div class="nav navbar-nav hidden-md">
+        <div id="toptools">
           <a href="" data-toggle="modal" data-target="#reseauModal">Le projet ResEau</a>&nbsp;|&nbsp;
           <a href="" data-toggle="modal" data-target="#reservesModal">Réserves</a>&nbsp;|&nbsp;
           <a href="" data-toggle="modal" data-target="#dataModal">Données géographiques</a>&nbsp;|&nbsp;
@@ -23,13 +23,13 @@
       <ul class="nav navbar-nav navbar-right">
         <un-search un-search-map="mainCtrl.map"></un-search>
       </ul>
-      <a href class="app-auth-btn" ng-click="mainCtrl.showAuth = !mainCtrl.showAuth"><span class="fa fa-user" ng-class="authenticated ? 'fa-user' : 'fa-user-times'" id="authBtn"></span></a>
-
     </div>
   </header>
 
   <!--Container-->
   <div id="map-container" >
+
+    <!--Left Bar-->
     <div id="sidebar" ng-class="{open: mainCtrl.sidebarOpen()}"
          ngeo-resizemap="mainCtrl.map" ngeo-resizemap-state="mainCtrl.sidebarOpen()">
 
@@ -64,7 +64,7 @@
             <div class="text-center">
               <button class="btn btn-default" ng-click="mainCtrl.showTab('a[href=#catalog]');" translate>+ Ajouter</button>
             </div>
-<!--            <button data-ng-if="mainCtrl.selectedLayers.length > 0" class="btn btn-default" id="legendBtn" ng-click="mainCtrl.legendOpen = !mainCtrl.legendOpen">Légende</button>-->
+            <!--            <button data-ng-if="mainCtrl.selectedLayers.length > 0" class="btn btn-default" id="legendBtn" ng-click="mainCtrl.legendOpen = !mainCtrl.legendOpen">Légende</button>-->
           </div>
 
           <!--Catalog tree-->
@@ -73,84 +73,140 @@
           </div>
         </div>
       </div>
-
-      <!--Import sidebar-->
-      <div id="import" data-ng-show="mainCtrl.importOpen">
-        <h2 translate>Import externe</h2>
-        <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
-          ✕
-        </button>
-
-        <!--Tab panel header-->
-        <ul class="nav nav-tabs">
-          <li role="presentation" class="active">
-            <a href="#importkml" data-toggle="tab">KML</a>
-          </li>
-          <li role="presentation">
-            <a href="#importwms" data-toggle="tab">WMS</a>
-          </li>
-          <li role="presentation">
-            <a href="#importwmts" data-toggle="tab">WMTS</a>
-          </li>
-        </ul>
-
-        <!--Tab panel content-->
-        <div class="tab-content">
-
-          <!--Import KML-->
-          <div id="importkml" class="tab-pane active">
-            <div gn-kml-import="" gn-kml-import-map="::mainCtrl.map"></div>
-          </div>
-
-          <!--Import WMS-->
-          <div id="importwms" class="tab-pane">
-            <div gn-wms-import="wms"
-                 gn-wms-import-map="::mainCtrl.map"
-                 services-list-from-catalog="true"></div>
-          </div>
-
-          <!--Import WMTS-->
-          <div id="importwmts" class="tab-pane">
-            <div gn-wms-import="wmts" gn-wms-import-map="::mainCtrl.map"></div>
-          </div>
-        </div>
-      </div>
-
-      <!--Map management (save/load contexts)-->
-      <div id="contextpanel" data-ng-show="mainCtrl.contextOpen">
-        <h2 translate>maps</h2>
-        <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
-          ✕
-        </button>
-        <div class="tab-content no-nav">
-          <div gn-ows-context="" map="::mainCtrl.map"></div>
-        </div>
-      </div>
-
-      <!--Print form panel-->
-      <div id="printpanel" data-ng-show="mainCtrl.printOpen">
-        <h2 translate>Impression</h2>
-        <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
-          ✕
-        </button>
-        <div class="tab-content no-nav">
-          <div gn-mapprint="" print-active="mainCtrl.printOpen" map="::mainCtrl.map"></div>
-        </div>
     </div>
 
-      <!--Drawing-->
-      <div id="drawpanel" data-ng-show="mainCtrl.drawOpen">
-        <h2>Annotations</h2>
-        <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
-          ✕
-        </button>
-        <div class="tab-content no-nav">
-          <div class="gn-draw-text" gn-draw="" map="::mainCtrl.map" vector="::mainCtrl.drawVector"></div>
+    <!--Right Bar-->
+    <div id="rightbar" class="app-tools" ngeo-resizemap="mainCtrl.map" ngeo-resizemap-state="mainCtrl.toolsActive">
+      <div class="app-bar">
+        <div ngeo-btn-group class="btn-group-vertical" ngeo-btn-group-active="mainCtrl.toolsActive">
+          <button ngeo-btn class="btn btn-default" ng-model="mainCtrl.loginOpen"
+                  data-toggle="tooltip" data-placement="left" data-original-title="{{'Login'|translate}}">
+            <span class="fa fa-user" ng-class="authenticated ? 'fa-user' : 'fa-user-times'"></span>
+          </button>
+          <button ngeo-btn class="btn btn-default" ng-model="mainCtrl.catalogOpen"
+                  data-toggle="tooltip" data-placement="left" data-original-title="{{'Catalog'|translate}}">
+            <span class="fa fa-book"></span>
+          </button>
+          <button ngeo-btn class="btn btn-default" ng-model="mainCtrl.importOpen"
+                  data-toggle="tooltip" data-placement="left" data-original-title="{{'Import'|translate}}">
+            <span class="fa fa-plus"></span>
+          </button>
+          <button ngeo-btn class="btn btn-default" ng-model="mainCtrl.contextOpen"
+                  data-toggle="tooltip" data-placement="left" data-original-title="{{'Mymaps'|translate}}">
+            <span class="icon map"></span>
+          </button>
+          <button ngeo-btn class="btn btn-default" ng-model="mainCtrl.printOpen"
+                  data-toggle="tooltip" data-placement="left" data-original-title="{{'Print'|translate}}">
+            <span class="fa fa-print"></span>
+          </button>
+          <button ngeo-btn class="btn btn-default" ng-model="mainCtrl.drawOpen"
+                  data-toggle="tooltip" data-placement="left" data-original-title="{{'Draw'|translate}}">
+            <span class="fa fa-paint-brush"></span>
+          </button>
         </div>
       </div>
+      <div class="app-tools-content container-fluid"
+           ng-class="{'app-active': mainCtrl.toolsActive, 'app-geocatalog-open': mainCtrl.catalogOpen}">
 
+        <!--Login-->
+        <div class="row" data-ng-show="mainCtrl.loginOpen">
+          <div class="col-sm-12">
+            <div class="app-tools-content-heading">
+              {{'Login' | translate}}
+              <a class="btn close" ng-click="mainCtrl.loginOpen = false">&times;</a>
+            </div>
+            <app-auth></app-auth>
+          </div>
+        </div>
+
+        <!--Geocatalog-->
+        <div class="row" data-ng-show="mainCtrl.catalogOpen">
+          <div class="col-sm-12">
+            <div class="app-tools-content-heading">
+              {{'Catalog' | translate}}
+              <a class="btn close" ng-click="mainCtrl.catalogOpen = false">&times;</a>
+            </div>
+            <app-geo-catalog app-geo-catalog-map="::mainCtrl.map"></app-geo-catalog>
+          </div>
+        </div>
+
+        <!--Import-->
+        <div class="row" data-ng-show="mainCtrl.importOpen">
+          <div class="col-sm-12">
+            <div class="app-tools-content-heading">
+              {{'Import' | translate}}
+              <a class="btn close" ng-click="mainCtrl.importOpen = false">&times;</a>
+            </div>
+            <!--Tab panel header-->
+            <ul class="nav nav-tabs">
+              <li role="presentation" class="active">
+                <a href="#importkml" data-toggle="tab">KML</a>
+              </li>
+              <li role="presentation">
+                <a href="#importwms" data-toggle="tab">WMS</a>
+              </li>
+              <li role="presentation">
+                <a href="#importwmts" data-toggle="tab">WMTS</a>
+              </li>
+            </ul>
+
+            <!--Tab panel content-->
+            <div class="tab-content">
+
+              <!--Import KML-->
+              <div id="importkml" class="tab-pane active">
+                <div gn-kml-import="" gn-kml-import-map="::mainCtrl.map"></div>
+              </div>
+
+              <!--Import WMS-->
+              <div id="importwms" class="tab-pane">
+                <div gn-wms-import="wms"
+                     gn-wms-import-map="::mainCtrl.map"
+                     services-list-from-catalog="true"></div>
+              </div>
+
+              <!--Import WMTS-->
+              <div id="importwmts" class="tab-pane">
+                <div gn-wms-import="wmts" gn-wms-import-map="::mainCtrl.map"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!--Mymaps-->
+        <div class="row" data-ng-show="mainCtrl.contextOpen">
+          <div class="col-sm-12">
+            <div class="app-tools-content-heading">
+              {{'Mymaps' | translate}}
+              <a class="btn close" ng-click="mainCtrl.contextOpen = false">&times;</a>
+            </div>
+            <div gn-ows-context="" map="::mainCtrl.map" template="../../catalog/views/unosat/js/contexts/partials/owscontext.html"></div>
+          </div>
+        </div>
+
+        <!--Print-->
+        <div class="row" data-ng-show="mainCtrl.printOpen">
+          <div class="col-sm-12">
+            <div class="app-tools-content-heading">
+              {{'Print' | translate}}
+              <a class="btn close" ng-click="mainCtrl.printOpen = false">&times;</a>
+            </div>
+            <div gn-mapprint="" print-active="mainCtrl.printOpen" map="::mainCtrl.map"></div>
+          </div>
+        </div>
+
+        <!--Drawing-->
+        <div class="row" data-ng-show="mainCtrl.drawOpen">
+          <div class="col-sm-12">
+            <div class="app-tools-content-heading">
+              {{'Draw' | translate}}
+              <a class="btn close" ng-click="mainCtrl.drawOpen = false">&times;</a>
+            </div>
+            <div class="gn-draw-text" gn-draw="" map="::mainCtrl.map" vector="::mainCtrl.drawVector"></div>
+          </div>
+        </div>
+      </div>
     </div>
-
     <div id="infopanel">
       <div id="showlayerinfo" data-ng-show="mainCtrl.unLayerState.md">
         <h4>{{mainCtrl.unLayerState.md.title || mainCtrl.unLayerState.md.defaultTitle}}</h4>
@@ -159,16 +215,6 @@
         </button>
         <div un-layerinfo="" class="info-content"></div>
       </div>
-    </div>
-
-    <div class="un-main-tools" ngeo-btn-group ng-class="{active: mainCtrl.sidebarOpen()}">
-      <button class="un-tool-btn btn" ngeo-btn ng-model="mainCtrl.layersOpen"><span class="icon layers"></span><span role="tooltip">Mes couches</span></button>
-      <button class="un-tool-btn btn" ngeo-btn ng-model="mainCtrl.importOpen"><span class="fa fa-plus"></span><span role="tooltip">Import de couches externes</span></button>
-      <button class="un-tool-btn btn" ngeo-btn ng-model="mainCtrl.contextOpen"><i class="icon map"></i><span role="tooltip">Mes cartes</span></button>
-      <button class="un-tool-btn btn" ngeo-btn ng-model="mainCtrl.printOpen"><i class="fa fa-print"></i><span role="tooltip">Impression</span></button>
-      <button class="un-tool-btn btn" ngeo-btn ng-model="mainCtrl.mInteraction.active"><i class="icon measure"></i><span role="tooltip">Mesure</span></button>
-      <button class="un-tool-btn btn" ngeo-btn ng-model="mainCtrl.drawOpen"><i class="fa fa-pencil"></i><span role="tooltip">Annotations</span></button>
-      <button class="un-tool-btn btn" ng-click="mainCtrl.openLegend()"><i class="fa fa-list"></i><span role="tooltip">Légendes</span></button>
     </div>
 
     <div id="measurepanel" data-ng-show="mainCtrl.mInteraction.active">
@@ -200,9 +246,9 @@
     </un-scaleselector>
     <un-mouseposition class="" map="mainCtrl.map">
     </un-mouseposition>
-<!--
-    <div id="scale-position" ngeo-control="mainCtrl.scaleControl" ngeo-control-map="mainCtrl.map"></div>
--->
+    <!--
+        <div id="scale-position" ngeo-control="mainCtrl.scaleControl" ngeo-control-map="mainCtrl.map"></div>
+    -->
   </footer>
 
   <!-- Modals -->

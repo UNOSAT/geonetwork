@@ -1,0 +1,351 @@
+app-geo-catalog, .app-mdview .overview {
+  .btn-default {
+    background: @main_color_600;
+    color: white;
+    border: none;
+    border-radius: 2px;
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.4);
+    padding: 4px 10px;
+  }
+
+}
+
+app-geo-catalog {
+
+  .tab-content.no-nav {
+    width: calc(@sidebar-width + 300px);
+    max-height: calc(~"100vh - 187px");
+    overflow-y: hidden;
+    box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.4);
+  }
+  .nav-tabs li {
+    > a {
+      padding-bottom: 5px;
+      padding-top: 8px;
+      text-transform: none;
+    }
+    &.active > a {
+      background-color: lighten(@brand-primary, @standard-variation * 2);
+      &:focus, &:hover {
+        background-color: lighten(@brand-primary, @standard-variation * 2);
+      }
+    }
+  }
+
+  .tab-content.inner {
+    max-height: initial;
+    min-height: initial;
+    overflow: initial;
+    padding: 0;
+    background-color: lighten(@brand-primary, @standard-variation * 2);
+  }
+
+
+  .gn-search-input {
+    position: relative;
+    .inner-spinner {
+      position: absolute;
+      top: 1.3em;
+      right: 4.5em;
+    }
+    .form-control {
+      border-radius: 0;
+    }
+    input {
+      height: 34px;
+    }
+    .btn {
+      border: none;
+      padding: 4px 10px;
+      font-size: 18px
+    }
+    .dropdown-menu {
+      overflow-y: auto;
+      max-height: 300px;
+    }
+  }
+
+  .geocatalog-content {
+    margin-top: 1em;
+  }
+  .gn-toolbar {
+    line-height: 2.8em;
+    padding-left: 15px;
+    padding-right: 15px;
+
+    .btn {
+      &.dropdown-toggle {
+        border: none;
+        background-color: transparent;
+        padding: 0 0;
+        box-shadow: none;
+      }
+      .badge {
+        background-color: @brand-primary;
+      }
+    }
+    .btn-link {
+      padding: 0;
+      margin-left: 2px;
+      color: @brand-primary;
+    }
+
+  }
+  [data-results] {
+    .gn-select .fa {
+      font-size: 14px;
+    }
+  }
+
+  .gn-selection-actions {
+    margin-left: 10px;
+  }
+
+  [data-sortby-combo] {
+    margin-right: 10px;
+  }
+  .gn-pager {
+
+    /*font-size: @sxt-fontsize;*/
+    .pagination-info {
+      display: inline-block;
+      margin-left: .3em;
+      em {
+        font-style: normal;
+        color: #888;
+      }
+    }
+    .btn-group {
+      .btn {
+        &:hover, &:focus {
+          text-decoration: underline;
+          color: @main_color_600;
+        }
+        &:active {
+          box-shadow: none;
+        }
+        em {
+          font-style: normal;
+        }
+
+      }
+
+      li {
+        a {
+          padding: 2px 10px;
+        }
+        display: inline-block;
+      }
+    }
+  }
+
+  #search-result, #appSearchForm {
+    overflow-y: auto;
+    max-height: calc(~"100vh - 187px - 70px");;
+  }
+
+  .gn-resultview {
+
+    margin-bottom: 0;
+    input[type="checkbox"] {
+      margin: 15px 8px 0;
+    }
+    .row {
+      margin: auto 0px;
+    }
+    > li {
+      border: none;
+      //padding: 8px 10px 4px 0;
+    }
+
+    .list-group-item {
+      margin: 10px 15px;
+      padding: 0;
+    }
+
+    .gn-grid-item {
+      position: relative;
+      height: 13em;
+      margin: 0;
+      box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.4);
+      &:hover {
+        background-color: #eee;
+        cursor: default;
+      }
+
+    }
+    .gn-md-title {
+      white-space: normal;
+      width: 100%;
+      padding: 8px 15px;
+      background-color: @brand-primary;
+      input {
+        float: right;
+        margin: 0;
+      }
+      h4 {
+        font-size: 13px;
+        overflow: hidden;
+        line-height: 1.2em;
+        display: table-cell;
+        vertical-align: middle;
+        letter-spacing: normal;
+        a {
+          color: white;
+          &:hover {
+            text-decoration: none;
+          }
+        }
+      }
+    }
+
+    .gn-md-details {
+      margin: 1em;
+      flex-direction: row;
+    }
+
+    .flex-row {
+      flex-direction: column;
+    }
+    .gn-md-thumbnail {
+      max-width: 33%;
+      margin: 0 1em 1em 0;
+      width: 180px;
+      min-height: 40px;
+      max-height: 110px;
+      height: auto;
+      .img-thumbnail {
+        max-width: 180px;
+        max-height: 110px;
+        min-height: 40px;
+      }
+      .gn-img-thumbnail {
+        max-width: 100%;
+        max-height: 90px;
+      }
+    }
+    .gn-md-emptythumbnail {
+      min-height: 120px;
+    }
+    .md-details {
+      display: flex;
+      height: 105px;
+      margin: 1em;
+    }
+    .md-abstract {
+      color: #808080;
+      overflow: hidden;
+      width: ~"calc(65% - 1em)";
+      margin-bottom: .3em;
+      font-size: 11px;
+      p {
+        margin-right: 1em;
+        color: #808080;
+      }
+    }
+    .gn-md-source {
+      padding-left: 3em;
+      display: flex;
+      color: @main_color_900;
+      font-size: 11px;
+    }
+    .md-footer {
+      margin-right:2em;
+      margin-left:2.7em;
+    }
+  }
+}
+
+.gn-md-links {
+  button {
+    width: 46px;
+    margin: 0 3px 0 0;
+  }
+}
+
+app-admin-btn {
+}
+.gn-facet-list {
+  background-color: #f1f8ff;
+  a {
+    cursor: pointer;
+    &:hover {
+      color: grey;
+    }
+  }
+  h4 {
+    cursor: pointer;
+    margin-bottom: 3px;
+  }
+  .list-group {
+    margin-bottom: 0.5em;
+    margin-left: 25px;
+    border-left: 1px dotted #dedede;
+    li {
+      border: none;
+      padding: 0;
+      background-color: transparent;
+      label {
+        font-weight: normal;
+        cursor: pointer;
+        margin: 0;
+        &:hover {
+          color: #428bca;
+        }
+      }
+      [data-gn-facet-dimension-category] {
+        display: none;
+      }
+
+    }
+  }
+
+  .gn-facet-moreorless {
+    display: block;
+  }
+  .gn-facet-count {
+    color: #999999;
+  }
+}
+
+#appSearchForm h4{
+  font-size: 13px;
+  font-weight: bold;
+  margin-top: 25px;
+}
+
+.search-sub-section {
+  padding-left: 20px;
+  .checkbox {
+    padding-top: 0;
+    span {
+      margin-top: 2px;
+      display: inline-block;
+    }
+  }
+}
+
+.gn-md-actions-btn {
+  top: -3em;
+}
+
+.gn-popup-title {
+  cursor: move;
+}
+
+.app-reset-btn {
+  margin-left: 20px;
+}
+
+.bottom-pagination {
+  margin-top: 15px;
+  .btn-group {
+    display: none;
+  }
+}
+
+.summary-links {
+  table {
+    margin-left: 25px;
+  }
+}

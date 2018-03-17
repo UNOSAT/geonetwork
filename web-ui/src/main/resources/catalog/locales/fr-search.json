@@ -405,7 +405,7 @@
     "mdnovalidation": "La métadonnée ne dispose pas d'information de validation",
     "setall": "Activer tous les privilèges",
     "print_legend": "Légende",
-    "print_legend_field": "Inclure la légende"
+    "print_legend_field": "Inclure la légende",
     "print_legend_field": "Inclure la légende",
     "wfsDownloadDataInstruction": "Choisir un format de téléchargement :",
     "wfsTypenameNotAvailable": "Le type d'entité '{{typename}}' n'est pas disponible dans le service WFS. Vous pouvez cependant sélectionner un autre type d'entité parmi ceux disponibles.",

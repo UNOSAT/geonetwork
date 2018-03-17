@@ -1,0 +1,7 @@
+{
+  "paginationInfo": "Résultats {{from}} à {{to}} <em> sur {{total}}</em>",
+  "metadataManagement": "Gestion des métadonnées",
+  "geomFilter" : "Filtre géographique",
+  "advanced": "Recherche avancée",
+  "results": "Résultats"
+}

@@ -1,14 +1,15 @@
 <form class="" role="login" action="../../signin" method="post" ng-if="!authenticated">
+  <input type="hidden" name="_csrf" value="{{csrf}}"/>
   <div class="form-group">
     <input type="text" name="username" class="form-control input-sm" placeholder="{{ 'username' | translate }}">
   </div>
   <div class="form-group">
     <input type="password" name="password" class="form-control input-sm" placeholder="{{ 'password' | translate }}">
   </div>
-  <button type="submit" class="btn btn-default" translate>signIn</button>
+  <button type="submit" class="btn btn-primary btn-block" translate>signIn</button>
 </form>
 
-<div ng-if="authenticated" class="navbar-text navbar-right">
+<div ng-if="authenticated" class="">
   <span translate>signedInAs</span>
   <a href="admin.console#/organization/users?userOrGroup={{user.username}}"
      title="{{'userDetails' | translate}}"

@@ -8,6 +8,7 @@
 @fa-font-path: '../catalog/lib/style/font-awesome/fonts';
 
 @import "navbar.less";
+@import "rightbar.less";
 @import "olcontrols.less";
 @import "themes.less";
 @import "variables.less";
@@ -28,6 +29,14 @@
 
 @header-height: 80px;
 @sidebar-width: 320px;
+@right-panel-width: 28rem;
+@app-margin: 1rem;
+@half-app-margin: 0.5rem;
+@micro-app-margin: 0.2rem;
+@standard-variation: 15%;
+
+
+
 
 @font-face {
   font-family: 'unosat';
@@ -54,6 +63,7 @@
   }
 }
 
+
 ::-webkit-scrollbar {
   width: 8px;
   background-color: transparent;
@@ -62,8 +72,8 @@
   background-color: rgba(125, 125, 125, 0.7);
 }
 
-body, .form-control {
-  font-size: 12px;
+body {
+  overflow: hidden;
 }
 
 html, body,
@@ -84,6 +94,23 @@ body > div,
 @media (min-width: 768px) {
   #sidebar {
     margin-left: -@sidebar-width;
+  }
+}
+
+.btn-secondary {
+  background-color: @brand-secondary;
+  color: #fff;
+  border-color: darken(@brand-secondary, @standard-variation);
+
+  &:hover {
+    background-color: darken(@brand-secondary, @standard-variation);
+    color: #fff;
+  }
+}
+
+.dropdown-menu {
+  li:hover {
+    cursor: pointer;
   }
 }
 
@@ -113,6 +140,7 @@ body > div,
     text-transform: uppercase;
     color: #fff;
   }
+
 
   .tab-content {
     padding: 20px;
@@ -155,6 +183,7 @@ body > div,
   }
 }
 #sidebar, .un-popup {
+  background-color: @brand-primary;
   color: white;
   h2 {
     line-height: 1;

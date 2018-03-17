@@ -89,8 +89,7 @@
       return {
         restrict: 'A',
         templateUrl: function(elem, attrs) {
-          return attrs.template || '../../catalog/views/unosat/js/contexts/' +
-            'partials/owscontext.html' ||
+          return attrs.template ||
               '../../catalog/components/viewer/owscontext/' +
               'partials/owscontext.html';
         },

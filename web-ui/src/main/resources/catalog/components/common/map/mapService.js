@@ -853,7 +853,7 @@
                 // The first style element is the default style
                 var defaultStyle;
                 if (this.containsStyles(getCapLayer)) {
-                  defaultStyle = getCapLayer.Style[0];
+                  //unosat defaultStyle = getCapLayer.Style[0];
                 }
                 if(defaultStyle) {
                   // Set a casual style if available
@@ -1271,27 +1271,16 @@
                     o.version = version;
                   }
 
-                  var errormsg = $translate.instant(
-                    'layerNotfoundInCapability', {
-                      layer: name,
-                      url: url
-                    });
-                  if(olL && md) {
-                    olL.set('md', md);
-                  }
-
-                  if (!angular.isArray(olL.get('errors'))) {
-                    olL.set('errors', []);
-                  }
-                  errors.push(errormsg);
-                  console.warn(errormsg);
-
                   if(!createOnly) {
                     olL = $this.addWmsToMap(map, o);
-                    if (!angular.isArray(olL.get('errors'))) {
-                      olL.set('errors', []);
+                    if(olL) {
+                      olL.set('md', md);
+                      if (!angular.isArray(olL.get('errors'))) {
+                        olL.set('errors', []);
+                      }
+                      olL.get('errors').push(errors);
+                      console.warn(errormsg);
                     }
-                    olL.get('errors').push(errors);
                   }
                   
                   gnWmsQueue.error(o);
