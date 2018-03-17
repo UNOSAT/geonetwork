@@ -1,4 +1,6 @@
 {
+  "curtainH": "Clipping horizontal",
+  "curtainV": "Clipping vertical",
   "paginationInfo": "Résultats {{from}} à {{to}} <em> sur {{total}}</em>",
   "metadataManagement": "Gestion des métadonnées",
   "geomFilter" : "Filtre géographique",

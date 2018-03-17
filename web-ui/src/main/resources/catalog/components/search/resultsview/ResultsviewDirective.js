@@ -104,52 +104,9 @@
               source: new ol.source.Vector(),
               style: gnSearchSettings.olStyles.mdExtentHighlight
             });
-
-            /**
-             * Draw md bbox on search
-             */
-            var fo = new ol.layer.Vector({
-              source: new ol.source.Vector(),
-              map: scope.map,
-              style: gnSearchSettings.olStyles.mdExtent
-            });
           }
 
-          scope.$watchCollection('searchResults.records', function(rec) {
-
-            //scroll to top
-            element.animate({scrollTop: top});
-
-            // get md extent boxes
-            if (scope.map) {
-              fo.getSource().clear();
-
-              if (!angular.isArray(rec) ||
-                  angular.isUndefined(scope.map.getTarget())) {
-                return;
-              }
-              for (var i = 0; i < rec.length; i++) {
-                var feat = gnMap.getBboxFeatureFromMd(rec[i],
-                    scope.map.getView().getProjection());
-                fo.getSource().addFeature(feat);
-              }
-              var extent = ol.extent.createEmpty();
-              fo.getSource().forEachFeature(function(f) {
-                var g = f.getGeometry();
-                if (g) {
-                  ol.extent.extend(extent, g.getExtent());
-                }
-              });
-              if (!ol.extent.isEmpty(extent)) {
-                // fit extent in map
-                scope.map.getView().fit(extent, scope.map.getSize());
-
-                // save this extent for later use (for example if the map
-                // is not currently visible)
-                scope.map.set('lastExtent', extent);
-              }
-            }
-          });
+          // unosat: remove md extent fit
 
           scope.$watch('resultTemplate', function(templateUrl) {
 

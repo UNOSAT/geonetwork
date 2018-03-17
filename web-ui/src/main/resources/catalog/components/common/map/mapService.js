@@ -1845,14 +1845,22 @@
                       opt);
                   break;
                 }
-                this.addWmtsFromScratch(map, opt.url, opt.name)
-                    .then(function(layer) {
-                      if (title) {
-                        layer.set('title', title);
-                        layer.set('label', title);
-                      }
-                      return layer;
-                    });
+                var capObj = capObjs[opt.name];
+                var info = gnOwsCapabilities.getLayerInfoFromCap(
+                  opt.name, capObj);
+
+                //unosat
+                return this.createOlWMTSFromCap(map, info,
+                  capObj);
+
+                gnOwsCapabilities.getWMTSCapabilities(opt.url).
+                then(function(capObj) {
+                  var info = gnOwsCapabilities.getLayerInfoFromCap(
+                    opt.name, capObj);
+                  return that.addWmtsToMapFromCap(map, info,
+                    capObj);
+                }.bind(this));
+
                 break;
 
               case 'wms':

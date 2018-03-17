@@ -37,16 +37,15 @@
 
   gn.MainController = function($scope, gnSearchSettings, defaultExtent,
                                gnMeasure, ngeoSyncArrays, unLayerInfoService,
-                               unLayerState, gnPopup) {
+                               unLayerState, gnPopup, appBboxLayer) {
 
-    this.searchSettings_ = gnSearchSettings;
     this.defaultExtent_ = defaultExtent;
     this.map = null;
     this.setMap_();
     this.measureObj = {};
-    this.layersOpen = true;
     this.legendOpen = false;
     this.catalogOpen = false;
+    this.appBboxLayer = appBboxLayer;
     this.toolsActive = false;
     this.drawVector;
     this.unLayerState = unLayerState;
@@ -57,13 +56,8 @@
     this['selectedLayers'] = [];
     this.manageSelectedLayers_($scope, ngeoSyncArrays);
 
-/*
-    this.map.addControl(new ol.control.MousePosition({
-      target: document.querySelector('footer')
-    }));
-*/
     this.map.addControl(new ol.control.ScaleLine({
-      target: document.querySelector('footer')
+      target: document.querySelector('.app-footer')
     }));
 
     this.mInteraction = gnMeasure.create(this.map,
@@ -85,19 +79,7 @@
     });
 
     unLayerInfoService.getAllMetadatas();
-
-    // Hide Auth panel docuement click
-    $(document).click(function(e){
-      if(!$(e.target).hasClass('fa-user')) {
-        $scope.$apply(function() {
-          this.showAuth = false;
-        }.bind(this));
-      }
-    }.bind(this));
-
-    $('app-auth').click(function(e){
-      e.stopPropagation();
-    }.bind(this));
+    this.manageBBoxLayer_();
 
   };
 
@@ -152,20 +134,9 @@
 
       };
 
-  gn.MainController.prototype.closeSidebar = function() {
-    this.layersOpen = false;
-    this.contextOpen = false;
-    this.printOpen = false;
-    this.drawOpen = false;
-    this.importOpen = false;
-  };
   gn.MainController.prototype.closeInfopanel = function() {
     this.unLayerState.md = undefined;
     this.legendOpen = false;
-  };
-
-  gn.MainController.prototype.sidebarOpen = function() {
-    return this.layersOpen;
   };
 
   gn.MainController.prototype.infopanelOpen = function() {
@@ -181,6 +152,18 @@
     }, this.$scope);
   };
 
+  gn.MainController.prototype.manageBBoxLayer_ = function() {
+    this.$scope.$watch(function() {
+      return this.catalogOpen;
+    }.bind(this), function(opened) {
+      var layer = this.appBboxLayer.layer
+      if(layer) {
+        layer.setVisible(opened);
+        layer.changed();
+      }
+    }.bind(this));
+  };
+
   gn.MainController.prototype.showTab = function(selector) {
     $(selector).tab('show');
   };
@@ -194,7 +177,8 @@
     'ngeoSyncArrays',
     'unLayerInfoService',
     'unLayerState',
-    'gnPopup'
+    'gnPopup',
+    'appBboxLayer'
   ];
 
 })();

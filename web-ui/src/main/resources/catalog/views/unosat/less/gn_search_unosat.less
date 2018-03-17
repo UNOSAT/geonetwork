@@ -64,6 +64,7 @@
 }
 
 
+
 ::-webkit-scrollbar {
   width: 8px;
   background-color: transparent;
@@ -143,7 +144,7 @@ body > div,
 
 
   .tab-content {
-    padding: 20px;
+    padding: 15px;
     height: calc(~"100% - 34px -" @header-height);
     overflow: hidden;
     background-color: @main-base-color-light;
@@ -218,7 +219,14 @@ body > div,
   margin: 20px;
 }
 
+main {
+  position: relative;
+  height: 100%;
+}
+
 #map-container {
+  width: auto;
+  overflow: hidden;
   position: relative;
   height: 100%;
 
@@ -297,10 +305,11 @@ button:hover [role=tooltip] {
 input[type=range]{
   -webkit-appearance: none;
   background-color: transparent;
+  cursor: pointer;
 }
 
 input[type=range]::-webkit-slider-runnable-track {
-  height: 5px;
+  height: 3px;
   background: #ddd;
   border: none;
   border-radius: 3px;
@@ -309,15 +318,14 @@ input[type=range]::-webkit-slider-runnable-track {
 input[type=range]::-webkit-slider-thumb {
   -webkit-appearance: none;
   border: none;
-  height: 15px;
-  width: 15px;
-  background: @main-base-color-light;
-  border-radius: 6px;
-
-  margin-top: -5px;
+  height: 12px;
+  width: 12px;
+  background: @brand-primary;
+  border-radius: 2px;
+  margin-top: -4px;
 }
 
-input[type=range]:focus, a:focus {
+input[type=range]:focus {
   outline: none;
 }
 

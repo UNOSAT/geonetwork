@@ -71,7 +71,7 @@
     $scope.paginationInfo = {
       pages: -1,
       currentPage: 1,
-      hitsPerPage: 20
+      hitsPerPage: 10
     };
 
     this.facetsSummaryType = 'details';

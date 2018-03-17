@@ -82,7 +82,7 @@
           'appUrl': '../../srv/{{lang}}/catalog.search#/search',
           'hitsperpageValues': [10, 50, 100],
           'paginationInfo': {
-            'hitsPerPage': 20
+            'hitsPerPage': 10
           },
           'facetsSummaryType': 'details',
           'facetTabField': '',
@@ -109,9 +109,6 @@
             'sortOrder': ''
           }, {
             'sortBy': 'popularity',
-            'sortOrder': ''
-          }, {
-            'sortBy': 'denominatorDesc',
             'sortOrder': ''
           }, {
             'sortBy': 'denominatorAsc',

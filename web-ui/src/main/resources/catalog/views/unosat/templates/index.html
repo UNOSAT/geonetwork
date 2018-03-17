@@ -1,4 +1,4 @@
-<div id="main-container" data-theme="main" ng-controller="MainController as mainCtrl">
+<main id="main-container" data-theme="main" ng-controller="MainController as mainCtrl">
 
   <!--Header-->
   <header class="navbar navbar-default navbar-fixed-top">
@@ -27,49 +27,44 @@
   </header>
 
   <!--Container-->
-  <div id="map-container" >
+  <main>
 
     <!--Left Bar-->
-    <div id="sidebar" ng-class="{open: mainCtrl.sidebarOpen()}"
-         ngeo-resizemap="mainCtrl.map" ngeo-resizemap-state="mainCtrl.sidebarOpen()">
+    <div id="sidebar" class="open">
 
       <!--Layers sidebar-->
-      <div id="layers" data-ng-show="mainCtrl.layersOpen">
+      <div id="layers">
         <h2 translate>geoportal</h2>
-        <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
-          ✕
-        </button>
 
         <!--Tab panel header-->
         <ul class="nav nav-tabs">
           <li role="presentation" class="active">
-            <a href="#mymap" data-toggle="tab">
-              <span translate>mylayers</span>
-              <span ng-if="mainCtrl.selectedLayers.length > 0">({{mainCtrl.selectedLayers.length}})</span>
-            </a>
+            <a data-target="#catalog" data-toggle="tab" translate href>datas</a>
           </li>
           <li role="presentation">
-            <a href="#catalog" data-toggle="tab" translate>catalog</a>
+            <a data-target="#mymap" data-toggle="tab" href>
+              <span translate>selection</span>
+              <span ng-if="mainCtrl.selectedLayers.length > 0">({{mainCtrl.selectedLayers.length}})</span>
+            </a>
           </li>
         </ul>
 
         <!--Tab panel content-->
         <div class="tab-content">
 
+          <!--Catalog tree-->
+          <div id="catalog" class="tab-pane active">
+            <un-catalog un-catalog-map="::mainCtrl.map"></un-catalog>
+          </div>
+
           <!--Mymap, list of inmap layer-->
-          <div id="mymap" class="tab-pane active">
+          <div id="mymap" class="tab-pane">
             <un-layermanager un-layermanager-map="::mainCtrl.map"
                              un-layermanager-layers="::mainCtrl.selectedLayers">
             </un-layermanager>
             <div class="text-center">
-              <button class="btn btn-default" ng-click="mainCtrl.showTab('a[href=#catalog]');" translate>+ Ajouter</button>
+              <button class="btn btn-default" ng-click="mainCtrl.showTab('a[data-target=#catalog]');" translate>+ Ajouter</button>
             </div>
-            <!--            <button data-ng-if="mainCtrl.selectedLayers.length > 0" class="btn btn-default" id="legendBtn" ng-click="mainCtrl.legendOpen = !mainCtrl.legendOpen">Légende</button>-->
-          </div>
-
-          <!--Catalog tree-->
-          <div id="catalog" class="tab-pane">
-            <un-catalog un-catalog-map="::mainCtrl.map"></un-catalog>
           </div>
         </div>
       </div>
@@ -231,24 +226,23 @@
       </div>
     </div>
 
-    <div ngeo-map="mainCtrl.map">
+    <div id="map-container">
+      <div ngeo-map="mainCtrl.map"></div>
+      <!--GetFeature Info Table results-->
+      <div gn-gfi=""  map="mainCtrl.map" ></div>
+      <!--Background selector-->
+      <un-bg-selector un-bg-selector-map="::mainCtrl.map" class="ga-bg-desktop"></un-bg-selector>
+
+      <div class="app-footer">
+        <un-scaleselector class="pull-right" map="mainCtrl.map">
+        </un-scaleselector>
+        <un-mouseposition class="" map="mainCtrl.map">
+        </un-mouseposition>
+      </div>
     </div>
+  </main>
 
-    <div gn-gfi=""  map="mainCtrl.map" ></div>
-
-    <!--Background selector-->
-    <un-bg-selector un-bg-selector-map="::mainCtrl.map" class="ga-bg-desktop"></un-bg-selector>
-  </div>
-  <app-auth ng-show="mainCtrl.showAuth"></app-auth>
-
-  <footer ng-class="{'offset-left': mainCtrl.sidebarOpen()}">
-    <un-scaleselector class="pull-right" map="mainCtrl.map">
-    </un-scaleselector>
-    <un-mouseposition class="" map="mainCtrl.map">
-    </un-mouseposition>
-    <!--
-        <div id="scale-position" ngeo-control="mainCtrl.scaleControl" ngeo-control-map="mainCtrl.map"></div>
-    -->
+  <footer>
   </footer>
 
   <!-- Modals -->

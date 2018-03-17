@@ -73,12 +73,8 @@ if(!goog) {
                 color: 'rgba(255,255,0,0.3)'
               })
             })
-
           };
 
-          /*******************************************************************
-             * Define maps
-             */
           var mapsConfig = {
             center: [280274.03240585705, 6053178.654789996],
             zoom: 2,
@@ -90,96 +86,13 @@ if(!goog) {
             view: new ol.View(mapsConfig)
           });
 
-          var searchMap = new ol.Map({
-            controls:[],
-            layers: [new ol.layer.Tile({
-              source: new ol.source.OSM()
-            })],
-            view: new ol.View({
-              center: mapsConfig.center,
-              zoom: 2
-            })
-          });
-
-
-          /** Facets configuration */
-          searchSettings.facetsSummaryType = 'hits';
-
           viewerSettings.singleTileWMS = true;
 
-          /*
-             * Hits per page combo values configuration. The first one is the
-             * default.
-             */
-          searchSettings.hitsperpageValues = [20, 50, 100];
 
-          /* Pagination configuration */
-          searchSettings.paginationInfo = {
-            hitsPerPage: searchSettings.hitsperpageValues[0]
-          };
-
-          /*
-             * Sort by combo values configuration. The first one is the default.
-             */
-          searchSettings.sortbyValues = [{
-            sortBy: 'relevance',
-            sortOrder: ''
-          }, {
-            sortBy: 'changeDate',
-            sortOrder: ''
-          }, {
-            sortBy: 'title',
-            sortOrder: 'reverse'
-          }, {
-            sortBy: 'rating',
-            sortOrder: ''
-          }, {
-            sortBy: 'popularity',
-            sortOrder: ''
-          }, {
-            sortBy: 'denominatorDesc',
-            sortOrder: ''
-          }, {
-            sortBy: 'denominatorAsc',
-            sortOrder: 'reverse'
-          }];
-
-          /* Default search by option */
-          searchSettings.sortbyDefault = searchSettings.sortbyValues[0];
-
-          // For the time being metadata rendering is done
-          // using Angular template. Formatter could be used
-          // to render other layout
-
-          // TODO: formatter should be defined per schema
-          searchSettings.formatter = {
-            // defaultUrl: 'md.format.xml?xsl=full_view&id='
-            defaultUrl: 'md.format.xml?xsl=xsl-view&id=',
-            list: [{
-            //  label: 'inspire',
-            //  url: 'md.format.xml?xsl=xsl-view' + '&view=inspire&id='
-            //}, {
-            //  label: 'full',
-            //  url: 'md.format.xml?xsl=xsl-view&view=advanced&id='
-            //}, {
-              label: 'full',
-              url: 'md.format.xml?xsl=full_view&id='
-            }]
-            // TODO: maybe formatter config should depends
-            // on the metadata schema.
-            // schema: {
-            // iso19139: 'md.format.xml?xsl=full_view&&id='
-            // }
-          };
-
-          // Set the default template to use
-          searchSettings.resultTemplate =
-              searchSettings.resultViewTpls[0].tplUrl;
 
           // Set custom config in gnSearchSettings
           angular.extend(searchSettings, {
-            viewerMap: viewerMap,
-            searchMap: searchMap
+            viewerMap: viewerMap
           });
 
           viewerSettings.contexts = ['france', 'italy', 'gb'];

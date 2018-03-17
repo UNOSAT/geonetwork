@@ -108,6 +108,7 @@
       layer = new ol.layer.Tile();
     }
     layer.set('bgType', layerSpec.layer);
+    layer.displayInLayerManager = false;
     return layer;
   };
 

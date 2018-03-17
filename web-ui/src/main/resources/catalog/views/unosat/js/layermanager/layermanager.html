@@ -1,22 +1,62 @@
 <div ng-if="!ctrl.selectedLayers.length" translate>nolayerselected</div>
 <ul id="layermanager-{{::ctrl.uid}}" class="layermanager" ngeo-sortable="ctrl.selectedLayers" ngeo-sortable-options="{handleClassName: 'sortable-handle', draggerClassName: 'sortable-dragger'}" >
   <li ng-repeat="layer in ctrl.selectedLayers" class="panel layermanager-panel">
+
+    <!--Drag and drop icon-->
     <span class="sortable-handle fa fa-reorder pull-left"></span>
-    <a href="" class="layername" data-ng-click="layer.visible = ! layer.visible" title="{{::(layer.get('label') || layer.get('title'))}}">
+
+    <!--Visibility checkbox-->
+    <a href=""  ng-right-click="ctrl.toggleContent($index)" class="layername" data-ng-click="layer.visible = ! layer.visible" title="{{::(layer.get('label') || layer.get('title'))}}">
       <i class="fa" ng-class="(layer.visible) ? 'fa-check-square' : 'fa-square'"></i>
       {{(layer.get('label') || layer.get('title')) | translate}}
     </a>
-    <a class="collapsed" data-toggle="collapse" data-parent="#layermanager-{{::ctrl.uid}}" href="#layermanager-item-{{$index}}">
+
+    <!--Collapse icon-->
+    <a class="collapsed" id="layermanager-item-{{$index}}-collapse" ng-click="ctrl.toggleContent($index)" href=""
+       data-toggle="collapse">
       <span class="collapsed fa fa-ellipsis-h"></span>
       <span class="expanded fa fa-minus"></span>
     </a>
+
+    <!--Delete layer icon-->
     <a class="delete" ng-click="ctrl.removeLayer(layer);"><span class="fa fa-trash-o"></span></a>
+
+    <div class="info-icon pull-right">
+      <span ng-if="::layer.get('md') || layer.get('metadataUuid')" title="{{'hasMetadata' | translate}}" class="fa fa-file-text-o fa-fw"></span>
+      <span ng-if="::layer.get('downloads')" title="{{'download' | translate}}" class="fa fa-download fa-fw"></span>
+    </div>
+
+    <!--Info metadata icon-->
     <a href="" class="info pull-right">
       <un-layerinfo-btn layer="::layer"></un-layerinfo-btn>
     </a>
+
+
     <div id="layermanager-item-{{$index}}" class="collapse">
-      <a href ng-if="::layer.get('cextent')" ng-click="ctrl.zoomToExtent(layer)"><span class="fa fa-arrows-alt" ></span></a>
-      <input class="opacity" type="range" min="0" max="1" step="0.25" ng-model="layer.opacity" />
+      <!--zoom to extent-->
+      <a href ng-if="::layer.get('cextent')" ng-click="ctrl.zoomToExtent(layer)" class="" title="{{'layerExtentZoom' | translate}}">
+        <span class="fa fa-arrows-alt" ></span>
+      </a>
+
+      <!--open metadata-->
+      <a href ng-if="::layer.get('md') || layer.get('metadataUuid')" app-formatter app-formatter-md="::layer.get('md') || layer.get('metadataUuid')" title="{{'openMetadata' | translate}}">
+        <span class="fa fa-file-text-o"></span>&nbsp;
+      </a>
+
+      <!--downloads -->
+      <a href="{{::layer.get('downloads')[0].url}}" target="_blank" ng-if="::layer.get('downloads')" title="{{'download' | translate}}">
+        <span class="fa fa-download"></span>&nbsp;
+      </a>
+
+      <!--sliders-->
+      <div class="right-content">
+        <div class="slider-col">
+          <span translate="">opacity</span>
+          <input class="opacity" type="range" min="0" max="1" step="0.1" ng-model="layer.opacity" />
+        </div>
+        <app-layerclipping app-layerclipping-map="::ctrl.map" app-layerclipping-layer="layer"></app-layerclipping>
+      </div>
+    </div>
     </div>
   </li>
 </ul>

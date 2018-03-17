@@ -11,6 +11,12 @@ ul.layermanager {
   padding: 0;
   max-height: ~"calc(100% - 60px)";
   overflow-y: auto;
+  &, a {
+    color: @main-txt-light;
+  }
+  li {
+    background-color: @main-basecolor-dark;
+  }
 }
 
 li.layermanager-panel {
@@ -72,6 +78,35 @@ li.layermanager-panel {
     float: right;
     cursor: pointer;
   }
+
+  .left-icons a {
+    display: block;
+    &:hover {
+      color: @main_color_300 !important;
+    }
+  }
+  .right-content {
+    margin-left: 25px;
+    margin-bottom: 5px;
+    color: grey;
+  }
+
+  .slider-col {
+    span {
+      width: 105px;
+      display: inline-block;
+      text-align: right;
+    }
+  }
+
+  .info-icon {
+    color: grey;
+    display: none;
+  }
+  &:hover .info-icon {
+    display: block;
+  }
+
 }
 
 .sortable-handle {
