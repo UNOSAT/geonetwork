@@ -25,13 +25,64 @@
   module.directive('unCatalog', gn.catalogDirective);
 
   var layerCache_ = {};
-  gn.UnCatalogController = function($http, unCatalogUrl, gnMap) {
+  gn.UnCatalogController = function($scope, $http, unCatalogUrl, gnMap) {
 
-    var $this = this;
     this.gnMap_ = gnMap;
     $http.get(unCatalogUrl).then(function(catalog) {
-      $this.tree = catalog.data[0];
-    });
+      this.tree = catalog.data[0];
+
+      // Apply text filter on the tree
+      $scope.$watch(function() {
+        return this.activeFilter;
+      }.bind(this), function(filter) {
+        if(angular.isDefined(filter)) {
+          this.clearFilterNode_(this.tree);
+          this.filterNode_(this.tree, filter);
+        }
+      }.bind(this));
+
+    }.bind(this));
+  };
+
+  /**
+   * Traverse tree and disable filter.
+   * Mark all nodes as visible.
+   * @param {TreeNode} node Node to traverse.
+   * @private
+   */
+  gn.UnCatalogController.prototype.clearFilterNode_ = function(node) {
+    delete node._matchFilter;
+    if(node.children) {
+      node.children.forEach(function(child) {
+        this.clearFilterNode_(child);
+      }.bind(this));
+    }
+  };
+
+  /**
+   * Filter a tree structure. Match filter text and `node.name` property.
+   * All node that match are marked with `node._matchFilter = true`.
+   * If a node match, then all children are visible.
+   *
+   * @param {TreeNode} node Node to traverse.
+   * @param {string} text Filter text.
+   * @returns {boolean}
+   * @private
+   */
+  gn.UnCatalogController.prototype.filterNode_ = function(node, text) {
+    var match = false;
+    if(node.name && node.name.toLowerCase().indexOf(text.toLowerCase()) >= 0) {
+      match = true;
+    }
+    else {
+      if(node.children) {
+        node.children.forEach(function(child) {
+          match = (this.filterNode_(child, text) || match);
+        }.bind(this));
+      }
+    }
+    node._matchFilter = match;
+    return match;
   };
 
   gn.UnCatalogController.prototype.toggle = function(node) {
@@ -88,6 +139,7 @@
     gn.UnCatalogController);
 
   gn.UnCatalogController['$inject'] = [
+    '$scope',
     '$http',
     'unCatalogUrl',
     'gnMap'

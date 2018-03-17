@@ -1,17 +1,32 @@
+<div class="row filter-input app-layertree-filter" ng-if="::layertreeCtrl.isRoot" >
+  <span class="fa fa-times-circle clear" ng-click="catalogCtrl.activeFilter = ''" ng-show="catalogCtrl.activeFilter" title="{{'clear'|translate}}"></span>
+  <input type="text" class="form-control input-sm layerfilter" placeholder="{{'filter'|translate}}"
+         data-ng-model="catalogCtrl.activeFilter" data-ng-model-options="{debounce: 300}">
+</div>
+
+<!--first level node-->
 <a data-toggle="collapse" class="collapsed" data-parent="#catalog-{{::layertreeCtrl.parentUid}}"
    href="#catalog-{{::layertreeCtrl.uid}}"
    ng-if="::!layertreeCtrl.isRoot && layertreeCtrl.node.children && layertreeCtrl.depth == 1"
+   ng-hide="layertreeCtrl.node._matchFilter === false"
    ng-click="catalogCtrl.toggleNode(layertreeCtrl, $event)">
   {{layertreeCtrl.node.name | translate}}
 </a>
+
+<!--Deeper level nodes-->
 <a data-toggle="collapse" class="collapsed"
    href="#catalog-{{::layertreeCtrl.uid}}"
    ng-if="::!layertreeCtrl.isRoot && layertreeCtrl.node.children && layertreeCtrl.depth > 1"
+   ng-hide="layertreeCtrl.node._matchFilter === false"
    ng-click="catalogCtrl.toggleNode(layertreeCtrl, $event)">
   <i ng-if="::!layertreeCtrl.isRoot && layertreeCtrl.node.children && layertreeCtrl.depth > 1" class="fa fa-plus-square"></i>
   {{layertreeCtrl.node.name | translate}}
 </a>
-<div ng-if="::!layertreeCtrl.isRoot && !layertreeCtrl.node.children" data-ng-class="{error: layertreeCtrl.layer.get('errors').length}">
+
+<!--Layer leaf-->
+<div ng-if="::!layertreeCtrl.isRoot && !layertreeCtrl.node.children"
+     ng-hide="layertreeCtrl.node._matchFilter === false"
+     data-ng-class="{error: layertreeCtrl.layer.get('errors').length}">
   <un-layerinfo-btn layer="::layertreeCtrl.layer"></un-layerinfo-btn>
   <a href="" ng-click="catalogCtrl.toggle(layertreeCtrl.node)">
     <i class="fa" ng-class="(layertreeCtrl.getSetActive()) ? 'fa-check-square' : 'fa-square'"></i>

@@ -126,3 +126,32 @@ un-catalog {
     }
   }
 }
+
+#sidebar .app-layertree-filter {
+  margin: 0 0 15px 15px;
+  position:relative;
+
+  .clear {
+    right: 2.8em;
+    position: absolute;
+    top: .5em;
+    color: @brand-primary;
+    &:hover {
+      cursor: pointer;
+      color: #eee;
+    }
+  }
+
+  .layerfilter {
+    border: none;
+    color: white;
+    background-color: transparent !important;
+    border-bottom: 1px solid @brand-primary;
+    border-radius: 0;
+    box-shadow: none;
+    width: 90%;
+    &:focus {
+      border-width: 2px;
+    }
+  }
+}

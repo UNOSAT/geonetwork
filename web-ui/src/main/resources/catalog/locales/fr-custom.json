@@ -1,4 +1,6 @@
 {
+  "datas": "Données",
+  "selection": "Sélection",
   "curtainH": "Clipping horizontal",
   "curtainV": "Clipping vertical",
   "paginationInfo": "Résultats {{from}} à {{to}} <em> sur {{total}}</em>",
