@@ -202,6 +202,9 @@
             $scope.searchResults.facet = data.facet;
             $scope.searchResults.dimension = data.dimension;
 
+            // unosat to clear bbox layer
+            $scope.$emit('aftersearch');
+
             // compute page number for pagination
             if ($scope.hasPagination) {
 

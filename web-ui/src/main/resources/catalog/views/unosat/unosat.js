@@ -153,6 +153,13 @@
   };
 
   gn.MainController.prototype.manageBBoxLayer_ = function() {
+    this.$scope.$on('aftersearch', function() {
+      var layer = this.appBboxLayer && this.appBboxLayer.layer;
+      if(layer) {
+        layer.getSource().clear();
+      }
+    }.bind(this));
+
     this.$scope.$watch(function() {
       return this.catalogOpen;
     }.bind(this), function(opened) {

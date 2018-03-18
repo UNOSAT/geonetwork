@@ -77,10 +77,6 @@
                 map.getSize());
           $rootScope.$broadcast('mapfit');
         });
-
-        scope.$on('aftersearch', function() {
-          fo.getSource().clear();
-        });
       }
     };
   };

@@ -20,24 +20,6 @@
       bindToController: true,
       templateUrl: '../../catalog/views/contrib/geocatalog/geocatalog.html',
       link: function(scope, element) {
-        // Must trigger search to generate facet, but hide this first search
-        /*var searchFormScope = angular.element(element.find('form')).scope();
-        var unregisterFn = searchFormScope.$watch(
-            'searchResults.count', function(n,o) {
-          if(o <= 0) {
-            searchFormScope.searchResults.records = [];
-            searchFormScope.searchResults.count = 0;
-          } else {
-            this.showResult = true;
-            scope.$on('aftersearch', function() {
-              $('a[data-target=#appSearchresults]').tab('show');
-              $('#geocatalog').find('.tab-content.no-nav').scrollTop(0);
-            });
-            unregisterFn();
-          }
-        }.bind(this));
-*/
-
       }
     };
   };
@@ -45,8 +27,7 @@
 
 
   gn.AppGeoCatalogController = function($scope, $http, gnSearchSettings,
-                                        suggestService, gnMap, appResultviewFns,
-                                        $element, $timeout) {
+                                        suggestService, gnMap, appResultviewFns) {
 
     this.suggestService = suggestService;
     this.$http = $http;
@@ -112,7 +93,7 @@
   gn.AppGeoCatalogController['$inject'] = [
     '$scope',
     '$http', 'gnSearchSettings',
-    'suggestService', 'gnMap', 'appResultviewFns', '$element', '$timeout'
+    'suggestService', 'gnMap', 'appResultviewFns'
   ];
   module.controller('AppGeoCatalogController',
       gn.AppGeoCatalogController);
