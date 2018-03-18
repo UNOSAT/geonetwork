@@ -103,13 +103,13 @@
           tipLabel: 'Emprise globale',
           className: 'un-zoom-extent',
           label:$(
-              '<span class="fa fa-globe"></span>')}),
+              '<span class="fa fa-globe"></span>')[0]}),
 
         new ol.control.FullScreen({
           tipLabel: 'Plein écran',
           className: 'un-full-screen',
           label:$(
-            '<span class="fa fa-arrows-alt"></span>')})
+            '<span class="fa fa-arrows-alt"></span>')[0]})
       ]
     });
 
