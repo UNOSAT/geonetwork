@@ -106267,19 +106267,19 @@ ngeo.searchDirective = function() {
           var typeaheadListeners = ngeo.searchDirective.adaptListeners_(
               typeaheadListeners_);
 
-          element.on('typeahead:open', function() {
+          element.on('typeahead:opened', function() {
             scope.$apply(function() {
               typeaheadListeners.open();
             });
           });
 
-          element.on('typeahead:close', function() {
+          element.on('typeahead:closed', function() {
             scope.$apply(function() {
               typeaheadListeners.close();
             });
           });
 
-          element.on('typeahead:cursorchange',
+          element.on('typeahead:cursorchanged',
               /**
                * @param {jQuery.Event} event Event.
                * @param {Object} suggestion Suggestion.
@@ -106291,7 +106291,7 @@ ngeo.searchDirective = function() {
                 });
               });
 
-          element.on('typeahead:select',
+          element.on('typeahead:selected',
               /**
                * @param {jQuery.Event} event Event.
                * @param {Object} suggestion Suggestion.
@@ -106303,7 +106303,7 @@ ngeo.searchDirective = function() {
                 });
               });
 
-          element.on('typeahead:autocomplete',
+          element.on('typeahead:autocompleted',
               /**
                * @param {jQuery.Event} event Event.
                * @param {Object} suggestion Suggestion.
