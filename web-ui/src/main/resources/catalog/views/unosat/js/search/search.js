@@ -90,10 +90,9 @@
       }
     }];
 
-    this['listeners'] = ({
-      selected: angular.bind(this, gn.SearchController.selected_)
+    this.listeners = /** @type {ngeox.SearchDirectiveListeners} */ ({
+      select: gn.SearchController.selected_.bind(this)
     });
-
   };
 
   /**
@@ -118,16 +117,10 @@
 
         url += '&name_startsWith=%QUERY';
 
-        var geojsonFormat = new ol.format.GeoJSON();
-        var bloodhoundOptions = ({
-          remote: {
-            url: url,
-            filter: function(resp) {
-              return resp.geonames;
-            }
-          }
-        });
-        var bloodhound = ngeoCreateGeoJSONBloodhound(bloodhoundOptions);
+        var bloodhound = ngeoCreateGeoJSONBloodhound(url,
+          undefined, undefined, undefined, undefined, {filter: function(resp) {
+            return resp.geonames;
+          }});
 
         bloodhound.initialize();
         return bloodhound;
