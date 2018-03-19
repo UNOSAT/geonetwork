@@ -1,0 +1,164 @@
+<div class="md-title">
+  <h4>  {{(md.title || md.defaultTitle)}}</h4>
+  <button class="close-panel" ng-click="md = null">
+    ✕
+  </button>
+</div>
+<div class="md-content">
+  <div class="md-mainblock">
+    <div class="pull-right md-thumb">
+      <img gn-img-modal="md" class="gn-img-thumbnail" data-ng-src="{{md.thumbnail}}" data-ng-if="md.thumbnail"/>
+    </div>
+
+    <div class="md-abstract"
+         data-ng-bind-html="(md.abstract || md.defaultAbstract) | linky | newlines"></div>
+  </div>
+
+  <table class="table">
+    <tbody>
+    <tr data-ng-if="::(md.category.length > 0 ||
+                      md.topicCat.length > 0)">
+      <th data-translate="">listOfCategories</th>
+      <td>
+        <a data-ng-repeat="cat in ::md.category"
+           data-ng-href="#/search?_cat={{cat}}">
+          <span class="fa gn-icon-{{cat}}" title="{{cat | translate}}"></span>
+        </a>
+
+        <a data-ng-repeat="t in ::md.topicCat"
+           data-ng-href="#/search?topicCat={{t}}">
+          <i class="fa" title="{{t | translate}}">
+            <span class="fa gn-icon-{{t}}"></span>
+          </i>
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <th>Emprise</th>
+      <td>
+        <p data-ng-repeat="bbox in ::md.geoBox">
+          <img class="gn-img-thumbnail img-thumbnail gn-img-extent"
+               data-ng-src="region.getmap.png?mapsrs=EPSG:3857&width=150&background=osm&geomsrs=EPSG:4326&geom={{md.getBoxAsPolygon($index)}}"/>
+        </p>
+      </td>
+    </tr>
+    <tr>
+      <th>Légende</th>
+      <td>
+        <p class="legend">
+          <img class=""
+               data-ng-src="{{layer.get('legend')}}"/>
+        </p>
+      </td>
+    </tr>
+    <tr data-ng-if="::md.keyword">
+      <th data-translate="">keywords</th>
+      <td>
+
+        <ul>
+          <li data-ng-repeat="k in ::md.keyword track by $index">
+            {{k}}
+          </li>
+        </ul>
+        <!--<span class="badge" data-ng-repeat="k in ::md.keyword track by $index">{{k}}</span>-->
+      </td>
+    </tr>
+    <!--
+    <tr data-ng-if="::md.datasetLang">
+      <th data-translate="">language</th>
+      <td>
+        <ul>
+          <li data-ng-repeat="l in ::md.datasetLang">
+            {{l | translate}}
+          </li>
+        </ul>
+      </td>
+    </tr>
+
+    <tr data-ng-if="::md.identifier">
+      <th data-translate="">identifier</th>
+      <td>
+        <ul>
+          <li data-ng-repeat="i in ::md.identifier">
+            {{i}}
+          </li>
+        </ul>
+      </td>
+    </tr>
+    <tr data-ng-if="::md.classification_text">
+      <th data-translate="">classification</th>
+      <td>{{::md.classification_text}}</td>
+    </tr>
+    <tr data-ng-if="::md.legalConstraints">
+      <th data-translate="">legalConstraints</th>
+      <td>
+        <p data-ng-repeat="c in ::md.legalConstraints track by $index">{{c}}</p>
+      </td>
+    </tr>
+
+
+    <tr data-ng-if="::md.securityConstraints">
+      <th data-translate="">securityConstraints</th>
+      <td>
+        <p data-ng-repeat="c in ::md.securityConstraints track by $index">{{c}}</p>
+      </td>
+    </tr>
+
+
+    <tr data-ng-if="::md.resourceConstraints">
+      <th data-translate="">resourceConstraints</th>
+      <td>
+        <p data-ng-repeat="c in ::md.resourceConstraints track by $index">{{c}}</p>
+      </td>
+    </tr>
+  -->
+
+    <tr data-ng-if="::md.getAllContacts().resource">
+      <th data-translate="">Contact</th>
+      <td>
+        <div class="gn-contact"
+             data-ng-repeat="c in ::md.getAllContacts().resource track by $index">
+          <!--
+                  <h3>
+                    <i class="fa fa-envelope"></i>
+                    {{c.role | translate}}
+                  </h3>
+          -->
+          <div class="row">
+            <div class="col-md-6">
+              <address>
+                <strong>
+                  Projet RésEau Tchad<br/>
+                </strong>
+                <div>
+                  <a href="mailto:reseau.databank@unitar.org">
+                    <span>reseau.databank@unitar.org</span>
+                  </a>
+                </div>
+                <div>Tchad</div>
+                <a href="tel:{{c.phone}}"
+                   data-ng-if="c.phone != ''">
+                  <span data-translate="">call</span> {{c.phone}}
+                </a>
+              </address>
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr data-ng-if="::md.status_text.length > 0">
+      <th data-translate="">resourceStatus</th>
+      <td>
+        <ul>
+          <li data-ng-repeat="s in ::md.status_text">{{s}}</li>
+        </ul>
+      </td>
+    </tr>
+    <tr data-ng-if="::md.credit">
+      <th data-translate="">credit</th>
+      <td>{{::md.credit}}</td>
+    </tr>
+
+    </tbody>
+  </table>
+</div>

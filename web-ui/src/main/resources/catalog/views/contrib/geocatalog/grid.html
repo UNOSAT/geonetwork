@@ -14,8 +14,8 @@
                data-ng-model="md['geonet:info'].selected"
                data-ng-change="change()"/>
 
-        <h4 title="{{md.title || md.defaultTitle}}">
-          <a  href="display#/{{md.getUuid()}}/formatters/pigeo_simple_view?output=html" app-formatter app-formatter-md="md">
+        <h4 title="{{md.title || md.defaultTitle}}" ng-click="ctrl.selectedMd = md">
+          <a  href="">
             {{(md.title || md.defaultTitle)}}</a>
         </h4>
       </div>

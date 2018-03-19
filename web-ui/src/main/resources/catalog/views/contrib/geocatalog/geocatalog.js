@@ -32,6 +32,7 @@
     this.suggestService = suggestService;
     this.$http = $http;
     this.$scope = $scope;
+    this.selectedMd = null;
 
     $scope.resultTemplate = gnSearchSettings.resultTemplate;
     $scope.searchObj = {
@@ -63,6 +64,7 @@
     var defaultSearchParams = ['sortBy', 'from', 'to', 'fast', 'resultType',
         'facet.q', 'sortOrder',
       '_content_type'];
+
     $scope.$watch('searchObj.params', function(v) {
       for (var p in v) {
         if(defaultSearchParams.indexOf(p) < 0) {
@@ -72,6 +74,10 @@
       }
       $scope.searchObj.canReset = false;
     });
+
+    $scope.$on('aftersearch', function() {
+      this.selectedMd = null;
+    }.bind(this));
 
   };
 
@@ -97,5 +103,18 @@
   ];
   module.controller('AppGeoCatalogController',
       gn.AppGeoCatalogController);
+
+
+  module.directive('appMdView', function() {
+    return {
+      restrict: 'E',
+      scope: {
+        md: '=appMdViewMd'
+      },
+      templateUrl: '../../catalog/views/contrib/geocatalog/mdview.html',
+      link: function(scope, element) {
+      }
+    };
+  });
 
 })();
