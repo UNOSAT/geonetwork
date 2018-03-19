@@ -226,4 +226,7 @@
   <sds-section-custodian>Responsible custodian</sds-section-custodian>
   <sds-addOperation>Add Operation</sds-addOperation>
   <unosat>Unosat</unosat>
+  <summary>Métadonnée simplifiée</summary>
+  <details>Fiche d'identification détaillée</details>
+  <distribution>Information sur la diffusion</distribution>
 </strings>

@@ -1798,7 +1798,7 @@ de métadonnées de données « BD Carthage métropole »
 
   </element>
   <element name="gmd:code" id="207.0" context="gmd:RS_Identifier">
-    <label>Code</label>
+    <label>Code EPSG</label>
     <description>Valeur alphanumérique pour l'identification d'une occurrence dans le domaine de
       valeurs
     </description>
