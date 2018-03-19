@@ -65,7 +65,7 @@
 
     $scope.$watch('mainCtrl.drawOpen', function() {
       if($scope.mainCtrl.drawVector) {
-        $scope.mainCtrl.drawVector.inmap = !$scope.mainCtrl.drawVector.inmap;
+        $scope.mainCtrl.drawVector.active = !$scope.mainCtrl.drawVector.active;
       }
     });
     $scope.$watch('mainCtrl.legendOpen', function() {
