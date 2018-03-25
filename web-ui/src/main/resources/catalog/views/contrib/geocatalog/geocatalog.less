@@ -229,11 +229,6 @@ app-geo-catalog {
     .gn-md-emptythumbnail {
       min-height: 120px;
     }
-    .md-details {
-      display: flex;
-      height: 105px;
-      margin: 1em;
-    }
     .md-abstract {
       color: #808080;
       overflow: hidden;
@@ -256,6 +251,8 @@ app-geo-catalog {
       margin-left:2.7em;
     }
   }
+
+
 }
 
 .gn-md-links {
@@ -350,4 +347,46 @@ app-admin-btn {
   table {
     margin-left: 25px;
   }
+}
+
+
+.unosat-md {
+  dt {
+    width: 90px;
+  }
+  dd {
+    margin-left: 105px;
+  }
+
+  h5, h6 {
+    color: white;
+    background-color: @brand-secondary-light;
+    padding: 6px;
+  }
+  h6 {
+    background-color: lighten(@brand-primary, @standard-variation);;
+  }
+  .md-summary {
+    display: flex;
+    height: 105px;
+    margin: 1em;
+
+    .md-summary-content {
+      flex: 2;
+      p {
+        margin-bottom: 2px;
+      }
+    }
+    .md-thumbnail {
+      flex: 1;
+      text-align: right;
+      .gn-img-thumbnail {
+        max-width: 100%;
+        max-height: 90px;
+        margin-right: 25px;
+      }
+
+    }
+  }
+
 }

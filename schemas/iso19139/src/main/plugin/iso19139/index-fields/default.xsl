@@ -522,7 +522,7 @@
                  index="true"/>
         </xsl:for-each>
       </xsl:for-each>
-
+w
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
       <xsl:for-each select="gmd:resourceMaintenance/

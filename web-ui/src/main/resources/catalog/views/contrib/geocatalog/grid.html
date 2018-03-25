@@ -6,7 +6,7 @@
       app-md-extent=""
       app-md-extent-md="md">
 
-    <div class="gn-grid-item">
+    <div class="gn-grid-item unosat-md">
 
       <!--Title-->
       <div class="gn-md-title">
@@ -19,23 +19,7 @@
             {{(md.title || md.defaultTitle)}}</a>
         </h4>
       </div>
-
-      <div class="md-details" title="{{(md.abstract || md.defaultAbstract) | striptags}}">
-        <div class="gn-md-thumbnail" ng-class="{'gn-md-emptythumbnail': !md.thumbnail }">
-          <img gn-img-modal="md" class="gn-img-thumbnail" data-ng-src="{{md.thumbnail}}" data-ng-if="md.thumbnail"/>
-        </div>
-        <div class="text-justify md-abstract">
-          <p>{{::(md.abstract || md.defaultAbstract)}}</p>
-        </div>
-        <div style="width:5px;height:50px;background-color: {{::md.extentColor}}"></div>
-      </div>
-      <div data-ng-if="md.getContactResources()" class="gn-md-source" title="{{::md.getContactResources()}}">
-        <em>{{::md.getContactResources() | characters : 80}}</em>
-      </div>
-      <!--<div class="md-footer">-->
-        <!--<app-admin-btn></app-admin-btn>-->
-        <!--<app-links-btn class="pull-right"></app-links-btn>-->
-      <!--</div>-->
+      <app-md-summary app-md-summary-md="md"></app-md-summary>
     </div>
   </li>
 </ul>

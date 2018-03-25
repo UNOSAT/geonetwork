@@ -1,0 +1,22 @@
+<div class="md-summary" title="{{(md.abstract || md.defaultAbstract) | striptags}}">
+  <div class="md-summary-content">
+    <dl class="dl-horizontal">
+      <dt translate>type</dt>
+      <dd>
+        <p>{{md.spatialRepresentationType_text}}&nbsp;{{md.geometricObjectType_text}}</p>
+      </dd>
+
+      <dt translate>keywords</dt>
+      <dd>
+        <p>
+          {{md.keyword.join(", ")}}
+        </p>
+      </dd>
+    </dl>
+  </div>
+  <div class="md-thumbnail">
+    <img gn-img-modal="md" class="gn-img-thumbnail" data-ng-src="{{md.thumbnail}}" data-ng-if="md.thumbnail"/>
+  </div>
+
+  <div style="width:5px;height:50px;background-color: {{::md.extentColor}}"></div>
+</div>

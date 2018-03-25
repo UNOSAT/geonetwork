@@ -151,6 +151,8 @@
       <field name="geoBox" tagName="geoBox"/>
       <field name="_indexingError" tagName="idxError"/>
       <field name="_indexingErrorMsg" tagName="idxMsg"/>
+      <field name="geomtype" tagName="geomtype"/>
+      <field name="geomObjectType" tagName="geomObjectType"/>
     </dumpFields>
   </search>
 

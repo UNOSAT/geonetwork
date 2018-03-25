@@ -89,6 +89,8 @@
     <facet name="resolution" indexKey="resolution" label="resolutions"/>
     <facet name="spatialRepresentationType" indexKey="cl_spatialRepresentationType"
            label="spatialRepresentationTypes"/>
+    <facet name="geometricObjectType" indexKey="cl_geometricObjectType"
+           label="geometricObjectTypes"/>
     <facet name="orgName" indexKey="orgName" label="orgNames" localized="true"/>
     <facet name="orgNameTree" indexKey="orgNameTree" label="orgNamesTree"
            classifier="slashSplitClassifier"/>
@@ -152,6 +154,8 @@
       <item facet="serviceType"/>
       <item facet="denominator" sortBy="numValue" sortOrder="desc"/>
       <item facet="resolution" sortBy="numValue" sortOrder="desc"/>
+      <item facet="geometricObjectType"
+            translator="codelist:gmd:MD_GeometricObjectTypeCode"/>
       <!--
       <item facet="region"
             translator="term:http://geonetwork-opensource.org/thesaurus/naturalearth-and-seavox"/>

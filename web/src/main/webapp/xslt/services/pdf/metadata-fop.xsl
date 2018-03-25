@@ -29,7 +29,7 @@
 
 
   <!-- Some colors -->
-  <xsl:variable name="background-color">#d6e2f7</xsl:variable>
+  <xsl:variable name="background-color">#679CE2</xsl:variable>
   <xsl:variable name="background-color-banner">#ffffff</xsl:variable>
   <xsl:variable name="background-color-thumbnail">#f1f2f3</xsl:variable>
   <xsl:variable name="border-color">#b3c6e6</xsl:variable>

@@ -116,5 +116,16 @@
       }
     };
   });
+  module.directive('appMdSummary', function() {
+    return {
+      restrict: 'E',
+      scope: {
+        md: '<appMdSummaryMd'
+      },
+      templateUrl: '../../catalog/views/contrib/geocatalog/mdsummary.html',
+      link: function(scope, element) {
+      }
+    };
+  });
 
 })();
