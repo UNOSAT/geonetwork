@@ -49,7 +49,7 @@
         restrict: 'A',
         replace: true,
         templateUrl: '../../catalog/components/viewer/wmsimport/' +
-            'partials/wmsimport.html',
+        'partials/wmsimport.html',
         scope: {
           map: '=gnWmsImportMap',
           url: '=?gnWmsImportUrl'
@@ -57,28 +57,28 @@
         controller: ['$scope', function($scope) {
 
           /**
-         * Transform a capabilities layer into an ol.Layer
-         * and add it to the map.
-         *
-         * @param {Object} getCapLayer
-         * @param {string} name of the style to use
-         * @return {*}
-         */
+           * Transform a capabilities layer into an ol.Layer
+           * and add it to the map.
+           *
+           * @param {Object} getCapLayer
+           * @param {string} name of the style to use
+           * @return {*}
+           */
           this.addLayer = function(getCapLayer, style) {
             getCapLayer.version = $scope.capability.version;
             if ($scope.format == 'wms') {
               var layer =
-                  gnMap.addWmsToMapFromCap($scope.map, getCapLayer, style);
+                gnMap.addWmsToMapFromCap($scope.map, getCapLayer, style);
               gnMap.feedLayerMd(layer);
               return layer;
             } else if ($scope.format == 'wfs') {
               var layer = gnMap.addWfsToMapFromCap($scope.map, getCapLayer,
-                  $scope.url);
+                $scope.url);
               gnMap.feedLayerMd(layer);
               return layer;
             } else if ($scope.format == 'wmts') {
               return gnMap.addWmtsToMapFromCap($scope.map, getCapLayer,
-                  $scope.capability);
+                $scope.capability);
             }
           };
         }],
@@ -86,7 +86,7 @@
           scope.loading = false;
           scope.error = {wms: null, wmts: null, wfs: null};
           scope.format = attrs['gnWmsImport'] != '' ?
-              attrs['gnWmsImport'] : 'all';
+            attrs['gnWmsImport'] : 'all';
           scope.serviceDesc = null;
           scope.servicesList = gnViewerSettings.servicesUrl[scope.format];
           scope.catServicesList = [];
@@ -141,7 +141,7 @@
               scope.error[type] = null;
               scope.capability = null;
               gnOwsCapabilities['get' + type.toUpperCase() +
-                  'Capabilities'](scope.url).then(function(capability) {
+              'Capabilities'](scope.url).then(function(capability) {
                 scope.loading = false;
                 scope.capability = capability;
               }, function(error) {
@@ -186,12 +186,13 @@
     'ngeoDecorateLayer',
     'gnAlertService',
     '$translate',
-    function(ngeoDecorateLayer, gnAlertService, $translate) {
+    'kmzService',
+    function(ngeoDecorateLayer, gnAlertService, $translate, kmzService) {
       return {
         restrict: 'A',
         replace: true,
         templateUrl: '../../catalog/components/viewer/wmsimport/' +
-            'partials/kmlimport.html',
+        'partials/kmlimport.html',
         scope: {
           map: '=gnKmlImportMap'
         },
@@ -200,12 +201,12 @@
           function($scope, $http) {
 
             /**
-           * Create new vector Kml file from url and add it to
-           * the Map.
-           *
-           * @param {string} url remote url of the kml file
-           * @param {ol.map} map
-           */
+             * Create new vector Kml file from url and add it to
+             * the Map.
+             *
+             * @param {string} url remote url of the kml file
+             * @param {ol.map} map
+             */
             this.addKml = function(url, map) {
 
               if (url == '') {
@@ -214,27 +215,28 @@
               }
 
               $http.get(gnGlobalSettings.proxyUrl + encodeURIComponent(url)).
-                  then(function(response) {
-                    var kmlSource = new ol.source.Vector();
-                    kmlSource.addFeatures(
-                    new ol.format.KML().readFeatures(
+              then(function(response) {
+                var kmlSource = new ol.source.Vector();
+                kmlSource.addFeatures(
+                  new ol.format.KML().readFeatures(
                     response.data, {
                       featureProjection: $scope.map.getView().getProjection(),
                       dataProjection: 'EPSG:4326'
                     }));
-                    var vector = new ol.layer.Vector({
-                      source: kmlSource,
-                      getinfo: true,
-                      label: $translate.instant('kmlFile',
-                      {layer: url.split('/').pop()})
-                    });
-                    $scope.addToMap(vector, map);
-                    $scope.url = '';
-                    $scope.validUrl = true;
+                var vector = new ol.layer.Vector({
+                  source: kmlSource,
+                  getinfo: true,
+                  kml: true,
+                  label: $translate.instant('kmlFile',
+                    {layer: url.split('/').pop()})
+                });
+                $scope.addToMap(vector, map);
+                $scope.url = '';
+                $scope.validUrl = true;
 
-                  }, function() {
-                    $scope.validUrl = false;
-                  });
+              }, function() {
+                $scope.validUrl = false;
+              });
             };
 
             $scope.addToMap = function(layer, map) {
@@ -242,11 +244,11 @@
               layer.displayInLayerManager = true;
               map.getLayers().push(layer);
               map.getView().fit(layer.getSource().getExtent(),
-                  map.getSize());
+                map.getSize());
 
               gnAlertService.addAlert({
                 msg: $translate.instant('layerAdded',
-                    {layer: layer.get('label')}),
+                  {layer: layer.get('label')}),
                 type: 'success'
               });
             };
@@ -258,14 +260,14 @@
 
           /** File drag & drop support */
           var dragAndDropInteraction =
-              new ol.interaction.DragAndDrop({
-                formatConstructors: [
-                  ol.format.GPX,
-                  ol.format.GeoJSON,
-                  ol.format.KML,
-                  ol.format.TopoJSON
-                ]
-              });
+            new ol.interaction.DragAndDrop({
+              formatConstructors: [
+                ol.format.GPX,
+                ol.format.GeoJSON,
+                ol.format.KML,
+                ol.format.TopoJSON
+              ]
+            });
 
           var onError = function(msg) {
             gnAlertService.addAlert({
@@ -290,8 +292,9 @@
             var layer = new ol.layer.Vector({
               source: vectorSource,
               getinfo: true,
+              kml: true,
               label: $translate.instant('localLayerFile',
-                  {layer: event.file.name})
+                {layer: event.file.name})
             });
             scope.addToMap(layer, scope.map);
             scope.$apply();
@@ -299,43 +302,20 @@
 
 
           var requestFileSystem = window.webkitRequestFileSystem ||
-              window.mozRequestFileSystem || window.requestFileSystem;
+            window.mozRequestFileSystem || window.requestFileSystem;
           var unzipProgress = document.createElement('progress');
           var fileInput = element.find('input[type="file"]')[0];
 
-          var model = (function() {
-            var URL = window.webkitURL || window.mozURL || window.URL;
-
-            return {
-              getEntries: function(file, onend) {
-                zip.createReader(new zip.BlobReader(file),
-                    function(zipReader) {
-                      zipReader.getEntries(onend);
-                    }, onerror);
-              },
-              getEntryFile: function(entry, creationMethod,
-                                     onend, onprogress) {
-                var writer, zipFileEntry;
-
-                function getData() {
-                  entry.getData(writer, function(blob) {
-                    var blobURL = URL.createObjectURL(blob);
-                    onend(blobURL);
-                  }, onprogress);
-                }
-                writer = new zip.BlobWriter();
-                getData();
-              }
-            };
-          })();
-
           scope.onEntryClick = function(entry, evt) {
-            model.getEntryFile(entry, 'Blob', function(blobURL) {
+            kmzService.model.getEntryFile(entry, function(blobURL) {
               entry.loading = true;
               scope.$apply();
               var source = new ol.source.Vector();
               $.ajax(blobURL).then(function(response) {
-                var format = new ol.format.KML();
+                var format = new ol.format.KML({
+                  showPointNames: false,
+                  blobImages: kmzService.imageMapping
+                });
                 var features = format.readFeatures(response, {
                   featureProjection: scope.map.getView().getProjection()
                 });
@@ -344,21 +324,22 @@
 
               var vector = new ol.layer.Vector({
                 label: $translate.instant('localLayerFile',
-                    {layer: entry.filename}),
+                  {layer: entry.filename}),
                 getinfo: true,
+                kml: true,
                 source: source
               });
               var listenerKey = vector.getSource().on('change',
-                  function(evt) {
-                    if (vector.getSource().getState() == 'ready') {
-                      vector.getSource().unByKey(listenerKey);
-                      scope.addToMap(vector, scope.map);
-                      entry.loading = false;
-                    }
-                    else if (vector.getSource().getState() == 'error') {
-                    }
-                    scope.$apply();
-                  });
+                function(evt) {
+                  if (vector.getSource().getState() == 'ready') {
+                    vector.getSource().unByKey(listenerKey);
+                    scope.addToMap(vector, scope.map);
+                    entry.loading = false;
+                  }
+                  else if (vector.getSource().getState() == 'error') {
+                  }
+                  scope.$apply();
+                });
             }, function(current, total) {
               unzipProgress.value = current;
               unzipProgress.max = total;
@@ -368,8 +349,8 @@
 
           angular.element(fileInput).bind('change', function(changeEvent) {
             if (fileInput.files.length > 0) {
-              model.getEntries(fileInput.files[0], function(entries) {
-                scope.kmzEntries = entries;
+              kmzService.model.getEntries(fileInput.files[0], function(entries) {
+                scope.kmzEntries = kmzService.preProcessEntries(entries);
                 scope.$apply();
               });
             }
@@ -397,8 +378,8 @@
           collection: '='
         },
         template: "<ul class='list-group'><gn-cap-tree-elt " +
-            "ng-repeat='member in collection' member='member'>" +
-            '</gn-cap-tree-elt></ul>'
+        "ng-repeat='member in collection' member='member'>" +
+        '</gn-cap-tree-elt></ul>'
       };
     }]);
 
@@ -424,18 +405,18 @@
           member: '='
         },
         templateTmp: "<li class='list-group-item' ng-click='handle($event)' " +
-            "ng-class='(!isParentNode()) ? \"leaf\" : \"\"'><label>" +
-            "<span class='fa'  ng-class='isParentNode() ? \"fa-folder-open-o\" :" +
-            " \"fa-plus-square\"'></span>" +
-            ' <span>{{member.Title || member.title}}</span></label></li>',
+        "ng-class='(!isParentNode()) ? \"leaf\" : \"\"'><label>" +
+        "<span class='fa'  ng-class='isParentNode() ? \"fa-folder-open-o\" :" +
+        " \"fa-plus-square\"'></span>" +
+        ' <span>{{member.Title || member.title}}</span></label></li>',
         templateUrl: '../../catalog/components/viewer/wmsimport/' +
-            'partials/layer.html',
+        'partials/layer.html',
         link: function(scope, element, attrs, controller) {
           var el = element;
 
           scope.toggleNode = function(evt) {
             el.find('.fa').first().toggleClass('fa-folder-o')
-                .toggleClass('fa-folder-open-o');
+              .toggleClass('fa-folder-open-o');
             el.children('ul').toggle();
             evt.stopPropagation();
           };
@@ -449,7 +430,7 @@
           // Add all subchildren
           if (angular.isArray(scope.member.Layer)) {
             element.append("<gn-cap-tree-col class='list-group' " +
-                "collection='member.Layer'></gn-cap-tree-col>");
+              "collection='member.Layer'></gn-cap-tree-col>");
             $compile(element.find('gn-cap-tree-col'))(scope);
           }
         }
@@ -460,7 +441,7 @@
       return {
         restrict: 'A',
         templateUrl: '../../catalog/components/viewer/wmsimport/' +
-            'partials/styles.html',
+        'partials/styles.html',
         scope: {
           styles: '=gnLayerStyles',
           onClick: '&gnLayerStylesOnClick',

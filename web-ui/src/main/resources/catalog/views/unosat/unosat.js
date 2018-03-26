@@ -14,6 +14,7 @@
   goog.require('un-mouseposition');
   goog.require('un-scaleselector');
   goog.require('app.contrib');
+  goog.require('app.kmz.overlay');
   goog.require('app.profile');
 
   var module = angular.module('gn_search_unosat', [
@@ -29,6 +30,7 @@
     'un-scaleselector',
     'gn_legendpanel_directive',
     'app.contrib',
+    'app.kmz.overlay',
     'app.profile'
   ]);
 
