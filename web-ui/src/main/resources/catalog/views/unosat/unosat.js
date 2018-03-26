@@ -14,6 +14,7 @@
   goog.require('un-mouseposition');
   goog.require('un-scaleselector');
   goog.require('app.contrib');
+  goog.require('app.profile');
 
   var module = angular.module('gn_search_unosat', [
     'gn_search',
@@ -27,7 +28,8 @@
     'un-mouseposition',
     'un-scaleselector',
     'gn_legendpanel_directive',
-    'app.contrib'
+    'app.contrib',
+    'app.profile'
   ]);
 
   module.constant('defaultExtent', [604168.9251648698, 827653.5815669585, 3495323.0830233768, 2750197.7169957114]);
@@ -37,7 +39,8 @@
 
   gn.MainController = function($scope, gnSearchSettings, defaultExtent,
                                gnMeasure, ngeoSyncArrays, unLayerInfoService,
-                               unLayerState, gnPopup, appBboxLayer) {
+                               unLayerState, gnPopup, appBboxLayer,
+                               ngeoFeatureOverlayMgr) {
 
     this.defaultExtent_ = defaultExtent;
     this.map = null;
@@ -51,11 +54,19 @@
     this.unLayerState = unLayerState;
     this.gnPopup = gnPopup;
     this.$scope = $scope;
+
+    // Profile SRTM
+    this.profileLine = null;
+    this.profileLinesconfiguration = {
+      'aster': {color: '#0000A0'},
+      'srtm': {color: '#00A000'}
+    };
+
     var $this = this;
 
     this['selectedLayers'] = [];
     this.manageSelectedLayers_($scope, ngeoSyncArrays);
-
+    ngeoFeatureOverlayMgr.init(this.map);
     this.map.addControl(new ol.control.ScaleLine({
       target: document.querySelector('.app-footer')
     }));
@@ -185,7 +196,8 @@
     'unLayerInfoService',
     'unLayerState',
     'gnPopup',
-    'appBboxLayer'
+    'appBboxLayer',
+    'ngeoFeatureOverlayMgr'
   ];
 
 })();

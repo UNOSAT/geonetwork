@@ -1,4 +1,4 @@
-<main id="main-container" data-theme="main" ng-controller="MainController as mainCtrl">
+<div id="main-container" data-theme="main" ng-controller="MainController as mainCtrl" ng-class="{'app-profile-chart-active': !!profileChartActive}">
 
   <!--Header-->
   <header class="navbar navbar-default navbar-fixed-top">
@@ -97,6 +97,10 @@
           <button ngeo-btn class="btn btn-default" ng-model="mainCtrl.drawOpen"
                   data-toggle="tooltip" data-placement="left" data-original-title="{{'Draw'|translate}}">
             <span class="fa fa-paint-brush"></span>
+          </button>
+          <button ngeo-btn class="btn btn-default" ng-model="mainCtrl.profileOpen"
+                  data-toggle="tooltip" data-placement="left" data-original-title="{{'Profile'|translate}}">
+            <span class="fa fa-area-chart"></span>
           </button>
         </div>
       </div>
@@ -200,6 +204,34 @@
             <div class="gn-draw-text" gn-draw="" map="::mainCtrl.map" vector="::mainCtrl.drawVector"></div>
           </div>
         </div>
+
+        <!--Profile SRTM-->
+        <div ng-show="mainCtrl.profileOpen" class="row">
+          <div class="col-sm-12">
+            <div class="app-tools-content-heading">
+              {{'Profile'|translate}}
+              <a class="btn close" ng-click="mainCtrl.profileOpen = false">&times;</a>
+            </div>
+            <div app-drawprofileline
+                 app-drawprofileline-active="mainCtrl.profileOpen"
+                 app-drawprofileline-map="::mainCtrl.map"
+                 app-drawprofileline-line="mainCtrl.profileLine">
+              <p>
+                <button class="btn btn-default"
+                        ngeo-btn ng-model="ctrl.interaction.active"
+                        translate> Draw profile line
+                </button>
+              </p>
+              <p>
+                <em translate ng-if="ctrl.interaction.active" class="text-muted small">
+                  Draw a line on the map to display the corresponding elevation profile.
+                  Use double-click to finish the drawing.
+                </em>
+              </p>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
     <div id="infopanel">
@@ -243,6 +275,14 @@
   </main>
 
   <footer>
+    <app-profile
+            app-profile-active="profileChartActive"
+            app-profile-line="mainCtrl.profileLine"
+            app-profile-map="::mainCtrl.map"
+            app-profile-linesconfiguration="::mainCtrl.profileLinesconfiguration"
+            ngeo-resizemap="mainCtrl.map"
+            ngeo-resizemap-state="profileChartActive">
+    </app-profile>
   </footer>
 
   <!-- Modals -->
