@@ -8,6 +8,8 @@
   "paginationInfo": "Résultats {{from}} à {{to}} <em> sur {{total}}</em>",
   "metadataManagement": "Gestion des métadonnées",
   "geomFilter" : "Filtre géographique",
+  "msgCanDropFileOnMap": "Vous pouvez également glisser/déposer un fichier <b>KML</b>, <b>GeoJSON</b> ou <b>GPX</b> sur la carte",
+  "UploadKMZfile": "Ouvrir fichier KMZ",
   "advanced": "Recherche avancée",
   "results": "Résultats"
 }

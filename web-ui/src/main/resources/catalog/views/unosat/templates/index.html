@@ -130,7 +130,7 @@
         </div>
 
         <!--Import-->
-        <div class="row" data-ng-show="mainCtrl.importOpen">
+        <div class="row" data-ng-show="mainCtrl.importOpen" id="import">
           <div class="col-sm-12">
             <div class="app-tools-content-heading">
               {{'Import' | translate}}
@@ -139,13 +139,13 @@
             <!--Tab panel header-->
             <ul class="nav nav-tabs">
               <li role="presentation" class="active">
-                <a href="#importkml" data-toggle="tab">KML</a>
+                <a href data-target="#importkml" data-toggle="tab">KML</a>
               </li>
               <li role="presentation">
-                <a href="#importwms" data-toggle="tab">WMS</a>
+                <a href data-target="#importwms" data-toggle="tab">WMS</a>
               </li>
               <li role="presentation">
-                <a href="#importwmts" data-toggle="tab">WMTS</a>
+                <a href data-target="#importwmts" data-toggle="tab">WMTS</a>
               </li>
             </ul>
 
@@ -161,7 +161,7 @@
               <div id="importwms" class="tab-pane">
                 <div gn-wms-import="wms"
                      gn-wms-import-map="::mainCtrl.map"
-                     services-list-from-catalog="true"></div>
+                     ></div>
               </div>
 
               <!--Import WMTS-->

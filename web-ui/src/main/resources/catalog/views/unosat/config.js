@@ -35,7 +35,7 @@ if(!goog) {
           viewerSettings.servicesUrl = {
             wms: [{
               name: 'ResEau Geoportal',
-              url: 'http://http://geoportal.reseau-tchad.org/geoserver/wms?'
+              url: 'http://geoportal.reseau-tchad.org/geoserver/wms?'
             }],
 
             wmts: [{
