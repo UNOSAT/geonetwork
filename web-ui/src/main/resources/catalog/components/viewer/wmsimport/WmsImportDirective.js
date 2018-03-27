@@ -276,6 +276,62 @@
             });
           };
 
+          var createVectorLayer = function(layer, map) {
+
+            var hlStyleFn = function(feature, resolution) {
+              return feature.get('kml_style') || feature.getStyle();
+            };
+            var selectCollection = new ol.Collection();
+            var unbindAdd = selectCollection.on('add', function(event) {
+              var feature = event.element;
+              feature.set('kml_styleFn', feature.getStyle());
+              var style = feature.getStyle().bind(feature)(5000);
+              if(angular.isArray(style)) {
+                style = style[0];
+              }
+              style = angular.copy(style);
+              style.getImage().setScale(style.getImage().getScale() +1);
+
+              feature.set('kml_style', style);
+              feature.setStyle(null);
+            });
+            var unbindRemove = selectCollection.on('remove', function(event) {
+              var feature = event.element;
+              feature.setStyle(feature.get('kml_styleFn'));
+              feature.set('kml_style', null);
+              feature.set('kml_styleFn', null);
+            });
+            var selectInteraction = new ol.interaction.Select({
+              condition: ol.events.condition.pointerMove,
+              layers: [layer],
+              style: hlStyleFn,
+              features: selectCollection,
+            });
+            map.addInteraction(selectInteraction);
+
+            var unbindMove = map.on('pointermove', function(event) {
+              console.log('move');
+              const hit = scope.map.forEachFeatureAtPixel(event.pixel,
+                function(){ return true},
+                undefined,
+                function(l) { return l === layer});
+              map.getTargetElement().style.cursor = hit ? 'pointer' : '';
+            });
+
+            var unbindDestroy = map.getLayers().on('remove', function(event) {
+              var l = event.element;
+              if(l == layer) {
+                map.removeInteraction(selectInteraction);
+                selectCollection.unByKey(unbindAdd);
+                selectCollection.unByKey(unbindRemove);
+                map.unByKey(unbindMove);
+                map.getLayers().unByKey(unbindDestroy);
+                delete selectCollection;
+                delete selectInteraction;
+              }
+            })
+          };
+
           scope.map.getInteractions().push(dragAndDropInteraction);
           dragAndDropInteraction.on('addfeatures', function(event) {
             if (!event.features || event.features.length == 0) {
@@ -296,7 +352,10 @@
               label: $translate.instant('localLayerFile',
                 {layer: event.file.name})
             });
+
             scope.addToMap(layer, scope.map);
+            createVectorLayer(layer, scope.map);
+
             scope.$apply();
           });
 
@@ -334,6 +393,7 @@
                   if (vector.getSource().getState() == 'ready') {
                     vector.getSource().unByKey(listenerKey);
                     scope.addToMap(vector, scope.map);
+                    createVectorLayer(vector, scope.map);
                     entry.loading = false;
                   }
                   else if (vector.getSource().getState() == 'error') {
