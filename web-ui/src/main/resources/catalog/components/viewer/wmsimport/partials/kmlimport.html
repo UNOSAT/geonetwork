@@ -22,7 +22,7 @@
         <input class="form-control input-sm ng-pristine ng-valid" type="file"
                accept="application/vnd.google-earth.kmz" id="kmz-file-input">
       </div>
-      <div class="list-group" id="file-list">
+      <div class="list-group" id="file-list" ng-show="kmzEntries.length > 1">
         <a href="" class="list-group-item" data-ng-repeat="e in kmzEntries"
            data-ng-click="onEntryClick(e, $event)">
           <span class="pull-right" data-ng-class="{'fa fa-spinner fa-spin' : e.loading }"></span>

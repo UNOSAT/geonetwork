@@ -389,7 +389,7 @@
                 source: source
               });
               var listenerKey = vector.getSource().on('change',
-                function(evt) {
+                function() {
                   if (vector.getSource().getState() == 'ready') {
                     vector.getSource().unByKey(listenerKey);
                     scope.addToMap(vector, scope.map);
@@ -403,7 +403,9 @@
             }, function(current, total) {
               unzipProgress.value = current;
               unzipProgress.max = total;
-              evt.target.appendChild(unzipProgress);
+              if(evt) {
+                evt.target.appendChild(unzipProgress);
+              }
             });
           };
 
@@ -411,6 +413,9 @@
             if (fileInput.files.length > 0) {
               kmzService.model.getEntries(fileInput.files[0], function(entries) {
                 scope.kmzEntries = kmzService.preProcessEntries(entries);
+                if(scope.kmzEntries.length === 1) {
+                  scope.onEntryClick(scope.kmzEntries[0]);
+                }
                 scope.$apply();
               });
             }
