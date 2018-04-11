@@ -4,7 +4,8 @@
            ngeo-search="ctrl.options"
            ngeo-search-datasets="ctrl.datasets"
            ngeo-search-listeners="ctrl.listeners">
-    <span class="clear-button" ng-click="click($event)">&#10005;</span>
+    <span ng-hide="ctrl.inputValue == ''"
+          class="clear-button" ng-click="ctrl.onClearButton($event)"></span>
     </input>
   </div>
 </form>

@@ -12,30 +12,6 @@ var module = angular.module('app.profile', [
 module.value('appProfileJsonUrl',
   '../api/srtm.profile');
 
-module.value('appProfileTemplateUrl',
-  /**
-   * @param {!angular.JQLite} $element Element.
-   * @param {!angular.Attributes} $attrs Attributes.
-   * @return {string} Template.
-   */
-  function($element, $attrs) {
-    const templateUrl = $attrs['appProfileTemplateurl'];
-    return templateUrl !== undefined ? templateUrl :
-      '../../catalog/views/unosat/js/profile/profile.html';
-  });
-
-
-/**
- * @param {!angular.JQLite} $element Element.
- * @param {!angular.Attributes} $attrs Attributes.
- * @param {!function(!angular.JQLite, !angular.Attributes): string} appProfileTemplateUrl Template function.
- * @return {string} Template URL.
- * @ngInject
- */
-function appProfileTemplateUrl($element, $attrs, appProfileTemplateUrl) {
-  return appProfileTemplateUrl($element, $attrs);
-}
-
 
 /**
  * Provide a component that display a profile panel. This profile use the given
@@ -87,7 +63,7 @@ module.component_ = {
     'getNbPointsFn': '&?appProfileNumberofpoints',
     'getOptionsFn': '&?appProfileOptions'
   },
-  templateUrl: appProfileTemplateUrl
+  templateUrl:  '../../catalog/views/unosat/js/profile/profile.html'
 };
 
 module.component('appProfile', module.component_);
@@ -698,11 +674,10 @@ module.Controller_.prototype.downloadCsv = function() {
   this.ngeoCsvDownload_.startDownload(rows, headers, 'profile.csv');
 };
 
-
-module.controller('AppProfileController', module.Controller_);
-
 module.Controller_['$inject'] = [
   '$scope', '$http', '$element', '$filter',
   'gettextCatalog', 'ngeoFeatureOverlayMgr', 'appProfileJsonUrl',
   'ngeoCsvDownload'
 ]
+module.controller('AppProfileController', module.Controller_);
+

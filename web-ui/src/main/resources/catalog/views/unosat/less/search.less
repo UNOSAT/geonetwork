@@ -1,13 +1,27 @@
+un-search {
+  .form-group {
+    position: relative;
+  }
+}
 span.twitter-typeahead {
   & + span.clear-button {
     position: absolute;
     top: 0;
-    margin: 30px 0px 0px 225px;
+    right: 0;
     cursor: pointer;
-    color: white;
     opacity: 0.5;
+    margin-right: 1rem;
+    display: none;
     &:hover {
       opacity: 1;
+    }
+    &:after {
+      position: absolute;
+      content: "\f00d";
+      color: @brand-secondary;
+      font-family: FontAwesome;
+      font-size: 2rem;
+      right: 0;
     }
   }
   .placeholder-text:-moz-placeholder {
@@ -25,8 +39,8 @@ span.twitter-typeahead {
   .form-control {
     min-width: 250px;
     position: relative;
-    padding-right: 32px;
-    padding-left: 32px;
+    padding-right: 15px;
+    padding-left: 15px;
   }
   .tt-dropdown-menu {
     position: absolute;
@@ -87,5 +101,10 @@ span.twitter-typeahead {
     height: 36px;
     line-height: 36px;
     color: white;
+  }
+  .header {
+    padding-left: 12px;
+    font-weight: bold;
+    color: @brand-secondary;
   }
 }

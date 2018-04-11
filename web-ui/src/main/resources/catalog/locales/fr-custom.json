@@ -1,4 +1,7 @@
 {
+  "searchPlaces": "Chercher un lieu ou une coordonnée",
+  "recenterTo": "Centrer sur les coordonnées (lon/lat)",
+  "location": "Lieux",
   "md-details": "Fiche d'identification détaillée",
   "legend": "Légende",
   "datas": "Données",

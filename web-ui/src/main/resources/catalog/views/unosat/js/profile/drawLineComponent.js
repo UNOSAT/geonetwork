@@ -158,7 +158,7 @@ var controller = function($scope, $element, $timeout,
  * Initialise the controller.
  */
 controller.prototype.$onInit = function() {
-  const map = this['getMapFn']();
+  var map = this['getMapFn']();
   goog.asserts.assertInstanceof(map, ol.Map);
   this.map_ = map;
   this.map_.addInteraction(this.interaction);
@@ -174,10 +174,11 @@ controller.prototype.clear_ = function() {
   this.line = null;
 };
 
-module.controller('AppDrawprofilelineController',
-  controller);
-
 controller['$inject'] = [
   '$scope', '$element', '$timeout', 'ngeoFeatureOverlayMgr',
   'ngeoDecorateInteraction'
 ];
+
+module.controller('AppDrawprofilelineController',
+  controller);
+

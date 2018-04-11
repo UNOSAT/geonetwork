@@ -305,13 +305,12 @@
               condition: ol.events.condition.pointerMove,
               layers: [layer],
               style: hlStyleFn,
-              features: selectCollection,
+              features: selectCollection
             });
             map.addInteraction(selectInteraction);
 
             var unbindMove = map.on('pointermove', function(event) {
-              console.log('move');
-              const hit = scope.map.forEachFeatureAtPixel(event.pixel,
+              var hit = scope.map.forEachFeatureAtPixel(event.pixel,
                 function(){ return true},
                 undefined,
                 function(l) { return l === layer});
