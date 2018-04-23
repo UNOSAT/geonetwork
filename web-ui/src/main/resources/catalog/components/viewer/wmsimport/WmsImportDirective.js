@@ -468,38 +468,52 @@
         scope: {
           member: '='
         },
-        templateTmp: "<li class='list-group-item' ng-click='handle($event)' " +
-        "ng-class='(!isParentNode()) ? \"leaf\" : \"\"'><label>" +
-        "<span class='fa'  ng-class='isParentNode() ? \"fa-folder-open-o\" :" +
-        " \"fa-plus-square\"'></span>" +
-        ' <span>{{member.Title || member.title}}</span></label></li>',
-        templateUrl: '../../catalog/components/viewer/wmsimport/' +
-        'partials/layer.html',
+        template: "<li class='list-group-item' ng-click='handle($event)' " +
+        "ng-class='(!isParentNode()) ? \"leaf\" : \"\"'>" +
+        "<i ng-show='layer.loading' class='fa fa-refresh fa-spin pull-right'></i>" +
+        "<i ng-show='layer && !layer.loading' class='fa fa-check pull-right'></i>" +
+        "<label>" +
+        "   <span class='fa'  ng-class='isParentNode() ? \"fa-folder-o\" :" +
+        "     \"fa-plus-square-o\"'></span>" +
+        '   {{member.Title || member.title}}' +
+        '</label>' +
+        '</li>',
         link: function(scope, element, attrs, controller) {
           var el = element;
-
-          scope.toggleNode = function(evt) {
+          var select = function() {
+            scope.layer = controller.addLayer(scope.member);
+            // gnAlertService.addAlert({
+            //   msg: $translate.instant('layerAdded', {layer:
+            //     (scope.member.Title || scope.member.title)
+            //   }),
+            //   type: 'success'
+            // });
+          };
+          var toggleNode = function() {
             el.find('.fa').first().toggleClass('fa-folder-o')
               .toggleClass('fa-folder-open-o');
             el.children('ul').toggle();
-            evt.stopPropagation();
           };
-
-          scope.addLayer = function(c) {
-            controller.addLayer(scope.member, c ? c.Name : null);
-          };
-
-          scope.isParentNode = angular.isDefined(scope.member.Layer);
-
-          // Add all subchildren
           if (angular.isArray(scope.member.Layer)) {
             element.append("<gn-cap-tree-col class='list-group' " +
               "collection='member.Layer'></gn-cap-tree-col>");
-            $compile(element.find('gn-cap-tree-col'))(scope);
+            $compile(element.contents())(scope);
           }
+          scope.handle = function(evt) {
+            if (scope.isParentNode()) {
+              toggleNode();
+            } else {
+              select();
+            }
+            evt.stopPropagation();
+          };
+          scope.isParentNode = function() {
+            return angular.isDefined(scope.member.Layer);
+          };
         }
       };
     }]);
+
   module.directive('gnLayerStyles', [
     function() {
       return {
