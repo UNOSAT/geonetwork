@@ -32,7 +32,7 @@
       restrict: 'E',
       scope: {
         map: '<gnFeaturesTablesMap',
-        active: '<gnActive'
+        active: '=?gnActive'
       },
       controllerAs: 'ctrl',
       bindToController: true,
@@ -46,10 +46,15 @@
 
   }]);
 
-  var GnFeaturesTablesController = function(gnFeaturesTableManager) {
+  var GnFeaturesTablesController = function(gnFeaturesTableManager, $scope) {
     this.tm = gnFeaturesTableManager;
 
     this.tables = gnFeaturesTableManager.tables;
+
+    $scope.$watch(
+      function() {return this.tables.length}.bind(this),
+      function(length) {this.active = !!length}.bind(this)
+    );
 
     this.fOverlay = new ol.layer.Vector({
       source: new ol.source.Vector({
@@ -68,7 +73,7 @@
 
 
   module.controller('gnFeaturesTablesController', [
-    'gnFeaturesTableManager',
+    'gnFeaturesTableManager', '$scope',
     GnFeaturesTablesController
   ]);
 

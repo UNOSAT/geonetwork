@@ -1,4 +1,12 @@
 {
+  "Login": "Authentification",
+  "Catalog": "Catalogue",
+  "Mymaps": "Cartothèque",
+  "Print": "Impression",
+  "Draw": "Dessin",
+  "geoportal": "Carte",
+  "drawProfile": "Dessiner un profile",
+  "drawProfileHelp": "Dessinez une ligne sur la carte pour afficher le profile d'élévation correspondant. Faites un double-click pour terminer le dessin.",
   "searchPlaces": "Chercher un lieu ou une coordonnée",
   "recenterTo": "Centrer sur les coordonnées (lon/lat)",
   "location": "Lieux",

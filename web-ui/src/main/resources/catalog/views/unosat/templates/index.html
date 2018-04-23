@@ -1,4 +1,4 @@
-<div id="main-container" data-theme="main" ng-controller="MainController as mainCtrl" ng-class="{'app-profile-chart-active': !!profileChartActive}">
+<div id="main-container" data-theme="main" ng-controller="MainController as mainCtrl" ng-class="{'app-profile-chart-active': (gfiActive || profileChartActive)}">
 
   <!--Header-->
   <header class="navbar navbar-default navbar-fixed-top">
@@ -219,7 +219,7 @@
               <p>
                 <button class="btn btn-default"
                         ngeo-btn ng-model="ctrl.interaction.active"
-                        translate> Draw profile line
+                        translate>drawProfile
                 </button>
               </p>
               <p>
@@ -262,6 +262,7 @@
       <div ngeo-map="mainCtrl.map"></div>
       <!--GetFeature Info Table results-->
       <div gn-gfi=""  map="mainCtrl.map" ></div>
+      <!--<gn-features-tables gn-features-tables-map="::mainCtrl.map"></gn-features-tables>-->
       <!--Background selector-->
       <un-bg-selector un-bg-selector-map="::mainCtrl.map" class="ga-bg-desktop"></un-bg-selector>
       <app-kml-overlay app-kml-overlay-map="::mainCtrl.map"></app-kml-overlay>
@@ -276,6 +277,11 @@
   </main>
 
   <footer>
+    <gn-features-tables
+            gn-features-tables-map="::mainCtrl.map"
+            gn-active="gfiActive"
+            ngeo-resizemap="mainCtrl.map"
+            ngeo-resizemap-state="gfiActive"></gn-features-tables>
     <app-profile
             app-profile-active="profileChartActive"
             app-profile-line="mainCtrl.profileLine"
